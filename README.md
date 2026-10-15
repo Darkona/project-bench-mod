@@ -37,4 +37,4 @@ You need Java 21. The Gradle wrapper does the rest.
 
 ## License
 
-[GNU GPL v3 or later](LICENSE). The name and the logo are covered by [TRADEMARKS.md](TRADEMARKS.md).
+The code is under the [GNU GPL v3 or later](LICENSE). The textures, the logo and the pictures of the wiki are under [CC BY-NC-SA 4.0](LICENSE-ASSETS.md). The name and the logo are also covered by [TRADEMARKS.md](TRADEMARKS.md).
