@@ -37,4 +37,4 @@ You need Java 21. The Gradle wrapper does the rest.
 
 ## License
 
-[GNU GPL v3 or later](LICENSE).
+[GNU GPL v3 or later](LICENSE). The name and the logo are covered by [TRADEMARKS.md](TRADEMARKS.md).
