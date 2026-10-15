@@ -1,0 +1,75 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "projectbench:block/slab_project_bench_board"
+      },
+      "when": {
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "projectbench:block/slab_project_bench_board",
+        "y": 90
+      },
+      "when": {
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "projectbench:block/slab_project_bench_board",
+        "y": 180
+      },
+      "when": {
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "projectbench:block/slab_project_bench_board",
+        "y": 270
+      },
+      "when": {
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "projectbench:block/slab_project_bench_leg_north_west"
+      },
+      "when": {
+        "legs_north": "true",
+        "legs_west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "projectbench:block/slab_project_bench_leg_north_east"
+      },
+      "when": {
+        "legs_east": "true",
+        "legs_north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "projectbench:block/slab_project_bench_leg_south_west"
+      },
+      "when": {
+        "legs_south": "true",
+        "legs_west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "projectbench:block/slab_project_bench_leg_south_east"
+      },
+      "when": {
+        "legs_east": "true",
+        "legs_south": "true"
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "minecraft:block/oak_planks",
+    "front": "projectbench:block/blueprint_archive_front_bottom",
+    "side": "projectbench:block/blueprint_archive_side",
+    "top": "minecraft:block/chiseled_bookshelf_top"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "projectbench:feature",
+      "feature": "slab_bench"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_project_bench": {
+      "conditions": {
+        "items": [
+          {
+            "items": "projectbench:project_bench"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "projectbench:slab_project_bench"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_project_bench"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projectbench:slab_project_bench"
+    ]
+  }
+}

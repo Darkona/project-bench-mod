@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "projectbench:feature",
+      "feature": "autocraft"
+    }
+  ],
+  "type": "projectbench:bench_upgrade_shaped",
+  "category": "redstone",
+  "key": {
+    "B": {
+      "item": "projectbench:project_bench"
+    },
+    "C": {
+      "item": "minecraft:crafter"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "L": {
+      "item": "minecraft:lever"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "IBI",
+    "RCR",
+    "PLP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "projectbench:auto_project_bench"
+  }
+}

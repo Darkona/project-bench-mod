@@ -1,0 +1,42 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#bottom"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "north": {
+          "texture": "#side"
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#side"
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#side"
+        }
+      },
+      "from": [
+        0,
+        0,
+        14
+      ],
+      "to": [
+        2,
+        8,
+        16
+      ]
+    }
+  ],
+  "textures": {
+    "bottom": "projectbench:block/project_bench_bottom",
+    "particle": "projectbench:block/project_bench_side",
+    "side": "projectbench:block/project_bench_side"
+  }
+}

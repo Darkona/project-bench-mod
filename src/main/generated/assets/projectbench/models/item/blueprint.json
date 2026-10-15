@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "projectbench:item/blueprint_recorded",
+      "predicate": {
+        "projectbench:recorded": 1.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "projectbench:item/blueprint"
+  }
+}

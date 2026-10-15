@@ -1,0 +1,8 @@
+{
+  "values": [
+    "projectbench:project_bench",
+    "projectbench:slab_project_bench",
+    "projectbench:auto_project_bench",
+    "projectbench:ejecting_auto_project_bench"
+  ]
+}

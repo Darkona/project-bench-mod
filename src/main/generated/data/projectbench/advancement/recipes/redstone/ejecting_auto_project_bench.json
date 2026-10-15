@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "projectbench:feature",
+      "feature": "autocraft"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_auto_project_bench": {
+      "conditions": {
+        "items": [
+          {
+            "items": "projectbench:auto_project_bench"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "projectbench:ejecting_auto_project_bench"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_auto_project_bench"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projectbench:ejecting_auto_project_bench"
+    ]
+  }
+}

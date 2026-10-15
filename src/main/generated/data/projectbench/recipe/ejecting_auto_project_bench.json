@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "projectbench:feature",
+      "feature": "autocraft"
+    }
+  ],
+  "type": "projectbench:bench_upgrade_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "projectbench:auto_project_bench"
+    },
+    {
+      "item": "minecraft:dropper"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "projectbench:ejecting_auto_project_bench"
+  }
+}

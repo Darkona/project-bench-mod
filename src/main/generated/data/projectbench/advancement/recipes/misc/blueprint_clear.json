@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "projectbench:feature",
+      "feature": "blueprint"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_blueprint": {
+      "conditions": {
+        "items": [
+          {
+            "items": "projectbench:blueprint"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "projectbench:blueprint_clear"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_blueprint"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projectbench:blueprint_clear"
+    ]
+  }
+}

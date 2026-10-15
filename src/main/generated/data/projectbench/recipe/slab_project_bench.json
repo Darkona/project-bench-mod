@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "projectbench:feature",
+      "feature": "slab_bench"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "projectbench:project_bench"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    " B ",
+    "III"
+  ],
+  "result": {
+    "count": 2,
+    "id": "projectbench:slab_project_bench"
+  }
+}

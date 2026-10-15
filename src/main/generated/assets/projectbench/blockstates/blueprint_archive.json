@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=east,part=bottom": {
+      "model": "projectbench:block/blueprint_archive_bottom",
+      "y": 90
+    },
+    "facing=east,part=middle": {
+      "model": "projectbench:block/blueprint_archive_middle",
+      "y": 90
+    },
+    "facing=east,part=single": {
+      "model": "projectbench:block/blueprint_archive",
+      "y": 90
+    },
+    "facing=east,part=top": {
+      "model": "projectbench:block/blueprint_archive_top",
+      "y": 90
+    },
+    "facing=north,part=bottom": {
+      "model": "projectbench:block/blueprint_archive_bottom"
+    },
+    "facing=north,part=middle": {
+      "model": "projectbench:block/blueprint_archive_middle"
+    },
+    "facing=north,part=single": {
+      "model": "projectbench:block/blueprint_archive"
+    },
+    "facing=north,part=top": {
+      "model": "projectbench:block/blueprint_archive_top"
+    },
+    "facing=south,part=bottom": {
+      "model": "projectbench:block/blueprint_archive_bottom",
+      "y": 180
+    },
+    "facing=south,part=middle": {
+      "model": "projectbench:block/blueprint_archive_middle",
+      "y": 180
+    },
+    "facing=south,part=single": {
+      "model": "projectbench:block/blueprint_archive",
+      "y": 180
+    },
+    "facing=south,part=top": {
+      "model": "projectbench:block/blueprint_archive_top",
+      "y": 180
+    },
+    "facing=west,part=bottom": {
+      "model": "projectbench:block/blueprint_archive_bottom",
+      "y": 270
+    },
+    "facing=west,part=middle": {
+      "model": "projectbench:block/blueprint_archive_middle",
+      "y": 270
+    },
+    "facing=west,part=single": {
+      "model": "projectbench:block/blueprint_archive",
+      "y": 270
+    },
+    "facing=west,part=top": {
+      "model": "projectbench:block/blueprint_archive_top",
+      "y": 270
+    }
+  }
+}

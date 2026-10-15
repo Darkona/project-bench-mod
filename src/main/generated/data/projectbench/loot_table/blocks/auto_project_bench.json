@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:block",
+  "functions": [
+    {
+      "function": "minecraft:copy_components",
+      "include": [
+        "projectbench:contents",
+        "projectbench:slot_locks"
+      ],
+      "source": "block_entity"
+    }
+  ],
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "projectbench:auto_project_bench"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "projectbench:blocks/auto_project_bench"
+}

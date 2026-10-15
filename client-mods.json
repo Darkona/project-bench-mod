@@ -1,0 +1,137 @@
+{
+  "_comment": "Extra mods of the development client (runClientWithMods), downloaded from Modrinth into run/mods and checked by sha512. Groups: base always; jei by default, emi in its place with -Pviewer=emi, neither with -Pviewer=none; inventory only with -PinventoryMods. Set enabled to false, or pass -PdisableMods=name,name, to leave one out.",
+  "mods": [
+    {
+      "name": "jei",
+      "group": "jei",
+      "source": "modrinth",
+      "project": "u6dRKJwZ",
+      "version": "TKsCmRlt",
+      "file": "jei-1.21.1-neoforge-19.57.0.449.jar",
+      "url": "https://cdn.modrinth.com/data/u6dRKJwZ/versions/TKsCmRlt/jei-1.21.1-neoforge-19.57.0.449.jar",
+      "sha512": "d7ebef36c1ded726702b3372fe3f573970188768bf78ce863d552af8b1ab701eb292cb5938618c6aa9d523fe5968857f226846a2003297aff8c8fd14b355c29e",
+      "enabled": true
+    },
+    {
+      "name": "emi",
+      "group": "emi",
+      "source": "modrinth",
+      "project": "fRiHVvU7",
+      "version": "5sIPA1To",
+      "file": "emi-1.1.24+1.21.1+neoforge.jar",
+      "url": "https://cdn.modrinth.com/data/fRiHVvU7/versions/5sIPA1To/emi-1.1.24%2B1.21.1%2Bneoforge.jar",
+      "sha512": "f4c45ed686fe617311d6debadcb6ace5963e66f8cfe0cfed398231f081f87407070efc7a73c8b695d158f1d87a97180737b9107a46771e77df2bc9a7dc715ebd",
+      "enabled": true
+    },
+    {
+      "name": "jade",
+      "group": "base",
+      "source": "modrinth",
+      "project": "nvQzSEkH",
+      "version": "eYz2YBGT",
+      "file": "Jade-1.21.1-NeoForge-15.10.6.jar",
+      "url": "https://cdn.modrinth.com/data/nvQzSEkH/versions/eYz2YBGT/Jade-1.21.1-NeoForge-15.10.6.jar",
+      "sha512": "dad9755dce8d85d914fc4df2baa0211f13e5839a71c1925fdd01f69081a95e30a2934e6273f8b01f0169adebe7a9dae57a8d904de0c4cb36dc17369bb474f0f2",
+      "enabled": true
+    },
+    {
+      "name": "polymorph",
+      "group": "base",
+      "source": "modrinth",
+      "project": "tagwiZkJ",
+      "version": "9yWvrF5o",
+      "file": "polymorph-neoforge-1.2.0+1.21.1.jar",
+      "url": "https://cdn.modrinth.com/data/tagwiZkJ/versions/9yWvrF5o/polymorph-neoforge-1.2.0%2B1.21.1.jar",
+      "sha512": "dce77fffebae80532fec39d35c9c8b5817ba756bb03569022cc0854a8a6cf1868690f91451b587bd60d813e8403b5de91adbc324796bc423ef28deecfb13c775",
+      "enabled": true
+    },
+    {
+      "name": "mouse-tweaks",
+      "group": "base",
+      "source": "modrinth",
+      "project": "aC3cM3Vq",
+      "version": "9I21YYxf",
+      "file": "MouseTweaks-neoforge-mc1.21-2.26.1.jar",
+      "url": "https://cdn.modrinth.com/data/aC3cM3Vq/versions/9I21YYxf/MouseTweaks-neoforge-mc1.21-2.26.1.jar",
+      "sha512": "f95c0cc881211ee0442434976775e07aae40b4a2ba4e3a85455bc57ca9d3c991e239cd98374a8abd442dc9c378dcd9001e2caa1bf69991d424b5652dd7f3483b",
+      "enabled": true
+    },
+    {
+      "name": "iron-chests",
+      "group": "base",
+      "source": "modrinth",
+      "project": "P3iIrPH3",
+      "version": "Res1o1zf",
+      "file": "ironchest-1.21-neoforge-16.0.7.jar",
+      "url": "https://cdn.modrinth.com/data/P3iIrPH3/versions/Res1o1zf/ironchest-1.21-neoforge-16.0.7.jar",
+      "sha512": "8cd23bf931f3334e1d9c1b0a5fac0e92b022039c4cd01ee0ee95e74310a91588b72a350fb45bf542a242ab2fa271d182721b53a618cf841dd8c56f78ca0e1a97",
+      "enabled": true
+    },
+    {
+      "name": "storage-drawers",
+      "group": "inventory",
+      "source": "modrinth",
+      "project": "guitPqEi",
+      "version": "px0CCB06",
+      "file": "StorageDrawers-neoforge-1.21.1-13.11.4.jar",
+      "url": "https://cdn.modrinth.com/data/guitPqEi/versions/px0CCB06/StorageDrawers-neoforge-1.21.1-13.11.4.jar",
+      "sha512": "df97b8b5053a902264a236a71e7585b78d9d48a0bce585033aa8b169896d775f6fda462cfc77431af79cc596ab356eb9642e0c69a205a46b02d4d6f7ab3e74e9",
+      "enabled": true
+    },
+    {
+      "name": "sophisticated-storage",
+      "group": "inventory",
+      "source": "modrinth",
+      "project": "hMlaZH8f",
+      "version": "QSAe7QA6",
+      "file": "sophisticatedstorage-1.21.1-1.6.6.2181.jar",
+      "url": "https://cdn.modrinth.com/data/hMlaZH8f/versions/QSAe7QA6/sophisticatedstorage-1.21.1-1.6.6.2181.jar",
+      "sha512": "4cde25feba390af7cf09cb009d0631ed557eeb546ac730e5421017d7323123e3ec7a1be326af5c8b9a8c5861bbfafd28a79aa7ad4b71d73f291052943ed3dee8",
+      "enabled": true
+    },
+    {
+      "name": "sophisticated-core",
+      "group": "inventory",
+      "source": "modrinth",
+      "project": "nmoqTijg",
+      "version": "tLoR0vCd",
+      "file": "sophisticatedcore-1.21.1-1.5.12.2400.jar",
+      "url": "https://cdn.modrinth.com/data/nmoqTijg/versions/tLoR0vCd/sophisticatedcore-1.21.1-1.5.12.2400.jar",
+      "sha512": "8195cdf8787e83c94599ae023e12b1785a245868d0d45001ba183eb1bfc8e11265c11aa8c5e0454b82b9933a21292ff77a85f097e4f443051a75d66a89298276",
+      "enabled": true
+    },
+    {
+      "name": "functional-storage",
+      "group": "inventory",
+      "source": "modrinth",
+      "project": "cO40ZIg3",
+      "version": "FWnouoF2",
+      "file": "functionalstorage-1.21.1-1.5.7.jar",
+      "url": "https://cdn.modrinth.com/data/cO40ZIg3/versions/FWnouoF2/functionalstorage-1.21.1-1.5.7.jar",
+      "sha512": "703292eb514d09ed34fb4cc889fc424a9816be145a931c29069a24ed6d21f5d9b46f4d8b3b1e224dabbdb95ecafe0fad32ad034debccf6545d89dd17cda634ce",
+      "enabled": true
+    },
+    {
+      "name": "titanium",
+      "group": "inventory",
+      "source": "modrinth",
+      "project": "1Ro7m06l",
+      "version": "vbCgpf68",
+      "file": "titanium-1.21-4.0.51.jar",
+      "url": "https://cdn.modrinth.com/data/1Ro7m06l/versions/vbCgpf68/titanium-1.21-4.0.51.jar",
+      "sha512": "59a1470b5b3e103f52fa9c0f2f334bb3b28cdbaba74c95234528a40a558596d598227968e5812502a41a9ee24993b00c748cee913abae8fbb4ab7df79d04ab29",
+      "enabled": true
+    },
+    {
+      "name": "create",
+      "group": "inventory",
+      "source": "modrinth",
+      "project": "LNytGWDc",
+      "version": "UjX6dr61",
+      "file": "create-1.21.1-6.0.10.jar",
+      "url": "https://cdn.modrinth.com/data/LNytGWDc/versions/UjX6dr61/create-1.21.1-6.0.10.jar",
+      "sha512": "11cc8fc049d2f67f6548c7abfada6b82a3adb5c7ca410a742de04bbca76e03862c518721b88d806f6e6d768a4d68531fdb903a85859b25d1484d550cc7bafd4b",
+      "enabled": true
+    }
+  ]
+}

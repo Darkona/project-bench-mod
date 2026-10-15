@@ -1,0 +1,260 @@
+plugins {
+    id 'java-library'
+    id 'idea'
+    id 'net.ltgt.errorprone' version '5.1.1'
+    id 'net.neoforged.moddev' version "${moddev_version}"
+}
+
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+version = "${minecraft_version}-${mod_version}"
+group = mod_group_id
+
+base {
+    archivesName = archive_name
+}
+
+// Minecraft 1.21.1 ships Java 21 to players, so the mod targets Java 21.
+java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
+
+repositories {
+    mavenCentral()
+    // JEI (the optional plugin of compat/jei)
+    maven {
+        url 'https://maven.blamejared.com'
+        content {
+            includeGroup 'mezz.jei'
+            includeGroup 'net.mezzdev.config'
+        }
+    }
+    // EMI, Jade, Polymorph, Mouse Tweaks and Inventory Profiles Next (the optional compat packages), Modrinth's maven
+    maven {
+        url 'https://api.modrinth.com/maven'
+        content { includeGroup 'maven.modrinth' }
+    }
+}
+
+// The GameTests (src/gametest): compiled against the mod and loaded as part of it in the dev runs only; the jar takes sourceSets.main alone.
+sourceSets {
+    gametest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+configurations {
+    gametestImplementation.extendsFrom implementation
+    gametestCompileOnly.extendsFrom compileOnly
+    gametestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+neoForge {
+    version = project.neo_version
+    // Minecraft and NeoForge on the GameTests' classpath too
+    addModdingDependenciesTo sourceSets.gametest
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        // The same client with the extra mods of client-mods.json in run/mods (syncClientMods below).
+        clientWithMods {
+            client()
+            gameDirectory = project.file('run')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        gameTestServer {
+            type = 'gameTestServer'
+            gameDirectory = project.file('run/gametest')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all',
+                    '--output', file('src/main/generated').absolutePath,
+                    '--existing', file('src/main/resources').absolutePath
+        }
+
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.INFO
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+            sourceSet(sourceSets.gametest)
+        }
+    }
+
+    // JUnit runs inside a booted FML (registries, data components, capabilities as in game).
+    unitTest {
+        enable()
+        testedMod = mods."${mod_id}"
+    }
+}
+
+sourceSets.main.resources {
+    srcDir 'src/main/generated'
+    exclude '.cache/**'
+}
+
+dependencies {
+    errorprone 'com.google.errorprone:error_prone_core:2.50.0'
+    errorprone 'com.uber.nullaway:nullaway:0.14.2'
+    // The other mods are optional: each compat package compiles against the mod's jar (or its API) and is set up only
+    // when that mod is loaded. None of them is on the runs' classpath; runClientWithMods installs them in run/mods.
+    compileOnly "mezz.jei:jei-1.21.1-neoforge-api:${jei_version}"
+    compileOnly "maven.modrinth:emi:${emi_version_id}"
+    compileOnly "maven.modrinth:jade:${jade_version_id}"
+    // Polymorph has no API jar: compat/polymorph compiles against the mod's jar.
+    compileOnly "maven.modrinth:polymorph:${polymorph_version_id}"
+    // Mouse Tweaks ships its API (IMTModGuiContainer3Ex) inside the mod's jar.
+    compileOnly "maven.modrinth:mouse-tweaks:${mouse_tweaks_version_id}"
+    // Inventory Profiles Next: ProjectBenchMenu carries its @IPNSlotsIgnoreForInventoryTypes; without IPN the JVM skips
+    // an annotation it cannot find.
+    compileOnly "maven.modrinth:inventory-profiles-next:${ipn_version_id}"
+
+    // TakeAtMostAStackTest drives the GameTests' FakeInventories
+    testImplementation sourceSets.gametest.output
+    testImplementation "org.junit.jupiter:junit-jupiter:${junit_version}"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// Expands ${} properties in src/main/templates (neoforge.mods.toml) into the resources.
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            neo_version_range      : neo_version_range,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : project.version.toString(),
+            mod_authors            : mod_authors,
+            mod_description        : mod_description,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    // Error Prone with only NullAway on: a field, parameter or return that can be null must say so with @Nullable
+    options.errorprone {
+        disableAllChecks = true
+        check('NullAway', net.ltgt.gradle.errorprone.CheckSeverity.ERROR)
+        option('NullAway:AnnotatedPackages', 'com.darkona.projectbench')
+        // The screen builds its buttons in init(), which vanilla always calls before anything else uses them
+        option('NullAway:KnownInitializers', 'com.darkona.projectbench.client.ProjectBenchScreen.init')
+        excludedPaths = '.*/src/main/generated/.*'
+        enabled = name != 'compileTestJava'
+    }
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
+    maxParallelForks = 1
+    // The junit environment keeps its generated config between runs; a stale one hides a changed default
+    def staleConfig = layout.buildDirectory.dir('minecraft-junit/config').get().asFile
+    doFirst {
+        staleConfig.deleteDir()
+    }
+    // CompatIsolationTest and ArchitectureTest read the compiled classes from these folders
+    systemProperty 'projectbench.classes', sourceSets.main.java.destinationDirectory.get().asFile.absolutePath
+    systemProperty 'projectbench.gametestClasses', sourceSets.gametest.java.destinationDirectory.get().asFile.absolutePath
+}
+
+tasks.named('jar', Jar) {
+    manifest {
+        attributes([
+                "Specification-Title"   : mod_id,
+                "Specification-Vendor"  : mod_authors,
+                "Specification-Version" : "1",
+                "Implementation-Title"  : project.name,
+                "Implementation-Version": project.version,
+                "Implementation-Vendor" : mod_authors
+        ])
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
+
+// The extra mods of the development client are listed in client-mods.json, by group: base (Jade, Polymorph, Mouse Tweaks,
+// Iron Chests), the recipe viewer (jei, or emi with -Pviewer=emi, neither with -Pviewer=none) and inventory (storage mods,
+// only with -PinventoryMods). syncClientMods downloads the missing jars into run/mods, checks each against its sha512, and
+// renames the jars it does not want to .jar.disabled; -PdisableMods=name,name leaves some out for one run.
+// runClientWithMods syncs first; runClient and runServer rename them all to .jar.disabled, so they stay plain NeoForge.
+def clientModsManifest = file('client-mods.json')
+def clientModsDir = file('run/mods')
+def clientModGroups = ['base', 'inventory'].findAll { it == 'base' || project.hasProperty('inventoryMods') } +
+        [(findProperty('viewer') ?: 'jei').toString()]
+def clientModsOff = ((findProperty('disableMods') ?: '') as String).split(',')*.trim().findAll { it } as Set
+[syncClientMods: true, disableClientMods: false].each { taskName, withMods ->
+    tasks.register(taskName) {
+        group = 'run'
+        description = withMods ? 'Downloads the extra client mods of client-mods.json into run/mods and enables them'
+                : 'Renames the extra client mods in run/mods to .jar.disabled'
+        def manifest = clientModsManifest
+        def modsDir = clientModsDir
+        def groups = clientModGroups
+        def off = clientModsOff
+        inputs.file(manifest)
+        outputs.upToDateWhen { false }
+        doLast {
+            modsDir.mkdirs()
+            def entries = new groovy.json.JsonSlurper().parse(manifest).mods
+            if (withMods) (off - entries*.name).each { logger.warn("client-mods: -PdisableMods names unknown mod '${it}'") }
+            entries.each { m ->
+                def jar = new File(modsDir, m.file)
+                def disabled = new File(modsDir, m.file + '.disabled')
+                if (!withMods || !m.enabled || !(m.group in groups) || m.name in off) {
+                    if (jar.exists()) { disabled.delete(); jar.renameTo(disabled); logger.lifecycle("client-mods: ${m.name} disabled") }
+                } else if (!jar.exists()) {
+                    if (disabled.exists()) { disabled.renameTo(jar); logger.lifecycle("client-mods: ${m.name} enabled") }
+                    else {
+                        logger.lifecycle("client-mods: downloading ${m.file}")
+                        def tmp = new File(modsDir, m.file + '.part')
+                        URI.create(m.url).toURL().withInputStream { i -> tmp.withOutputStream { o -> o << i } }
+                        def sum = java.security.MessageDigest.getInstance('SHA-512').digest(tmp.bytes).encodeHex().toString()
+                        if (sum != m.sha512) { tmp.delete(); throw new GradleException("client-mods: sha512 mismatch for ${m.file}") }
+                        tmp.renameTo(jar)
+                    }
+                }
+            }
+            def known = entries.collectMany { [it.file, it.file + '.disabled'] } as Set
+            def extra = (modsDir.listFiles() ?: []).findAll { (it.name.endsWith('.jar') || it.name.endsWith('.jar.disabled')) && !(it.name in known) }
+            if (extra) logger.warn("client-mods: not in client-mods.json, left alone: ${extra*.name.join(', ')}")
+        }
+    }
+}
+tasks.matching { it.name == 'runClientWithMods' }.configureEach { dependsOn 'syncClientMods' }
+tasks.matching { it.name in ['runClient', 'runServer'] }.configureEach { dependsOn 'disableClientMods' }

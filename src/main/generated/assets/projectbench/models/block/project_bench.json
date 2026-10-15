@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "projectbench:block/project_bench_bottom",
+    "front": "projectbench:block/project_bench_front",
+    "side": "projectbench:block/project_bench_side",
+    "top": "projectbench:block/project_bench_top"
+  }
+}

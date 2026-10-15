@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "projectbench:block/ejecting_auto_project_bench",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "projectbench:block/ejecting_auto_project_bench"
+    },
+    "facing=south": {
+      "model": "projectbench:block/ejecting_auto_project_bench",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectbench:block/ejecting_auto_project_bench",
+      "y": 270
+    }
+  }
+}

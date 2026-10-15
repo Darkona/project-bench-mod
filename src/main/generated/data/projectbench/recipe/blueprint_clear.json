@@ -1,0 +1,19 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "projectbench:feature",
+      "feature": "blueprint"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "projectbench:blueprint"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "projectbench:blueprint"
+  }
+}

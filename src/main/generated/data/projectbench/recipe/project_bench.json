@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "projectbench:feature",
+      "feature": "bench"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "c:player_workstations/crafting_tables"
+    },
+    "C": {
+      "tag": "c:chests/wooden"
+    },
+    "G": {
+      "tag": "c:ingots/gold"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "S": {
+      "item": "minecraft:smooth_stone"
+    }
+  },
+  "pattern": [
+    "RGR",
+    "SBS",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "projectbench:project_bench"
+  }
+}
