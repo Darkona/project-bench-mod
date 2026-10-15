@@ -1,0 +1,55 @@
+name: Build
+
+# A push or PR that only touches documentation does not build. One that mixes docs and code does.
+on:
+  push:
+    branches: ['master']
+    paths-ignore:
+      - '**.md'
+      - 'wiki/**'
+      - 'art/**'
+      - 'LICENSE'
+      - '.gitignore'
+  pull_request:
+    branches: ['master']
+    paths-ignore:
+      - '**.md'
+      - 'wiki/**'
+      - 'art/**'
+      - 'LICENSE'
+      - '.gitignore'
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Java version
+        run: echo "JAVA_VERSION=$(grep '^java_version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - uses: gradle/actions/setup-gradle@v5
+        with:
+          validate-wrappers: true
+
+      # Two invocations: a GameTest task in the same invocation adds the test data to the resources, and the
+      # sources jar would then pack it twice.
+      - name: Build and unit tests
+        run: ./gradlew build --no-daemon
+
+      - name: GameTests
+        run: ./gradlew runGameTestServer --no-daemon
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: jars
+          path: build/libs/*.jar
