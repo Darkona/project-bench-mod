@@ -5,19 +5,25 @@ on:
   push:
     branches: ['master']
     paths-ignore:
-      - '**.md'
       - 'wiki/**'
-      - 'art/**'
+      - '**/*.md'
       - 'LICENSE'
+      - 'LICENSE-ASSETS.md'
+      - 'TRADEMARKS.md'
       - '.gitignore'
+      - '.github/workflows/publish-wiki.yml'
+      - 'art/**'
   pull_request:
     branches: ['master']
     paths-ignore:
-      - '**.md'
       - 'wiki/**'
-      - 'art/**'
+      - '**/*.md'
       - 'LICENSE'
+      - 'LICENSE-ASSETS.md'
+      - 'TRADEMARKS.md'
       - '.gitignore'
+      - '.github/workflows/publish-wiki.yml'
+      - 'art/**'
 
 concurrency:
   group: build-${{ github.ref }}
