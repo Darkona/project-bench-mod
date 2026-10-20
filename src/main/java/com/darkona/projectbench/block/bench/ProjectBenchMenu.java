@@ -12,6 +12,8 @@ import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
 import com.darkona.projectbench.registry.ModMenus;
+import dev.darkona.jdlib.api.menu.SlotMap;
+import dev.darkona.jdlib.api.menu.SlotMapped;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -47,7 +49,7 @@ import java.util.Optional;
 import java.util.function.IntSupplier;
 
 @IPNSlotsIgnoreForInventoryTypes(value = {}, ignoreCraftingSlots = true)
-public class ProjectBenchMenu extends BenchMenu {
+public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     public static final int MATRIX_START = 0;
     public static final int RESULT = 9;
     public static final int STORAGE_START = 10;
@@ -129,6 +131,7 @@ public class ProjectBenchMenu extends BenchMenu {
     private final int secondStart;
     private final int costStart;
     private final int processorStart;
+    private final SlotMap slotMap;
 
     private int openTab;
     private int outsideScroll;
@@ -240,6 +243,16 @@ public class ProjectBenchMenu extends BenchMenu {
             int y = OUTSIDE_Y + at[i][1];
             addSlot(client ? new ProcessorSlot(machine, i, brewing, machineSlot, x, y) : new RealProcessorSlot(machine, i, brewing, machineSlot, x, y));
         }
+        int benchHalves = second == null ? 1 : 2;
+        int[] matrixStarts = new int[benchHalves];
+        int[] resultIndexes = new int[benchHalves];
+        int[] storageStarts = new int[benchHalves];
+        for (int which = 0; which < benchHalves; ++which) {
+            matrixStarts[which] = matrixStart(which);
+            resultIndexes[which] = resultIndex(which);
+            storageStarts[which] = storageStart(which);
+        }
+        slotMap = BenchSlotMap.build(matrixStarts, resultIndexes, storageStarts, outsideStart);
         windowStocks = second == null ? new Stock[]{openStock(bench)} : new Stock[]{openStock(bench), openStock(second)};
         int halves = second == null ? 1 : 2;
         List<List<Slot>> matrices = new ArrayList<>(halves);
@@ -351,6 +364,11 @@ public class ProjectBenchMenu extends BenchMenu {
             out.add(archive.blueprints());
         }
         return new ConcatContainer(out);
+    }
+
+    @Override
+    public SlotMap slotMap() {
+        return slotMap;
     }
 
     public boolean station() {

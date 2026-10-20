@@ -58,7 +58,7 @@ You can lock a storage slot to one item:
 2. Middle-click the slot (the pick block button).
 3. The slot now shows it is locked. When empty, it still shows which item it takes.
 
-Middle-click it again while the slot is empty to unlock it. While it still holds items, middle-click does nothing.
+Middle-click a locked slot again to unlock it, whether it is empty or holds items.
 
 In creative mode, middle-click on a storage slot locks it instead of copying the stack.
 
@@ -139,7 +139,7 @@ Hover a button to see its name and what it does.
 | Recipe button | By the result | Lists the recipes that match the grid, so you can pick one. | Only when more than one recipe matches. |
 | Shift+click | Result slot | Crafts as many as the grid and the storage can pay for. | Stops when your inventory is full. |
 | Shift+click | Your inventory | Sends the item to the grid, the storage or the chests. | See [Filling the bench](#filling-the-bench-with-shift-click). |
-| Middle click | Storage slot | Locks the slot to the item it holds, or unlocks it when empty. | See [Locked slots](#locked-slots). |
+| Middle click | Storage slot | Locks the slot to the item it holds, or unlocks it if it is already locked. | See [Locked slots](#locked-slots). |
 
 The three modes of **Auto**:
 

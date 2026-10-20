@@ -171,9 +171,6 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
         }
         boolean empty = storage.getItem(slot).isEmpty();
         if (!storage.lock(slot).isEmpty()) {
-            if (!empty) {
-                return false;
-            }
             storage.setLock(slot, ItemStack.EMPTY);
         } else if (!empty) {
             storage.setLock(slot, storage.getItem(slot));

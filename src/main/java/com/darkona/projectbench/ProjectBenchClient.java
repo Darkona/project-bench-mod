@@ -3,16 +3,17 @@ package com.darkona.projectbench;
 import com.darkona.projectbench.block.bench.RecipeLookup;
 import com.darkona.projectbench.blueprint.Blueprint;
 import com.darkona.projectbench.client.BlockTint;
-import com.darkona.projectbench.client.BlueprintArchiveScreen;
+import com.darkona.projectbench.client.BlueprintArchiveView;
 import com.darkona.projectbench.client.ProjectBenchRenderer;
-import com.darkona.projectbench.client.ProjectBenchScreen;
-import com.darkona.projectbench.compat.mousetweaks.MouseTweaksCompat;
+import com.darkona.projectbench.client.ProjectBenchView;
 import com.darkona.projectbench.compat.polymorph.PolymorphCompat;
+import com.darkona.projectbench.compat.xei.BenchXei;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.registry.ModBlockEntities;
 import com.darkona.projectbench.registry.ModItems;
 import com.darkona.projectbench.registry.ModMenus;
 import com.darkona.projectbench.registry.ModComponents;
+import dev.darkona.jdlib.api.ui.JDMenus;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
@@ -36,10 +37,10 @@ import net.neoforged.neoforge.common.NeoForge;
 public final class ProjectBenchClient {
     public ProjectBenchClient(IEventBus modBus) {
         modBus.addListener((RegisterMenuScreensEvent e) -> {
-            e.register(ModMenus.PROJECT_BENCH.get(), ModList.get().isLoaded(MouseTweaksCompat.MOD_ID) ? MouseTweaksCompat.screen() : ProjectBenchScreen::new);
-            e.register(ModMenus.BLUEPRINT_ARCHIVE.get(), BlueprintArchiveScreen::new);
+            JDMenus.register(e, ModMenus.PROJECT_BENCH, new ProjectBenchView());
+            JDMenus.register(e, ModMenus.BLUEPRINT_ARCHIVE, new BlueprintArchiveView());
         });
-        modBus.addListener((RegisterKeyMappingsEvent e) -> e.register(ProjectBenchScreen.SWITCH_MATRIX));
+        modBus.addListener((RegisterKeyMappingsEvent e) -> e.register(ProjectBenchView.SWITCH_MATRIX));
         modBus.addListener((EntityRenderersEvent.RegisterRenderers e) ->
                 e.registerBlockEntityRenderer(ModBlockEntities.PROJECT_BENCH.get(), ProjectBenchRenderer::new));
         modBus.addListener((FMLClientSetupEvent e) -> e.enqueueWork(() -> ItemProperties.register(ModItems.BLUEPRINT.get(),
@@ -59,6 +60,8 @@ public final class ProjectBenchClient {
             Config.forgetServer();
             BlockTint.forget();
         });
+
+        BenchXei.register();
 
         if (ModList.get().isLoaded(PolymorphCompat.MOD_ID)) {
             PolymorphCompat.init(modBus);

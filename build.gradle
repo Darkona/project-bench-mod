@@ -34,6 +34,9 @@ repositories {
         url 'https://api.modrinth.com/maven'
         content { includeGroup 'maven.modrinth' }
     }
+    // LDLib2 (the engine under JDLib)
+    maven { url 'https://maven.firstdark.dev/releases' }
+    maven { url 'https://maven.firstdark.dev/snapshots' }
 }
 
 // The GameTests (src/gametest): compiled against the mod and loaded as part of it in the dev runs only; the jar takes sourceSets.main alone.
@@ -60,9 +63,24 @@ neoForge {
     }
 
     runs {
+        // Headless visual check (scripts/ui-check.sh): its own game directory, a fixed window size, straight into a world
+        uiCheck {
+            client()
+            gameDirectory = project.file('run/uicheck')
+            jvmArgument '-Xmx2g'
+            programArguments.addAll '--width', '1280', '--height', '720', '--quickPlaySingleplayer', 'uiworld'
+        }
         client {
             client()
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        // Straight into the world "New World" of run/saves, where /ldlib2_ui_editor opens the visual UI editor
+        // (and /jdlib export_ui saves a screen as a template). -Pworld=Name picks another world.
+        editor {
+            client()
+            gameDirectory = project.file('run')
+            programArguments = ['--quickPlaySingleplayer', project.findProperty('world') ?: 'New World']
         }
 
         // The same client with the extra mods of client-mods.json in run/mods (syncClientMods below).
@@ -121,13 +139,18 @@ dependencies {
     errorprone 'com.uber.nullaway:nullaway:0.14.2'
     // The other mods are optional: each compat package compiles against the mod's jar (or its API) and is set up only
     // when that mod is loaded. None of them is on the runs' classpath; runClientWithMods installs them in run/mods.
+    // JDLib is the UI/HUD/FX bridge; LDLib2 is its engine and has to be present at runtime
+    implementation 'dev.darkona.jdlib:JDLib'
+    // ...and travels inside this mod's jar (jar-in-jar), from 0.1 on without crossing a major version
+    jarJar('dev.darkona.jdlib:JDLib') {
+        version { strictly '[0.1.0-SNAPSHOT,1.0.0)'; prefer '0.1.0-SNAPSHOT' }
+    }
+    runtimeOnly "com.lowdragmc.ldlib2:ldlib2-neoforge-${minecraft_version}:${ldlib2_version}"
     compileOnly "mezz.jei:jei-1.21.1-neoforge-api:${jei_version}"
     compileOnly "maven.modrinth:emi:${emi_version_id}"
     compileOnly "maven.modrinth:jade:${jade_version_id}"
     // Polymorph has no API jar: compat/polymorph compiles against the mod's jar.
     compileOnly "maven.modrinth:polymorph:${polymorph_version_id}"
-    // Mouse Tweaks ships its API (IMTModGuiContainer3Ex) inside the mod's jar.
-    compileOnly "maven.modrinth:mouse-tweaks:${mouse_tweaks_version_id}"
     // Inventory Profiles Next: ProjectBenchMenu carries its @IPNSlotsIgnoreForInventoryTypes; without IPN the JVM skips
     // an annotation it cannot find.
     compileOnly "maven.modrinth:inventory-profiles-next:${ipn_version_id}"
@@ -146,6 +169,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             neo_version            : neo_version,
             neo_version_range      : neo_version_range,
             loader_version_range   : loader_version_range,
+            ldlib2_version         : ldlib2_version,
             mod_id                 : mod_id,
             mod_name               : mod_name,
             mod_license            : mod_license,

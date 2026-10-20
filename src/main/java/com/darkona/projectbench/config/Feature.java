@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public enum Feature {
-    BENCH(s -> s.bench(), ModItems.PROJECT_BENCH),
+    BENCH(Config.Settings::bench, ModItems.PROJECT_BENCH),
     SLAB_BENCH(s -> s.bench() && s.slab(), ModItems.SLAB_PROJECT_BENCH),
     AUTOCRAFT(s -> s.bench() && s.autocraft(), ModItems.AUTO_PROJECT_BENCH),
     EJECTING(s -> s.bench() && s.autocraft(), ModItems.EJECTING_AUTO_PROJECT_BENCH),

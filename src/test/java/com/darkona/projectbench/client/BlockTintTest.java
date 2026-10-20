@@ -84,21 +84,6 @@ class BlockTintTest {
                 assertEquals(old, BlockTint.soften(rgb), "soften " + Integer.toHexString(rgb));
             }
         }
-        for (int rgb = 0; rgb <= 0xFFFFFF; rgb += 0x030507) {
-            for (int argb : new int[] {0xFF555555, 0xFFC6C6C6}) {
-                int r = (argb >> 16 & 0xFF) * (rgb >> 16 & 0xFF) / 255;
-                int g = (argb >> 8 & 0xFF) * (rgb >> 8 & 0xFF) / 255;
-                int b = (argb & 0xFF) * (rgb & 0xFF) / 255;
-                assertEquals(0xFF000000 | r << 16 | g << 8 | b, ProjectBenchScreen.tint(argb, rgb), "tint " + Integer.toHexString(rgb));
-            }
-            int background = ProjectBenchScreen.tint(0xFFC6C6C6, rgb);
-            int r = (background >> 16 & 0xFF) + (0xFF - (background >> 16 & 0xFF)) * 40 / 100;
-            int g = (background >> 8 & 0xFF) + (0xFF - (background >> 8 & 0xFF)) * 40 / 100;
-            int b = (background & 0xFF) + (0xFF - (background & 0xFF)) * 40 / 100;
-            assertEquals(0xFF000000 | r << 16 | g << 8 | b, ProjectBenchScreen.slotColor(rgb), "slotColor " + Integer.toHexString(rgb));
-        }
-        assertEquals(0xFF8B8B8B, ProjectBenchScreen.slotColor(BlockTint.PLAIN), "a plain panel keeps vanilla's slot grey");
-        assertEquals(0xFFC6C6C6, ProjectBenchScreen.tint(0xFFC6C6C6, BlockTint.PLAIN));
     }
 
     @Test
@@ -127,5 +112,20 @@ class BlockTintTest {
         assertEquals(0xABCDEF, BlockTint.window(both));
         assertEquals(0xFF102030, BlockTint.text(both));
         assertFalse(BlockTint.pack(BlockTint.PLAIN, 0xFFF0F0F0) == BlockTint.NONE);
+    }
+
+    @Test
+    void aPlainWindowLeavesItsSlotsAloneAndATintedOneLightensThem() {
+        assertEquals(0, BlockTint.slotFill(BlockTint.PLAIN), "no paint: the vanilla slot");
+        assertEquals(0xFFDCDCDC, BlockTint.slotFill(0xFFFFFF), "white: the panel grey, 40 % towards white");
+        int red = BlockTint.slotFill(0xFF0000);
+        assertEquals(0xFF, red >>> 24, "opaque");
+        assertTrue((red >> 16 & 0xFF) > (red >> 8 & 0xFF), "keeps the hue");
+    }
+
+    @Test
+    void aBlocksPaletteNameKeepsItsNamespace() {
+        assertEquals(ResourceLocation.fromNamespaceAndPath("quark", "projectbench_window/spruce_chest"),
+                BlockTint.paletteKey(ResourceLocation.fromNamespaceAndPath("quark", "spruce_chest")));
     }
 }

@@ -38,7 +38,7 @@ class ArchitectureTest {
     private static final Map<String, Set<String>> EXCEPTIONS = Map.of(
             "block/archive/BlueprintArchiveMenu", Set.of("block.bench"),
             "config/Feature", Set.of("block.bench"));
-    private static final Set<String> CLIENT_COMPAT = Set.of("compat.emi", "compat.jei", "compat.mousetweaks", "compat.polymorph");
+    private static final Set<String> CLIENT_COMPAT = Set.of("compat.emi", "compat.jei", "compat.polymorph", "compat.xei");
 
     private static final Map<String, Set<String>> NAMES = new TreeMap<>();
     private static final Map<String, Set<String>> CLIENT_NAMES = new TreeMap<>();

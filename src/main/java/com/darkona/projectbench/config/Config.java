@@ -161,7 +161,7 @@ public final class Config {
         SLOT_LOCKS = b.comment("A middle click on a slot of the bench's inventory that holds something locks it to that item: from then on only",
                 "that very item goes in there, whoever puts it (you, shift-click, hoppers, pipes, Clear, what a craft leaves behind),",
                 "and that item goes to its locked slots first. The slot gets an orange edge and a little padlock, and shows the item",
-                "faded when it is empty. A middle click on a locked slot that is empty unlocks it; while it holds anything the lock stays. Off, no locking and no drawing,",
+                "faded when it is empty. A middle click on a locked slot unlocks it, empty or not. Off, no locking and no drawing,",
                 "and the locks benches already have do nothing (they are kept, and work again when you turn this back on).")
                 .define("enabled", true);
         b.pop();

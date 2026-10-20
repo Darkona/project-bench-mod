@@ -9,6 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -87,6 +88,36 @@ public class BlueprintArchiveMenu extends BenchMenu {
             return original;
         }
         return moveBetween(index, ownSlots());
+    }
+
+    @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        boolean gather = server && clickType == ClickType.PICKUP_ALL && slotId >= 0 && !getCarried().isEmpty()
+                && (!slots.get(slotId).hasItem() || !slots.get(slotId).mayPickup(player));
+        super.clicked(slotId, button, clickType, player);
+        if (gather) {
+            gatherHidden();
+        }
+    }
+
+    private void gatherHidden() {
+        ItemStack carried = getCarried();
+        int windowStart = scroll * COLUMNS;
+        int windowEnd = windowStart + ownSlots();
+        for (int pass = 0; pass < 2; ++pass) {
+            for (int i = 0; i < blueprints.getContainerSize() && carried.getCount() < carried.getMaxStackSize(); ++i) {
+                if (i >= windowStart && i < windowEnd) {
+                    continue;
+                }
+                ItemStack there = blueprints.getItem(i);
+                if (there.isEmpty() || !ItemStack.isSameItemSameComponents(carried, there)
+                        || pass == 0 && there.getCount() == there.getMaxStackSize()) {
+                    continue;
+                }
+                ItemStack taken = blueprints.removeItem(i, Math.min(there.getCount(), carried.getMaxStackSize() - carried.getCount()));
+                carried.grow(taken.getCount());
+            }
+        }
     }
 
     @Override

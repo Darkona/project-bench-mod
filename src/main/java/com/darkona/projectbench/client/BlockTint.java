@@ -1,6 +1,8 @@
 package com.darkona.projectbench.client;
 
 import com.darkona.projectbench.config.ClientConfig;
+import dev.darkona.jdlib.api.ui.JDPalette;
+import dev.darkona.jdlib.api.ui.JDTint;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import net.minecraft.client.Minecraft;
@@ -18,7 +20,7 @@ import java.util.List;
 import java.util.function.IntBinaryOperator;
 
 public final class BlockTint {
-    public static final int PLAIN = -1;
+    public static final int PLAIN = JDTint.NONE;
     public static final int USUAL_TEXT = ClientConfig.TintLine.USUAL_TEXT;
     public static final long NONE = pack(PLAIN, USUAL_TEXT);
     private static final long UNKNOWN = Long.MIN_VALUE;
@@ -26,6 +28,7 @@ public final class BlockTint {
     private static final Reference2LongOpenHashMap<Item> BY_ITEM = new Reference2LongOpenHashMap<>();
     private static final Object2LongOpenHashMap<ResourceLocation> LISTED = new Object2LongOpenHashMap<>();
     private static int seenLoads = -1;
+    private static int seenPalette = -1;
 
     static {
         BY_ITEM.defaultReturnValue(UNKNOWN);
@@ -40,8 +43,10 @@ public final class BlockTint {
             return NONE;
         }
         int loads = ClientConfig.fileLoads();
-        if (loads != seenLoads) {
+        int palette = JDPalette.generation();
+        if (loads != seenLoads || palette != seenPalette) {
             seenLoads = loads;
+            seenPalette = palette;
             BY_ITEM.clear();
             listed(ClientConfig.tints(), LISTED);
         }
@@ -88,7 +93,15 @@ public final class BlockTint {
         if (listed != UNKNOWN) {
             return listed;
         }
+        int named = JDPalette.get(paletteKey(BuiltInRegistries.BLOCK.getKey(block)), JDTint.NONE);
+        if (named != JDTint.NONE) {
+            return pack(named, USUAL_TEXT);
+        }
         return ClientConfig.tintFromTexture() ? fromTexture(block) : NONE;
+    }
+
+    static ResourceLocation paletteKey(ResourceLocation block) {
+        return ResourceLocation.fromNamespaceAndPath(block.getNamespace(), "projectbench_window/" + block.getPath());
     }
 
     private static long fromTexture(Block block) {
@@ -125,6 +138,12 @@ public final class BlockTint {
             return PLAIN;
         }
         return (int) (red / count) << 16 | (int) (green / count) << 8 | (int) (blue / count);
+    }
+
+    static final int SLOT_LIGHTEN = 40;
+
+    public static int slotFill(int rgb) {
+        return JDTint.slotInside(rgb, SLOT_LIGHTEN);
     }
 
     static int soften(int rgb) {

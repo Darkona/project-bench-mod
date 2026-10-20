@@ -28,6 +28,14 @@ versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
+# Required: the windows are described with JDLib, which draws them with LDLib2 (JDLib is packed inside this mod)
+[[dependencies.${mod_id}]]
+modId = "ldlib2"
+type = "required"
+versionRange = "[${ldlib2_version},)"
+ordering = "AFTER"
+side = "CLIENT"
+
 # Optional: the bench's recipe transfer, its catalyst and the hidden switches in JEI (compat/jei)
 [[dependencies.${mod_id}]]
 modId = "jei"
