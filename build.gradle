@@ -16,12 +16,10 @@ base {
     archivesName = archive_name
 }
 
-// Minecraft 1.21.1 ships Java 21 to players, so the mod targets Java 21.
 java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
 repositories {
     mavenCentral()
-    // JEI (the optional plugin of compat/jei)
     maven {
         url 'https://maven.blamejared.com'
         content {
@@ -29,17 +27,14 @@ repositories {
             includeGroup 'net.mezzdev.config'
         }
     }
-    // EMI, Jade, Polymorph, Mouse Tweaks and Inventory Profiles Next (the optional compat packages), Modrinth's maven
     maven {
         url 'https://api.modrinth.com/maven'
         content { includeGroup 'maven.modrinth' }
     }
-    // LDLib2 (the engine under JDLib)
     maven { url 'https://maven.firstdark.dev/releases' }
     maven { url 'https://maven.firstdark.dev/snapshots' }
 }
 
-// The GameTests (src/gametest): compiled against the mod and loaded as part of it in the dev runs only; the jar takes sourceSets.main alone.
 sourceSets {
     gametest {
         compileClasspath += sourceSets.main.output
@@ -54,7 +49,6 @@ configurations {
 
 neoForge {
     version = project.neo_version
-    // Minecraft and NeoForge on the GameTests' classpath too
     addModdingDependenciesTo sourceSets.gametest
 
     parchment {
@@ -63,7 +57,6 @@ neoForge {
     }
 
     runs {
-        // Headless visual check (scripts/ui-check.sh): its own game directory, a fixed window size, straight into a world
         uiCheck {
             client()
             gameDirectory = project.file('run/uicheck')
@@ -75,15 +68,12 @@ neoForge {
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
-        // Straight into the world "New World" of run/saves, where /ldlib2_ui_editor opens the visual UI editor
-        // (and /jdlib export_ui saves a screen as a template). -Pworld=Name picks another world.
         editor {
             client()
             gameDirectory = project.file('run')
             programArguments = ['--quickPlaySingleplayer', project.findProperty('world') ?: 'New World']
         }
 
-        // The same client with the extra mods of client-mods.json in run/mods (syncClientMods below).
         clientWithMods {
             client()
             gameDirectory = project.file('run')
@@ -122,7 +112,6 @@ neoForge {
         }
     }
 
-    // JUnit runs inside a booted FML (registries, data components, capabilities as in game).
     unitTest {
         enable()
         testedMod = mods."${mod_id}"
@@ -137,11 +126,7 @@ sourceSets.main.resources {
 dependencies {
     errorprone 'com.google.errorprone:error_prone_core:2.50.0'
     errorprone 'com.uber.nullaway:nullaway:0.14.2'
-    // The other mods are optional: each compat package compiles against the mod's jar (or its API) and is set up only
-    // when that mod is loaded. None of them is on the runs' classpath; runClientWithMods installs them in run/mods.
-    // JDLib is the UI/HUD/FX bridge; LDLib2 is its engine and has to be present at runtime
     implementation 'dev.darkona.jdlib:JDLib'
-    // ...and travels inside this mod's jar (jar-in-jar), from 0.1 on without crossing a major version
     jarJar('dev.darkona.jdlib:JDLib') {
         version { strictly '[0.1.0-SNAPSHOT,1.0.0)'; prefer '0.1.0-SNAPSHOT' }
     }
@@ -149,19 +134,14 @@ dependencies {
     compileOnly "mezz.jei:jei-1.21.1-neoforge-api:${jei_version}"
     compileOnly "maven.modrinth:emi:${emi_version_id}"
     compileOnly "maven.modrinth:jade:${jade_version_id}"
-    // Polymorph has no API jar: compat/polymorph compiles against the mod's jar.
     compileOnly "maven.modrinth:polymorph:${polymorph_version_id}"
-    // Inventory Profiles Next: ProjectBenchMenu carries its @IPNSlotsIgnoreForInventoryTypes; without IPN the JVM skips
-    // an annotation it cannot find.
     compileOnly "maven.modrinth:inventory-profiles-next:${ipn_version_id}"
 
-    // TakeAtMostAStackTest drives the GameTests' FakeInventories
     testImplementation sourceSets.gametest.output
     testImplementation "org.junit.jupiter:junit-jupiter:${junit_version}"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-// Expands ${} properties in src/main/templates (neoforge.mods.toml) into the resources.
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var replaceProperties = [
             minecraft_version      : minecraft_version,
@@ -187,12 +167,10 @@ neoForge.ideSyncTask generateModMetadata
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    // Error Prone with only NullAway on: a field, parameter or return that can be null must say so with @Nullable
     options.errorprone {
         disableAllChecks = true
         check('NullAway', net.ltgt.gradle.errorprone.CheckSeverity.ERROR)
         option('NullAway:AnnotatedPackages', 'com.darkona.projectbench')
-        // The screen builds its buttons in init(), which vanilla always calls before anything else uses them
         option('NullAway:KnownInitializers', 'com.darkona.projectbench.client.ProjectBenchScreen.init')
         excludedPaths = '.*/src/main/generated/.*'
         enabled = name != 'compileTestJava'
@@ -202,12 +180,10 @@ tasks.withType(JavaCompile).configureEach {
 tasks.named('test', Test) {
     useJUnitPlatform()
     maxParallelForks = 1
-    // The junit environment keeps its generated config between runs; a stale one hides a changed default
     def staleConfig = layout.buildDirectory.dir('minecraft-junit/config').get().asFile
     doFirst {
         staleConfig.deleteDir()
     }
-    // CompatIsolationTest and ArchitectureTest read the compiled classes from these folders
     systemProperty 'projectbench.classes', sourceSets.main.java.destinationDirectory.get().asFile.absolutePath
     systemProperty 'projectbench.gametestClasses', sourceSets.gametest.java.destinationDirectory.get().asFile.absolutePath
 }
@@ -232,11 +208,6 @@ idea {
     }
 }
 
-// The extra mods of the development client are listed in client-mods.json, by group: base (Jade, Polymorph, Mouse Tweaks,
-// Iron Chests), the recipe viewer (jei, or emi with -Pviewer=emi, neither with -Pviewer=none) and inventory (storage mods,
-// only with -PinventoryMods). syncClientMods downloads the missing jars into run/mods, checks each against its sha512, and
-// renames the jars it does not want to .jar.disabled; -PdisableMods=name,name leaves some out for one run.
-// runClientWithMods syncs first; runClient and runServer rename them all to .jar.disabled, so they stay plain NeoForge.
 def clientModsManifest = file('client-mods.json')
 def clientModsDir = file('run/mods')
 def clientModGroups = ['base', 'inventory'].findAll { it == 'base' || project.hasProperty('inventoryMods') } +

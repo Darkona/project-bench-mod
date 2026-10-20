@@ -11,5 +11,4 @@ plugins {
 
 rootProject.name = 'projectbench'
 
-// JDLib (own UI/HUD/FX bridge over LDLib2), built from the sibling checkout while it is being developed
 includeBuild('../JDLib')

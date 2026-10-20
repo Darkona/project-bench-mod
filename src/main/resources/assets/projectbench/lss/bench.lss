@@ -1,7 +1,4 @@
-// Project Bench's look on top of JDLib's theme (jdlib:lss/jd.lss).
 
-// The windows keep their hand-drawn textures: panel, corners and the arrows (mirrored on the station's right half).
-// An id outweighs every class rule of the theme.
 #bench {
   background: sprite(projectbench:textures/gui/project_bench.png, 0, 0, 176, 222);
 }

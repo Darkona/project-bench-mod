@@ -1,4 +1,3 @@
-# IDE
 .idea/
 *.iml
 *.ipr
@@ -6,7 +5,6 @@
 out/
 .vscode/
 
-# Gradle
 .gradle/
 build/
 **/build/
@@ -14,18 +12,14 @@ gradle-app.setting
 .gradletasknamecache
 !gradle-wrapper.jar
 
-# Game directories of the run configurations
 run/
 
-# Logs and crash dumps
 logs/
 *.log
 hs_err_pid*
 
-# Datagen cache
 src/main/generated/.cache/
 
-# OS
 .DS_Store
 Thumbs.db
 *~
