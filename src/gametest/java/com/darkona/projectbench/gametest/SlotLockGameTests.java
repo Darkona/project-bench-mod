@@ -81,9 +81,11 @@ public final class SlotLockGameTests {
         menu.clicked(S + 4, MIDDLE, ClickType.CLONE, player);
         helper.assertTrue(bench.storage().lock(4).isEmpty(), "an empty free slot does not lock");
         menu.clicked(S + 3, MIDDLE, ClickType.CLONE, player);
-        helper.assertTrue(lockedTo(bench, 3, new ItemStack(Items.COBBLESTONE)) && bench.storage().getItem(3).getCount() == 5,
-                "locked and holding items: a middle click changes nothing");
+        helper.assertTrue(bench.storage().lock(3).isEmpty() && bench.storage().getItem(3).getCount() == 5,
+                "locked and holding items: a middle click frees it and the items stay");
+        menu.clicked(S + 3, MIDDLE, ClickType.CLONE, player);
         bench.storage().setItem(3, ItemStack.EMPTY);
+        helper.assertTrue(lockedTo(bench, 3, new ItemStack(Items.COBBLESTONE)), "locked again, then emptied");
         menu.clicked(S + 3, MIDDLE, ClickType.CLONE, player);
         helper.assertTrue(bench.storage().lock(3).isEmpty(), "locked and empty: a middle click frees it");
         helper.succeed();
