@@ -58,8 +58,6 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
     private static final int ICON = 10;
     static final String LIGHT_SLOTS = "jd-light-slots";
     private static final int LOCK_SIZE = 8;
-    private static final JDNode.Face LOCK_CLOSED = new JDNode.TextureFace(ProjectBench.id("textures/gui/close_lock.png"), 0, 0, 16, 16, 16, 16);
-    private static final JDNode.Face LOCK_OPEN = new JDNode.TextureFace(ProjectBench.id("textures/gui/open_lock.png"), 0, 0, 16, 16, 16, 16);
     private static final int BUTTON = 14;
     private static final int GAP = 2;
     private static final int BAR = BUTTON + GAP;
@@ -110,9 +108,9 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
             return null;
         }
         if (locked(menu, which)) {
-            return LOCK_CLOSED;
+            return JDViews.LOCK_CLOSED;
         }
-        return menu.benchOf(which).blueprint() != null ? LOCK_OPEN : null;
+        return menu.benchOf(which).blueprint() != null ? JDViews.LOCK_OPEN : null;
     }
 
     private static ItemStack expected(ProjectBenchMenu menu, int which, Slot slot) {
@@ -291,7 +289,7 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
         int storage = menu.storageStart(which);
         int storageY = ProjectBenchMenu.STORAGE_Y + (station ? which * 2 * SLOT : 0);
         kids.add(JDViews.at(halfTint(JDViews.slotIcon(JDViews.lockOverlay(JDViews.slotGrid("storage" + half, menu.slots.subList(storage, storage + ProjectBenchBlockEntity.STORAGE), 9),
-                LockView.filters(slot -> storageLock(menu, which, slot))), slot -> storageLock(menu, which, slot).isEmpty() ? null : LOCK_CLOSED,
+                LockView.filters(slot -> storageLock(menu, which, slot))), slot -> storageLock(menu, which, slot).isEmpty() ? null : JDViews.LOCK_CLOSED,
                 JDNode.Corner.TOP_LEFT, LOCK_SIZE), station, which),
                 storageX - 1, storageY - 1));
         kids.add(JDViews.at(JDViews.ghostItem(JDViews.slot("blueprint" + half, menu.slots.get(menu.blueprintIndex(which))), new ItemStack(ModItems.BLUEPRINT.get())),
