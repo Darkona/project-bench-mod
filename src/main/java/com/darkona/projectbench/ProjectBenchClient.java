@@ -13,7 +13,7 @@ import com.darkona.projectbench.registry.ModBlockEntities;
 import com.darkona.projectbench.registry.ModItems;
 import com.darkona.projectbench.registry.ModMenus;
 import com.darkona.projectbench.registry.ModComponents;
-import dev.darkona.jdlib.api.ui.JDMenus;
+import dev.darkona.jdlib.api.ui.client.JDMenus;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
