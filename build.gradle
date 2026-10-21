@@ -256,3 +256,8 @@ def clientModsOff = ((findProperty('disableMods') ?: '') as String).split(',')*.
 }
 tasks.matching { it.name == 'runClientWithMods' }.configureEach { dependsOn 'syncClientMods' }
 tasks.matching { it.name in ['runClient', 'runServer'] }.configureEach { dependsOn 'disableClientMods' }
+
+tasks.register('freshGameTestWorld', Delete) {
+    delete 'run/gametest/world'
+}
+tasks.matching { it.name == 'runGameTestServer' }.configureEach { dependsOn 'freshGameTestWorld' }
