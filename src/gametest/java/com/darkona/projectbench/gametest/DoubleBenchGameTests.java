@@ -208,7 +208,7 @@ public final class DoubleBenchGameTests {
         place(helper, ModItems.SLAB_PROJECT_BENCH.get(), lone);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         try {
-            Config.override(Config.Settings.builder().slab(false).slabShare(true).build());
+            Config.CONFIG.override(Config.Settings.builder().slab(false).slabShare(true).build());
             helper.assertFalse(Feature.SLAB_BENCH.enabled(), "the slab's feature is off");
             helper.assertTrue(pair(helper, bench) == null && pair(helper, slab) == null, "a pair counts for nothing: each bench is on its own");
             helper.assertTrue(CommonHooks.onRightClickBlock(player, InteractionHand.MAIN_HAND, helper.absolutePos(slab),
@@ -224,7 +224,7 @@ public final class DoubleBenchGameTests {
             helper.assertTrue(type(helper, lone.east()) == ChestType.SINGLE && type(helper, lone) == ChestType.SINGLE,
                     "a bench placed beside a slab switched off does not join it");
         } finally {
-            Config.clearOverride();
+            Config.CONFIG.clearOverride();
         }
         helper.assertTrue(pair(helper, bench) != null, "back on, the pair counts again");
         helper.succeed();
@@ -308,14 +308,14 @@ public final class DoubleBenchGameTests {
         refillByItem(helper, second);
         first.storage().setItem(0, new ItemStack(Items.OAK_PLANKS, 5));
         try {
-            Config.override(Config.Settings.builder().slab(true).slabShare(false).build());
+            Config.CONFIG.override(Config.Settings.builder().slab(true).slabShare(false).build());
             helper.assertTrue(pair(helper, new BlockPos(1, 1, 1)) != null, "still a double bench");
             layOutSticks(second);
             second.craft(player);
             helper.assertTrue(second.matrix().isEmpty() && count(first.storage(), Items.OAK_PLANKS) == 5,
                     "not sharing the stock: the matrix pays and the other half's inventory is left alone");
         } finally {
-            Config.clearOverride();
+            Config.CONFIG.clearOverride();
         }
         helper.succeed();
     }
@@ -386,12 +386,12 @@ public final class DoubleBenchGameTests {
         bench.setShareMode(ShareMode.ALL);
         helper.assertTrue(bench.externalPanels().size() == 1 && bench.stock().count(new ItemStack(Items.COBBLESTONE)) == 4, "switched on, the slab is beside it");
         try {
-            Config.override(Config.Settings.builder().slab(false).slabShare(true).build());
+            Config.CONFIG.override(Config.Settings.builder().slab(false).slabShare(true).build());
             helper.assertTrue(bench.externalPanels().isEmpty(), "switched off, the slab is no tab");
             helper.assertTrue(bench.stock().count(new ItemStack(Items.COBBLESTONE)) == 0 && bench.stock().take(new ItemStack(Items.COBBLESTONE), 4) == 0,
                     "and its inventory is no stock");
         } finally {
-            Config.clearOverride();
+            Config.CONFIG.clearOverride();
         }
         helper.succeed();
     }

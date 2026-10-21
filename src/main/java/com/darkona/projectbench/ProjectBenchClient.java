@@ -8,7 +8,6 @@ import com.darkona.projectbench.client.ProjectBenchRenderer;
 import com.darkona.projectbench.client.ProjectBenchView;
 import com.darkona.projectbench.compat.polymorph.PolymorphCompat;
 import com.darkona.projectbench.compat.xei.BenchXei;
-import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.registry.ModBlockEntities;
 import com.darkona.projectbench.registry.ModItems;
 import com.darkona.projectbench.registry.ModMenus;
@@ -54,7 +53,6 @@ public final class ProjectBenchClient {
         });
 
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> {
-            Config.forgetServer();
             BlockTint.forget();
         });
 

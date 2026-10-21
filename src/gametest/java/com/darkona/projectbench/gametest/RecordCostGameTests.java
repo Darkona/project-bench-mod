@@ -114,14 +114,14 @@ public final class RecordCostGameTests {
         Slot cost = menu.getSlot(menu.costIndex(0));
         bench.costSlot().setItem(0, new ItemStack(Items.WHITE_DYE, 2));
         try {
-            Config.override(Config.Settings.builder().recordCost(false).build());
+            Config.CONFIG.override(Config.Settings.builder().recordCost(false).build());
             helper.assertFalse(cost.isActive() || cost.mayPlace(new ItemStack(Items.WHITE_DYE)), "off: the slot is hidden and takes nothing");
             helper.assertTrue(menu.canRecord() && menu.clickMenuButton(player, ProjectBenchMenu.BUTTON_RECORD) && bench.blueprint() != null,
                     "and recording is free");
             helper.assertTrue(bench.costSlot().getItem(0).getCount() == 2, "the dye left there stays");
 
             bench.blueprintSlot().setItem(0, new ItemStack(ModItems.BLUEPRINT.get()));
-            Config.override(Config.Settings.builder().recordCost(true).recordCostItem(ResourceLocation.withDefaultNamespace("paper")).recordCostCount(3).build());
+            Config.CONFIG.override(Config.Settings.builder().recordCost(true).recordCostItem(ResourceLocation.withDefaultNamespace("paper")).recordCostCount(3).build());
             helper.assertTrue(cost.isActive() && cost.mayPlace(new ItemStack(Items.PAPER)) && !cost.mayPlace(new ItemStack(Items.WHITE_DYE)),
                     "three paper: the slot takes paper now, not dye");
             helper.assertTrue(menu.missingCost() == 3 && !bench.record(), "the dye in it pays nothing");
@@ -131,12 +131,12 @@ public final class RecordCostGameTests {
             helper.assertTrue(bench.record() && bench.costSlot().getItem(0).getCount() == 1, "four: it records and spends three");
 
             bench.blueprintSlot().setItem(0, new ItemStack(ModItems.BLUEPRINT.get()));
-            Config.override(Config.Settings.builder().recordCost(true).recordCostItem(ResourceLocation.fromNamespaceAndPath(ProjectBench.MOD_ID, "no_such_item"))
+            Config.CONFIG.override(Config.Settings.builder().recordCost(true).recordCostItem(ResourceLocation.fromNamespaceAndPath(ProjectBench.MOD_ID, "no_such_item"))
                     .recordCostCount(1).build());
             helper.assertTrue(!cost.isActive() && bench.record() && bench.costSlot().getItem(0).getCount() == 1,
                     "an item that does not exist: free, and the slot is hidden");
         } finally {
-            Config.clearOverride();
+            Config.CONFIG.clearOverride();
         }
         helper.succeed();
     }

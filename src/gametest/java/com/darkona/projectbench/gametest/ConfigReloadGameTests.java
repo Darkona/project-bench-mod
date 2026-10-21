@@ -2,8 +2,9 @@ package com.darkona.projectbench.gametest;
 
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.config.Config;
-import com.darkona.projectbench.config.ConfigSync;
 import com.mojang.authlib.GameProfile;
+import dev.darkona.jdlib.api.config.ConfigSync;
+import io.netty.buffer.Unpooled;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.Connection;
@@ -37,8 +38,8 @@ public final class ConfigReloadGameTests {
         new ServerGamePacketListenerImpl(server, new Connection(PacketFlow.SERVERBOUND), player, CommonListenerCookie.createInitial(profile, false)) {
             @Override
             public void send(Packet<?> packet, @Nullable PacketSendListener listener) {
-                if (packet instanceof ClientboundCustomPayloadPacket custom && custom.payload() instanceof ConfigSync sync) {
-                    received.add(sync.settings());
+                if (packet instanceof ClientboundCustomPayloadPacket custom && custom.payload() instanceof ConfigSync.Snapshot snapshot) {
+                    received.add(Config.Settings.STREAM_CODEC.decode(Unpooled.wrappedBuffer(snapshot.values())));
                 }
             }
         };
@@ -52,13 +53,13 @@ public final class ConfigReloadGameTests {
         Config.Settings before = Config.get();
         Config.Settings edited = before.toBuilder().slotLocks(!before.slotLocks()).build();
         try {
-            helper.assertFalse(ConfigSync.reload(before, List.of(player)), "a reload that changes nothing sends nothing");
+            helper.assertFalse(Config.SYNC.adopt(Config.CONFIG, before, List.of(player)), "a reload that changes nothing sends nothing");
             helper.assertTrue(received.isEmpty(), "and the player got nothing");
-            helper.assertTrue(ConfigSync.reload(edited, List.of(player)), "a changed value is sent");
+            helper.assertTrue(Config.SYNC.adopt(Config.CONFIG, edited, List.of(player)), "a changed value is sent");
             helper.assertTrue(Config.get().equals(edited), "the server follows the file");
             helper.assertTrue(received.equals(List.of(edited)), "the player got the new Settings once");
         } finally {
-            ConfigSync.reload(before, List.of());
+            Config.SYNC.adopt(Config.CONFIG, before, List.of());
         }
         helper.assertTrue(Config.get().equals(before), "the Settings are back");
         helper.succeed();

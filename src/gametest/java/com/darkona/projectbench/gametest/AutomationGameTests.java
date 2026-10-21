@@ -203,7 +203,7 @@ public final class AutomationGameTests {
         ProjectBenchBlockEntity bench = bench(helper, BENCH, Direction.NORTH);
         IItemHandler blueprintSide = handler(helper, BENCH, Direction.NORTH);
         try {
-            Config.override(Config.Settings.builder().blueprint(false).build());
+            Config.CONFIG.override(Config.Settings.builder().blueprint(false).build());
             helper.assertTrue(blueprintSide.insertItem(0, new ItemStack(ModItems.BLUEPRINT.get()), false).getCount() == 1,
                     "the blueprint view a pipe kept goes quiet");
             IItemHandler front = handler(helper, BENCH, Direction.NORTH);
@@ -211,7 +211,7 @@ public final class AutomationGameTests {
             helper.assertTrue(push(front, new ItemStack(Items.DIRT, 4)).isEmpty() && count(bench.storage(), Items.DIRT) == 4, "and fills the inventory");
             helper.assertTrue(pullOne(front).is(Items.DIRT), "and empties it");
         } finally {
-            Config.clearOverride();
+            Config.CONFIG.clearOverride();
         }
         helper.succeed();
     }
@@ -283,7 +283,7 @@ public final class AutomationGameTests {
         BlockPos at = BENCH;
         helper.setBlock(at, ModBlocks.BLUEPRINT_ARCHIVE.get().defaultBlockState().setValue(BenchBlock.FACING, Direction.EAST));
         try {
-            Config.override(Config.Settings.builder().archiveInsert(1 << RelativeSide.BACK.ordinal()).archiveExtract(1 << RelativeSide.FRONT.ordinal()).build());
+            Config.CONFIG.override(Config.Settings.builder().archiveInsert(1 << RelativeSide.BACK.ordinal()).archiveExtract(1 << RelativeSide.FRONT.ordinal()).build());
             ItemStack blueprint = new ItemStack(ModItems.BLUEPRINT.get(), 2);
             helper.assertTrue(handler(helper, at, Direction.EAST).insertItem(0, blueprint, false).getCount() == 2, "facing east, the east is the front: no way in");
             helper.assertTrue(handler(helper, at, Direction.WEST).insertItem(0, blueprint, false).isEmpty(), "the west is the back: in");
@@ -291,7 +291,7 @@ public final class AutomationGameTests {
             helper.assertTrue(handler(helper, at, Direction.DOWN).extractItem(0, 64, false).isEmpty(), "nor out of the bottom");
             helper.assertTrue(handler(helper, at, Direction.EAST).extractItem(0, 64, false).getCount() == 2, "out of the front");
         } finally {
-            Config.clearOverride();
+            Config.CONFIG.clearOverride();
         }
         helper.succeed();
     }
