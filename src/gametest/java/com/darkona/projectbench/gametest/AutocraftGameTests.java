@@ -1,7 +1,7 @@
 package com.darkona.projectbench.gametest;
 
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.block.RelativeSide;
+import dev.darkona.jdlib.api.world.RelativeSide;
 import com.darkona.projectbench.block.bench.AutoBenchBlock;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.block.BenchBlock;

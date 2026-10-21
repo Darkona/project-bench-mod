@@ -1,5 +1,6 @@
 package com.darkona.projectbench.block.bench;
 
+import dev.darkona.jdlib.api.inventory.Stock;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.registry.ModBlocks;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.ChestType;
+import dev.darkona.jdlib.api.capability.CapabilityCaches;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -43,24 +45,24 @@ public final class ExternalInventories implements Stock {
     public static final int TAB_PROCESSOR = 2;
 
     private final BlockEntity bench;
-    @SuppressWarnings("unchecked")
-    private final BlockCapabilityCache<IItemHandler, Direction>[] caches = new BlockCapabilityCache[6];
     private final byte[] kinds = new byte[6];
     private final Block[] blocks = new Block[6];
     private final BlockEntity[] processors = new BlockEntity[6];
     private final int[] faceSlots = new int[6];
     private final BlockPos.MutableBlockPos probe = new BlockPos.MutableBlockPos();
+    private final CapabilityCaches<IItemHandler> caches;
     private final Stock everySide;
     private final Stock unique;
 
     public ExternalInventories(BlockEntity bench) {
         this.bench = bench;
-        Stock chain = new HandlerStock(() -> handler(0));
-        Stock notShared = new HandlerStock(() -> leftToPartner(0) ? null : handler(0));
+        this.caches = CapabilityCaches.neighboursEachSide(Capabilities.ItemHandler.BLOCK, bench, side -> kinds[side] = UNKNOWN);
+        Stock chain = Stock.lazyHandler(() -> handler(0));
+        Stock notShared = Stock.lazyHandler(() -> leftToPartner(0) ? null : handler(0));
         for (int next = 1; next < 6; ++next) {
             int sideIndex = next;
-            chain = Stock.chain(chain, new HandlerStock(() -> handler(sideIndex)));
-            notShared = Stock.chain(notShared, new HandlerStock(() -> leftToPartner(sideIndex) ? null : handler(sideIndex)));
+            chain = Stock.chain(chain, Stock.lazyHandler(() -> handler(sideIndex)));
+            notShared = Stock.chain(notShared, Stock.lazyHandler(() -> leftToPartner(sideIndex) ? null : handler(sideIndex)));
         }
         this.everySide = chain;
         Stock taking = notShared;
@@ -140,15 +142,13 @@ public final class ExternalInventories implements Stock {
             return null;
         }
         BlockPos at = probe.setWithOffset(bench.getBlockPos(), side);
-        BlockCapabilityCache<IItemHandler, Direction> cache = caches[sideIndex];
+        BlockCapabilityCache<IItemHandler, Direction> cache = caches.existing(sideIndex);
         Block there = cache != null && kinds[sideIndex] != UNKNOWN ? blocks[sideIndex] : server.getBlockState(at).getBlock();
         if (there == ModBlocks.BLUEPRINT_ARCHIVE.get() || !Feature.allows(there)) {
             return null;
         }
         if (cache == null) {
-            cache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, server, at.immutable(), side.getOpposite(),
-                    () -> !bench.isRemoved(), () -> kinds[sideIndex] = UNKNOWN);
-            caches[sideIndex] = cache;
+            cache = caches.cache(server, sideIndex);
             kinds[sideIndex] = UNKNOWN;
         }
         return cache;
@@ -209,7 +209,7 @@ public final class ExternalInventories implements Stock {
     }
 
     public void forget() {
-        Arrays.fill(caches, null);
+        caches.clear();
         Arrays.fill(kinds, UNKNOWN);
         Arrays.fill(processors, null);
         Arrays.fill(blocks, null);

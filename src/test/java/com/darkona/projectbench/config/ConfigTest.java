@@ -3,7 +3,7 @@ package com.darkona.projectbench.config;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import com.darkona.projectbench.block.RelativeSide;
+import dev.darkona.jdlib.api.world.RelativeSide;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.Test;

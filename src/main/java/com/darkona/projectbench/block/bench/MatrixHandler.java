@@ -1,5 +1,6 @@
 package com.darkona.projectbench.block.bench;
 
+import dev.darkona.jdlib.api.inventory.GridFill;
 import com.darkona.projectbench.blueprint.Blueprint;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
@@ -68,6 +69,6 @@ final class MatrixHandler implements IItemHandler {
             return ItemStack.isSameItemSameComponents(held, stack);
         }
         Blueprint blueprint = bench.blueprint();
-        return blueprint == null || BenchStacks.accepts(blueprint.ghost(slot), stack);
+        return blueprint == null || GridFill.accepts(blueprint.ghost(slot), stack);
     }
 }

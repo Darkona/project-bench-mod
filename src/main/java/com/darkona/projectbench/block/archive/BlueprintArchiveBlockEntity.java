@@ -1,10 +1,11 @@
 package com.darkona.projectbench.block.archive;
 
+import dev.darkona.jdlib.api.inventory.ConcatContainer;
 import com.darkona.projectbench.block.BenchMenu;
 import com.darkona.projectbench.block.BenchBlockEntity;
-import com.darkona.projectbench.block.RelativeSide;
+import dev.darkona.jdlib.api.world.RelativeSide;
 import com.darkona.projectbench.block.BenchBlock;
-import com.darkona.projectbench.block.SidedItemHandler;
+import dev.darkona.jdlib.api.inventory.SidedItemHandler;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
@@ -113,7 +114,7 @@ public class BlueprintArchiveBlockEntity extends BenchBlockEntity implements Men
             for (BlueprintArchiveBlockEntity b : c) {
                 parts.add(b.blueprints);
             }
-            s = new ConcatContainer(parts);
+            s = new ConcatContainer(BlueprintArchiveBlockEntity.SLOTS, parts);
             shelf = s;
         }
         return s;
