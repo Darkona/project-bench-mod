@@ -129,7 +129,7 @@ dependencies {
     errorprone 'com.uber.nullaway:nullaway:0.14.2'
     implementation 'dev.darkona.jdlib:JDLib'
     jarJar('dev.darkona.jdlib:JDLib') {
-        version { strictly '[0.1.0-SNAPSHOT,1.0.0)'; prefer '0.1.0-SNAPSHOT' }
+        version { strictly jdlib_range; prefer jdlib_version }
     }
     runtimeOnly "com.lowdragmc.ldlib2:ldlib2-neoforge-${minecraft_version}:${ldlib2_version}"
     compileOnly "mezz.jei:jei-1.21.1-neoforge-api:${jei_version}"
