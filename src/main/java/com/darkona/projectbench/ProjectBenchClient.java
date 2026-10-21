@@ -1,6 +1,5 @@
 package com.darkona.projectbench;
 
-import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.blueprint.Blueprint;
 import com.darkona.projectbench.client.BlockTint;
 import com.darkona.projectbench.client.BlueprintArchiveView;
@@ -27,7 +26,6 @@ import dev.darkona.jdlib.api.compat.Bridges;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -46,8 +44,6 @@ public final class ProjectBenchClient {
         modBus.addListener((FMLClientSetupEvent e) -> e.enqueueWork(() -> ItemProperties.register(ModItems.BLUEPRINT.get(),
                 ProjectBench.id("recorded"), (stack, level, entity, seed) -> Blueprint.of(stack) == null ? 0F : 1F)));
         modBus.addListener((RegisterClientReloadListenersEvent e) -> e.registerReloadListener((ResourceManagerReloadListener) manager -> BlockTint.forget()));
-
-        NeoForge.EVENT_BUS.addListener((RecipesUpdatedEvent e) -> ProjectBenchBlockEntity.RECIPES.clearClient());
 
         NeoForge.EVENT_BUS.addListener((ItemTooltipEvent e) -> {
             ItemContainerContents contents = e.getItemStack().get(ModComponents.CONTENTS);
