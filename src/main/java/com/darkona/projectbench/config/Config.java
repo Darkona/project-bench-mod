@@ -1,5 +1,9 @@
 package com.darkona.projectbench.config;
 
+import com.darkona.projectbench.ProjectBench;
+import dev.darkona.jdlib.api.config.ConfigSection;
+import dev.darkona.jdlib.api.config.ConfigSync;
+import dev.darkona.jdlib.api.config.ConfigTree;
 import dev.darkona.jdlib.api.world.RelativeSide;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -27,51 +31,56 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SuppressWarnings("NullAway.Init")
 public final class Config {
     private static final List<String> ALL_SIDES = List.of("front", "back", "left", "right", "up", "down");
 
-    public static final ModConfigSpec SPEC;
-    private static final ModConfigSpec.BooleanValue BENCH;
-    private static final ModConfigSpec.BooleanValue BLUEPRINT;
-    private static final ModConfigSpec.BooleanValue ARCHIVE;
-    private static final ModConfigSpec.BooleanValue AUTOCRAFT;
-    private static final ModConfigSpec.BooleanValue AUTOCRAFT_DEFAULT;
-    private static final List<ModConfigSpec.EnumValue<SideMode>> AUTO_SIDES;
-    private static final List<ModConfigSpec.EnumValue<SideMode>> BENCH_SIDES;
-    private static final ModConfigSpec.BooleanValue KEEP_LAYOUT;
-    private static final ModConfigSpec.EnumValue<AutoMode> AUTO_DEFAULT;
-    private static final ModConfigSpec.BooleanValue REMAINDERS_TO_STORAGE;
-    private static final ModConfigSpec.BooleanValue SHIFT_CLICK_FILLS_GHOSTS;
-    private static final ModConfigSpec.BooleanValue TOOLTIP_INGREDIENTS;
-    private static final ModConfigSpec.IntValue ARCHIVE_STACK;
-    private static final ModConfigSpec.BooleanValue BENCH_PANEL;
-    private static final ModConfigSpec.IntValue ARCHIVE_HEIGHT;
-    private static final ModConfigSpec.BooleanValue CLEAR_MATRIX;
-    private static final ModConfigSpec.BooleanValue AUTO_FILL;
-    private static final ModConfigSpec.BooleanValue BALANCE_BUTTON;
-    private static final ModConfigSpec.BooleanValue AUTO_BUTTON;
-    private static final ModConfigSpec.BooleanValue EXTERNAL;
-    private static final ModConfigSpec.EnumValue<ShareMode> SHARE_DEFAULT;
-    private static final ModConfigSpec.IntValue EXTERNAL_SLOTS;
-    private static final ModConfigSpec.BooleanValue PROTECT_VAULTS;
-    private static final ModConfigSpec.BooleanValue PROCESSORS;
-    private static final ModConfigSpec.BooleanValue PARTIAL_TABS;
-    private static final ModConfigSpec.ConfigValue<List<? extends String>> ALWAYS_SHOW;
-    private static final ModConfigSpec.EnumValue<BreakMode> BENCH_ON_BREAK;
-    private static final ModConfigSpec.EnumValue<BreakMode> ARCHIVE_ON_BREAK;
-    private static final ModConfigSpec.BooleanValue SHOWCASE;
-    private static final ModConfigSpec.BooleanValue SHOWCASE_DEFAULT;
-    private static final ModConfigSpec.BooleanValue SLAB;
-    private static final ModConfigSpec.BooleanValue SLAB_SHARE;
-    private static final ModConfigSpec.BooleanValue SLOT_LOCKS;
-    private static final ModConfigSpec.BooleanValue RECORD_COST;
-    private static final ModConfigSpec.ConfigValue<String> RECORD_COST_ITEM;
-    private static final ModConfigSpec.IntValue RECORD_COST_COUNT;
-    private static final ModConfigSpec.ConfigValue<List<? extends String>> ARCHIVE_INSERT;
-    private static final ModConfigSpec.ConfigValue<List<? extends String>> ARCHIVE_EXTRACT;
+    private static ModConfigSpec.BooleanValue BENCH;
+    private static ModConfigSpec.BooleanValue BLUEPRINT;
+    private static ModConfigSpec.BooleanValue ARCHIVE;
+    private static ModConfigSpec.BooleanValue AUTOCRAFT;
+    private static ModConfigSpec.BooleanValue AUTOCRAFT_DEFAULT;
+    private static List<ModConfigSpec.EnumValue<SideMode>> AUTO_SIDES;
+    private static List<ModConfigSpec.EnumValue<SideMode>> BENCH_SIDES;
+    private static ModConfigSpec.BooleanValue KEEP_LAYOUT;
+    private static ModConfigSpec.EnumValue<AutoMode> AUTO_DEFAULT;
+    private static ModConfigSpec.BooleanValue REMAINDERS_TO_STORAGE;
+    private static ModConfigSpec.BooleanValue SHIFT_CLICK_FILLS_GHOSTS;
+    private static ModConfigSpec.BooleanValue TOOLTIP_INGREDIENTS;
+    private static ModConfigSpec.IntValue ARCHIVE_STACK;
+    private static ModConfigSpec.BooleanValue BENCH_PANEL;
+    private static ModConfigSpec.IntValue ARCHIVE_HEIGHT;
+    private static ModConfigSpec.BooleanValue CLEAR_MATRIX;
+    private static ModConfigSpec.BooleanValue AUTO_FILL;
+    private static ModConfigSpec.BooleanValue BALANCE_BUTTON;
+    private static ModConfigSpec.BooleanValue AUTO_BUTTON;
+    private static ModConfigSpec.BooleanValue EXTERNAL;
+    private static ModConfigSpec.EnumValue<ShareMode> SHARE_DEFAULT;
+    private static ModConfigSpec.IntValue EXTERNAL_SLOTS;
+    private static ModConfigSpec.BooleanValue PROTECT_VAULTS;
+    private static ModConfigSpec.BooleanValue PROCESSORS;
+    private static ModConfigSpec.BooleanValue PARTIAL_TABS;
+    private static ModConfigSpec.ConfigValue<List<? extends String>> ALWAYS_SHOW;
+    private static ModConfigSpec.EnumValue<BreakMode> BENCH_ON_BREAK;
+    private static ModConfigSpec.EnumValue<BreakMode> ARCHIVE_ON_BREAK;
+    private static ModConfigSpec.BooleanValue SHOWCASE;
+    private static ModConfigSpec.BooleanValue SHOWCASE_DEFAULT;
+    private static ModConfigSpec.BooleanValue SLAB;
+    private static ModConfigSpec.BooleanValue SLAB_SHARE;
+    private static ModConfigSpec.BooleanValue SLOT_LOCKS;
+    private static ModConfigSpec.BooleanValue RECORD_COST;
+    private static ModConfigSpec.ConfigValue<String> RECORD_COST_ITEM;
+    private static ModConfigSpec.IntValue RECORD_COST_COUNT;
+    private static ModConfigSpec.ConfigValue<List<? extends String>> ARCHIVE_INSERT;
+    private static ModConfigSpec.ConfigValue<List<? extends String>> ARCHIVE_EXTRACT;
 
-    static {
-        ModConfigSpec.Builder b = new ModConfigSpec.Builder();
+    public static final ConfigSection<Settings> CONFIG = ConfigSection.synced("", Settings.STREAM_CODEC, Config::define)
+            .whenSet(settings -> Feature.changed());
+    public static final ConfigTree TREE = ConfigTree.of(List.of(CONFIG));
+    public static final ModConfigSpec SPEC = TREE.build();
+    public static final ConfigSync SYNC = ConfigSync.of(ProjectBench.id("config_sync"), TREE);
+
+    private static Function<ConfigSection.Read, Settings> define(ModConfigSpec.Builder b) {
         b.comment("One switch per system. Turn one off and its blocks and items are gone from the game: no recipe, not in the creative tab",
                 "or JEI, you cannot place or use them, and the ones already in a world stop working (no window, no hoppers).",
                 "Nothing is deleted: turn it back on and it all works again.",
@@ -250,7 +259,7 @@ public final class Config {
                 .defineListAllowEmpty("extractSides", List.of("down"), () -> "down", Config::isSide);
         b.pop();
         b.pop();
-        SPEC = b.build();
+        return Config::read;
     }
 
     private static List<ModConfigSpec.EnumValue<SideMode>> defineSides(ModConfigSpec.Builder b, String front, SideMode... defaults) {
@@ -262,36 +271,32 @@ public final class Config {
         return List.copyOf(values);
     }
 
-    private static int packSides(List<ModConfigSpec.EnumValue<SideMode>> values, boolean defaults) {
+    private static int packSides(List<ModConfigSpec.EnumValue<SideMode>> values, ConfigSection.Read read) {
         int bits = 0;
         for (int i = 0; i < values.size(); ++i) {
-            bits |= value(values.get(i), defaults).ordinal() << 3 * i;
+            bits |= read.of(values.get(i)).ordinal() << 3 * i;
         }
         return bits;
     }
 
-    private static <T> T value(ModConfigSpec.ConfigValue<T> config, boolean defaults) {
-        return defaults ? config.getDefault() : config.get();
-    }
-
-    private static Settings read(boolean defaults) {
-        return new Settings.Builder().bench(value(BENCH, defaults)).blueprint(value(BLUEPRINT, defaults)).archive(value(ARCHIVE, defaults))
-                .keepLayout(value(KEEP_LAYOUT, defaults)).remaindersToStorage(value(REMAINDERS_TO_STORAGE, defaults))
-                .benchSides(packSides(BENCH_SIDES, defaults)).shiftClickFillsGhosts(value(SHIFT_CLICK_FILLS_GHOSTS, defaults))
-                .tooltipIngredients(value(TOOLTIP_INGREDIENTS, defaults)).archiveStack(value(ARCHIVE_STACK, defaults))
-                .benchPanel(value(BENCH_PANEL, defaults)).archiveInsert(sides(value(ARCHIVE_INSERT, defaults)))
-                .archiveExtract(sides(value(ARCHIVE_EXTRACT, defaults))).archiveHeight(value(ARCHIVE_HEIGHT, defaults))
-                .clearMatrix(value(CLEAR_MATRIX, defaults)).autoFill(value(AUTO_FILL, defaults)).external(value(EXTERNAL, defaults))
-                .shareMode(value(SHARE_DEFAULT, defaults)).externalSlots(value(EXTERNAL_SLOTS, defaults))
-                .showcase(value(SHOWCASE, defaults)).showcaseDefault(value(SHOWCASE_DEFAULT, defaults))
-                .autoDefault(value(AUTO_DEFAULT, defaults)).benchOnBreak(value(BENCH_ON_BREAK, defaults))
-                .archiveOnBreak(value(ARCHIVE_ON_BREAK, defaults)).slab(value(SLAB, defaults)).slabShare(value(SLAB_SHARE, defaults))
-                .balanceButton(value(BALANCE_BUTTON, defaults)).autoButton(value(AUTO_BUTTON, defaults))
-                .autocraft(value(AUTOCRAFT, defaults)).autocraftDefault(value(AUTOCRAFT_DEFAULT, defaults))
-                .autoSides(packSides(AUTO_SIDES, defaults)).slotLocks(value(SLOT_LOCKS, defaults)).recordCost(value(RECORD_COST, defaults))
-                .recordCostItem(ResourceLocation.parse(value(RECORD_COST_ITEM, defaults))).recordCostCount(value(RECORD_COST_COUNT, defaults))
-                .protectVaults(value(PROTECT_VAULTS, defaults)).processors(value(PROCESSORS, defaults))
-                .partialTabs(value(PARTIAL_TABS, defaults)).build();
+    private static Settings read(ConfigSection.Read read) {
+        return new Settings.Builder().bench(read.of(BENCH)).blueprint(read.of(BLUEPRINT)).archive(read.of(ARCHIVE))
+                .keepLayout(read.of(KEEP_LAYOUT)).remaindersToStorage(read.of(REMAINDERS_TO_STORAGE))
+                .benchSides(packSides(BENCH_SIDES, read)).shiftClickFillsGhosts(read.of(SHIFT_CLICK_FILLS_GHOSTS))
+                .tooltipIngredients(read.of(TOOLTIP_INGREDIENTS)).archiveStack(read.of(ARCHIVE_STACK))
+                .benchPanel(read.of(BENCH_PANEL)).archiveInsert(sides(read.of(ARCHIVE_INSERT)))
+                .archiveExtract(sides(read.of(ARCHIVE_EXTRACT))).archiveHeight(read.of(ARCHIVE_HEIGHT))
+                .clearMatrix(read.of(CLEAR_MATRIX)).autoFill(read.of(AUTO_FILL)).external(read.of(EXTERNAL))
+                .shareMode(read.of(SHARE_DEFAULT)).externalSlots(read.of(EXTERNAL_SLOTS))
+                .showcase(read.of(SHOWCASE)).showcaseDefault(read.of(SHOWCASE_DEFAULT))
+                .autoDefault(read.of(AUTO_DEFAULT)).benchOnBreak(read.of(BENCH_ON_BREAK))
+                .archiveOnBreak(read.of(ARCHIVE_ON_BREAK)).slab(read.of(SLAB)).slabShare(read.of(SLAB_SHARE))
+                .balanceButton(read.of(BALANCE_BUTTON)).autoButton(read.of(AUTO_BUTTON))
+                .autocraft(read.of(AUTOCRAFT)).autocraftDefault(read.of(AUTOCRAFT_DEFAULT))
+                .autoSides(packSides(AUTO_SIDES, read)).slotLocks(read.of(SLOT_LOCKS)).recordCost(read.of(RECORD_COST))
+                .recordCostItem(ResourceLocation.parse(read.of(RECORD_COST_ITEM))).recordCostCount(read.of(RECORD_COST_COUNT))
+                .protectVaults(read.of(PROTECT_VAULTS)).processors(read.of(PROCESSORS))
+                .partialTabs(read.of(PARTIAL_TABS)).build();
     }
 
     public record Settings(boolean bench, boolean blueprint, boolean archive,
@@ -639,17 +644,12 @@ public final class Config {
         }
     }
 
-    public static final Settings DEFAULTS = read(true);
-
-    private static volatile Settings current = DEFAULTS;
+    public static final Settings DEFAULTS = CONFIG.defaults();
 
     private static volatile Set<Block> alwaysShow = Set.of();
     @Nullable
     private static volatile Set<Block> alwaysShowOverride;
 
-    private static volatile boolean fromServer;
-    @Nullable
-    private static volatile Settings override;
 
     private Config() {
     }
@@ -671,13 +671,12 @@ public final class Config {
         }
         server.execute(() -> {
             resolveAlwaysShow();
-            ConfigSync.reload(fromFile(), server.getPlayerList().getPlayers());
+            SYNC.reload(server.getPlayerList().getPlayers());
         });
     }
 
     public static Settings get() {
-        Settings o = override;
-        return o != null ? o : current;
+        return CONFIG.get();
     }
 
     public static Item costItem() {
@@ -699,48 +698,13 @@ public final class Config {
     @Nullable
     private static volatile Cost cost;
 
-    public static Settings fromFile() {
-        return SPEC.isLoaded() ? read(false) : DEFAULTS;
-    }
-
     public static void load() {
         resolveAlwaysShow();
-        adopt(fromFile(), ServerLifecycleHooks.getCurrentServer() != null);
+        TREE.load();
     }
 
     private static void resolveAlwaysShow() {
         alwaysShow = SPEC.isLoaded() ? blocks(ALWAYS_SHOW.get()) : Set.of();
-    }
-
-    static boolean adopt(Settings file, boolean serverHere) {
-        if (fromServer && !serverHere) {
-            return false;
-        }
-        Settings before = get();
-        current = file;
-        Feature.changed();
-        return !before.equals(get());
-    }
-
-    public static void receive(Settings settings) {
-        fromServer = true;
-        current = settings;
-        Feature.changed();
-    }
-
-    public static void forgetServer() {
-        fromServer = false;
-        load();
-    }
-
-    public static void override(Settings settings) {
-        override = settings;
-        Feature.changed();
-    }
-
-    public static void clearOverride() {
-        override = null;
-        Feature.changed();
     }
 
     public static Set<Block> alwaysShow() {

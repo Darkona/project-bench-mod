@@ -46,7 +46,7 @@ public enum Feature {
     }
 
     public boolean configured() {
-        return test.test(Config.fromFile());
+        return test.test(Config.CONFIG.fromFile());
     }
 
     public Item item() {

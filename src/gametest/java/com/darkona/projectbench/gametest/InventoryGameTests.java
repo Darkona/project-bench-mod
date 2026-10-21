@@ -193,7 +193,7 @@ public final class InventoryGameTests {
         ProjectBenchBlockEntity bench = bench(helper, BENCH);
         fill(bench);
         try {
-            Config.override(Config.Settings.builder().benchOnBreak(BreakMode.SILK_TOUCH).archiveOnBreak(BreakMode.DROP_ALL).build());
+            Config.CONFIG.override(Config.Settings.builder().benchOnBreak(BreakMode.SILK_TOUCH).archiveOnBreak(BreakMode.DROP_ALL).build());
             ItemStack dropped = breakWith(helper, BENCH, silkPick(helper));
             helper.assertTrue(dropped(helper, Items.OAK_PLANKS) == 0 && dropped(helper, Items.COBBLESTONE) == 0, "nothing falls out of it");
             helper.assertTrue(dropped.has(ModComponents.CONTENTS.get()), "the dropped bench holds it");
@@ -210,7 +210,7 @@ public final class InventoryGameTests {
             helper.assertTrue(!plain.has(ModComponents.CONTENTS.get()) && dropped(helper, Items.OAK_PLANKS) == 10
                     && dropped(helper, Items.WHITE_DYE) == 3, "without Silk Touch it all falls, the dye too");
         } finally {
-            Config.clearOverride();
+            Config.CONFIG.clearOverride();
         }
         helper.succeed();
     }
@@ -220,7 +220,7 @@ public final class InventoryGameTests {
         ProjectBenchBlockEntity bench = bench(helper, BENCH);
         fill(bench);
         try {
-            Config.override(Config.Settings.builder().benchOnBreak(BreakMode.ALWAYS_KEEP).archiveOnBreak(BreakMode.DROP_ALL).build());
+            Config.CONFIG.override(Config.Settings.builder().benchOnBreak(BreakMode.ALWAYS_KEEP).archiveOnBreak(BreakMode.DROP_ALL).build());
             ItemStack kept = breakWith(helper, BENCH, new ItemStack(Items.DIAMOND_PICKAXE));
             helper.assertTrue(kept.has(ModComponents.CONTENTS.get()) && dropped(helper, Items.OAK_PLANKS) == 0, "ALWAYS_KEEP keeps it with any pickaxe");
 
@@ -229,13 +229,13 @@ public final class InventoryGameTests {
             ItemStack bare = breakWith(helper, BENCH, ItemStack.EMPTY);
             helper.assertTrue(dropped(helper, Items.OAK_PLANKS) == 10 && !bare.has(ModComponents.CONTENTS.get()), "without the right tool it all falls");
 
-            Config.override(Config.Settings.builder().benchOnBreak(BreakMode.DROP_ALL).archiveOnBreak(BreakMode.DROP_ALL).build());
+            Config.CONFIG.override(Config.Settings.builder().benchOnBreak(BreakMode.DROP_ALL).archiveOnBreak(BreakMode.DROP_ALL).build());
             ProjectBenchBlockEntity last = bench(helper, BENCH);
             fill(last);
             ItemStack all = breakWith(helper, BENCH, silkPick(helper));
             helper.assertTrue(!all.has(ModComponents.CONTENTS.get()) && dropped(helper, Items.OAK_PLANKS) == 20, "DROP_ALL drops it even with Silk Touch");
         } finally {
-            Config.clearOverride();
+            Config.CONFIG.clearOverride();
         }
         helper.succeed();
     }
@@ -262,25 +262,25 @@ public final class InventoryGameTests {
         IItemHandler west = handler(helper, BENCH, Direction.WEST);
         IItemHandler down = handler(helper, BENCH, Direction.DOWN);
         try {
-            Config.override(Config.Settings.builder().benchSides(0).build());
+            Config.CONFIG.override(Config.Settings.builder().benchSides(0).build());
             helper.assertTrue(west.insertItem(1, new ItemStack(Items.DIRT), false).getCount() == 1, "every side closed: the west takes nothing");
             helper.assertTrue(down.extractItem(0, 64, false).isEmpty(), "and the bottom gives nothing");
             helper.assertTrue(helper.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, helper.absolutePos(BENCH), Direction.DOWN) == null,
                     "a closed side has no handler");
 
-            Config.override(Config.Settings.builder().bench(false).benchOnBreak(BreakMode.DROP_ALL).archiveOnBreak(BreakMode.DROP_ALL).build());
+            Config.CONFIG.override(Config.Settings.builder().bench(false).benchOnBreak(BreakMode.DROP_ALL).archiveOnBreak(BreakMode.DROP_ALL).build());
             helper.assertTrue(west.insertItem(1, new ItemStack(Items.DIRT), false).getCount() == 1 && down.extractItem(0, 64, false).isEmpty(),
                     "a bench switched off takes and gives nothing");
             helper.assertTrue(handler(helper, BENCH.east(), Direction.UP).insertItem(0, new ItemStack(ModItems.BLUEPRINT.get()), false).getCount() == 1,
                     "nor does the archive, which needs the bench");
 
-            Config.override(Config.Settings.builder().blueprint(false).archive(false).benchOnBreak(BreakMode.DROP_ALL).archiveOnBreak(BreakMode.DROP_ALL)
+            Config.CONFIG.override(Config.Settings.builder().blueprint(false).archive(false).benchOnBreak(BreakMode.DROP_ALL).archiveOnBreak(BreakMode.DROP_ALL)
                     .build());
             helper.assertTrue(bench.archives().isEmpty(), "an archive switched off is not in the bench's panel");
             helper.assertFalse(bench.record(), "blueprints switched off: nothing is recorded");
             helper.assertTrue(bench.blueprint() == null, "nor shown");
         } finally {
-            Config.clearOverride();
+            Config.CONFIG.clearOverride();
         }
         helper.assertTrue(bench.archives().size() == 1 && bench.record(), "back on, the archive is listed and the blueprint records");
         helper.succeed();

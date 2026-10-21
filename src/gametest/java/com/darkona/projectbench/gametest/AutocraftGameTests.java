@@ -243,7 +243,7 @@ public final class AutocraftGameTests {
         ChestBlockEntity below = chest(helper, BENCH.below());
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         try {
-            Config.override(Config.Settings.builder().autocraft(false).autocraftDefault(true).build());
+            Config.CONFIG.override(Config.Settings.builder().autocraft(false).autocraftDefault(true).build());
             helper.assertFalse(bench.automates() || bench.autocraftButton() != 0, "it does not automate and has no button");
             helper.assertTrue(Feature.allows(helper.getBlockState(BENCH).getBlock()), "it still opens and works");
             helper.assertFalse(Feature.allows(ModItems.AUTO_PROJECT_BENCH.get()) || Feature.allows(ModItems.EJECTING_AUTO_PROJECT_BENCH.get()),
@@ -256,7 +256,7 @@ public final class AutocraftGameTests {
             helper.assertTrue(planks(bench) == 10, "crafting by hand works");
             helper.assertTrue(upgrade(helper, upgradeGrid(new ItemStack(ModItems.PROJECT_BENCH.get()))).isEmpty(), "and the upgrade recipe does not match");
         } finally {
-            Config.clearOverride();
+            Config.CONFIG.clearOverride();
         }
         helper.assertTrue(bench.automates(), "back on, it automates again");
         helper.succeed();

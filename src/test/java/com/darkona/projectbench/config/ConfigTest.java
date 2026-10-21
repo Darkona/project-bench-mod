@@ -28,19 +28,22 @@ class ConfigTest {
     }
 
     @Test
-    void theFileWinsWhenTheServerIsInThisGame() {
+    void theServersCopyWinsUntilTheClientLeaves() {
         Config.Settings file = Config.get();
         Config.Settings edited = file.toBuilder().slotLocks(!file.slotLocks()).build();
         try {
-            Config.receive(file);
-            assertFalse(Config.adopt(edited, false), "connected to another machine's server: its copy is kept");
+            Config.SYNC.receive(Config.SYNC.snapshot());
+            assertTrue(Config.CONFIG.fromServer());
+            assertFalse(Config.CONFIG.adopt(edited), "connected to another machine's server: its copy is kept");
             assertEquals(file, Config.get());
-            assertTrue(Config.adopt(edited, true), "single player: the integrated server's echo does not freeze the file");
-            assertEquals(edited, Config.get());
-            assertFalse(Config.adopt(edited, true), "the same Settings again: nothing changed, nothing to send");
         } finally {
-            Config.forgetServer();
+            Config.SYNC.forgetServer();
         }
+        assertFalse(Config.CONFIG.fromServer());
+        assertEquals(file, Config.get(), "leaving the server goes back to the file");
+        assertTrue(Config.CONFIG.adopt(edited), "with no server's copy the file is taken");
+        assertFalse(Config.CONFIG.adopt(edited), "the same Settings again: nothing changed, nothing to send");
+        Config.CONFIG.adopt(file);
     }
 
     @Test
@@ -92,7 +95,7 @@ class ConfigTest {
         assertTrue(d.archiveExtracts(null), "a caller that names no side may do what any side may");
         assertTrue(d.processors() && !d.partialTabs(), "furnaces and brewing stands get their own tab, sided machines none");
         assertTrue(Config.SPEC.isLoaded(), "the junit game loads a fresh common file");
-        assertEquals(d, Config.fromFile(), "the spec's defaults, written to a fresh file and read back, are DEFAULTS");
+        assertEquals(d, Config.CONFIG.fromFile(), "the spec's defaults, written to a fresh file and read back, are DEFAULTS");
     }
 
     @Test
