@@ -5,6 +5,7 @@ import com.darkona.projectbench.block.bench.ProjectBenchBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.Feature;
+import dev.darkona.jdlib.api.compat.jade.JDJade;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -15,20 +16,24 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
-import snownee.jade.api.IWailaPlugin;
-import snownee.jade.api.WailaPlugin;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.IElementHelper;
 
-@WailaPlugin
-public final class JadePlugin implements IWailaPlugin {
-    @Override
-    public void register(IWailaCommonRegistration registration) {
+public final class JadeCompat {
+    public static final String MOD_ID = "jade";
+
+    private JadeCompat() {
+    }
+
+    public static void init() {
+        JDJade.add(ProjectBench.MOD_ID, JadeCompat::register, JadeCompat::registerClient);
+    }
+
+    private static void register(IWailaCommonRegistration registration) {
         registration.registerBlockDataProvider(RecipeProvider.INSTANCE, ProjectBenchBlockEntity.class);
     }
 
-    @Override
-    public void registerClient(IWailaClientRegistration registration) {
+    private static void registerClient(IWailaClientRegistration registration) {
         registration.registerBlockComponent(RecipeProvider.INSTANCE, ProjectBenchBlock.class);
     }
 

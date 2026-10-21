@@ -3,6 +3,7 @@ package com.darkona.projectbench;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.compat.create.CreateCompat;
+import com.darkona.projectbench.compat.jade.JadeCompat;
 import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.ConfigSync;
 import com.darkona.projectbench.config.Config;
@@ -52,6 +53,7 @@ public final class ProjectBench {
         modBus.addListener(ProjectBench::registerCapabilities);
         modBus.addListener(DataGen::gather);
         Bridges.ifLoaded(CreateCompat.MOD_ID, () -> modBus.addListener((FMLCommonSetupEvent e) -> e.enqueueWork(CreateCompat::register)));
+        Bridges.ifLoaded(JadeCompat.MOD_ID, () -> JadeCompat.init());
     }
 
     public static ResourceLocation id(String path) {
