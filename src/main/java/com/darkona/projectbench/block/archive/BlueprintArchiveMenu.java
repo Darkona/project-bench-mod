@@ -2,7 +2,6 @@ package com.darkona.projectbench.block.archive;
 
 import dev.darkona.jdlib.api.inventory.ConcatContainer;
 import dev.darkona.jdlib.api.inventory.Stacks;
-import com.darkona.projectbench.block.bench.BenchStacks;
 import com.darkona.projectbench.block.BenchMenu;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.config.Config;

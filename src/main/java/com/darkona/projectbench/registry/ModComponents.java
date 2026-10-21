@@ -1,7 +1,7 @@
 package com.darkona.projectbench.registry;
 
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.blueprint.Blueprint;
+import dev.darkona.jdlib.api.pattern.Blueprint;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.component.ItemContainerContents;

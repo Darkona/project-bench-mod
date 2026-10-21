@@ -4,8 +4,8 @@ import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.BenchWheel;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
-import com.darkona.projectbench.block.bench.BenchStacks;
-import com.darkona.projectbench.blueprint.Blueprint;
+import dev.darkona.jdlib.api.inventory.GridFill;
+import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.blueprint.CostContainer;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.config.ClientConfig;
@@ -115,7 +115,7 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
 
     private static ItemStack expected(ProjectBenchMenu menu, int which, Slot slot) {
         Blueprint blueprint = menu.benchOf(which).blueprint();
-        return blueprint != null && BenchStacks.missing(menu.benchOf(which).matrix(), blueprint, slot.getContainerSlot())
+        return blueprint != null && GridFill.missing(menu.benchOf(which).matrix(), blueprint.pattern(), slot.getContainerSlot())
                 ? blueprint.ghost(slot.getContainerSlot()) : ItemStack.EMPTY;
     }
 

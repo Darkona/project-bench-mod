@@ -1,6 +1,7 @@
 package com.darkona.projectbench;
 
-import com.darkona.projectbench.blueprint.Blueprint;
+import dev.darkona.jdlib.api.pattern.Blueprint;
+import com.darkona.projectbench.blueprint.BlueprintItem;
 import com.darkona.projectbench.client.BlockTint;
 import com.darkona.projectbench.client.BlueprintArchiveView;
 import com.darkona.projectbench.client.ProjectBenchRenderer;
@@ -42,7 +43,7 @@ public final class ProjectBenchClient {
         modBus.addListener((EntityRenderersEvent.RegisterRenderers e) ->
                 e.registerBlockEntityRenderer(ModBlockEntities.PROJECT_BENCH.get(), ProjectBenchRenderer::new));
         modBus.addListener((FMLClientSetupEvent e) -> e.enqueueWork(() -> ItemProperties.register(ModItems.BLUEPRINT.get(),
-                ProjectBench.id("recorded"), (stack, level, entity, seed) -> Blueprint.of(stack) == null ? 0F : 1F)));
+                ProjectBench.id("recorded"), (stack, level, entity, seed) -> BlueprintItem.blueprint(stack) == null ? 0F : 1F)));
         modBus.addListener((RegisterClientReloadListenersEvent e) -> e.registerReloadListener((ResourceManagerReloadListener) manager -> BlockTint.forget()));
 
         NeoForge.EVENT_BUS.addListener((ItemTooltipEvent e) -> {

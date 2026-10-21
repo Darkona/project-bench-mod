@@ -1,7 +1,7 @@
 package com.darkona.projectbench.block.bench;
 
 import dev.darkona.jdlib.api.inventory.GridFill;
-import com.darkona.projectbench.blueprint.Blueprint;
+import dev.darkona.jdlib.api.pattern.Blueprint;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
