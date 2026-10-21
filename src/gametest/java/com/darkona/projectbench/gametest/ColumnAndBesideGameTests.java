@@ -7,7 +7,7 @@ import com.darkona.projectbench.block.archive.BlueprintArchiveMenu;
 import com.darkona.projectbench.block.archive.ColumnPart;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
-import com.darkona.projectbench.blueprint.Blueprint;
+import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.registry.ModBlocks;
 import com.darkona.projectbench.registry.ModComponents;
 import com.darkona.projectbench.registry.ModItems;
@@ -241,6 +241,37 @@ public final class ColumnAndBesideGameTests {
         bench.clearMatrix(player);
         helper.assertTrue(bench.matrix().getItem(0).getCount() == 5 && player.getInventory().armor.stream().allMatch(ItemStack::isEmpty),
                 "everything full: it stays in the matrix");
+        helper.succeed();
+    }
+
+    @GameTest(template = GameTests.EMPTY)
+    public static void fillCraftAndClearNeitherMakeNorLosePlanks(GameTestHelper helper) {
+        ProjectBenchBlockEntity bench = bench(helper, BENCH);
+        helper.setBlock(BENCH.east(), Blocks.CHEST);
+        ChestBlockEntity chest = helper.getBlockEntity(BENCH.east());
+        List<ItemStack> sticks = new ArrayList<>();
+        for (int i = 0; i < 9; ++i) {
+            sticks.add(i == 1 || i == 4 ? new ItemStack(Items.OAK_PLANKS) : ItemStack.EMPTY);
+        }
+        bench.blueprintSlot().setItem(0, recorded(sticks, new ItemStack(Items.STICK, 4)));
+        bench.storage().setItem(0, new ItemStack(Items.OAK_PLANKS, 7));
+        bench.storage().setItem(1, new ItemStack(Items.DIRT, 3));
+        chest.setItem(3, new ItemStack(Items.OAK_PLANKS, 20));
+        bench.matrix().setItem(0, new ItemStack(Items.COBBLESTONE, 2));
+        bench.setShareMode(ShareMode.ALL);
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        bench.fillMatrix(player);
+        int planks = count(bench.matrix(), Items.OAK_PLANKS) + count(bench.storage(), Items.OAK_PLANKS) + count(chest, Items.OAK_PLANKS);
+        helper.assertTrue(planks == 27, "fill moves planks without making or losing any: " + planks);
+        helper.assertTrue(bench.matrix().getItem(0).isEmpty() && count(bench.storage(), Items.COBBLESTONE) + count(chest, Items.COBBLESTONE) == 2,
+                "what the blueprint does not want went back");
+        bench.craft(player);
+        planks = count(bench.matrix(), Items.OAK_PLANKS) + count(bench.storage(), Items.OAK_PLANKS) + count(chest, Items.OAK_PLANKS);
+        helper.assertTrue(planks == 25, "a craft takes two planks: " + planks);
+        bench.clearMatrix(player);
+        helper.assertTrue(bench.matrix().isEmpty(), "cancelled: the matrix is empty");
+        planks = count(bench.storage(), Items.OAK_PLANKS) + count(chest, Items.OAK_PLANKS) + count(player.getInventory(), Items.OAK_PLANKS);
+        helper.assertTrue(planks == 25 && count(bench.storage(), Items.DIRT) == 3, "and everything is back: " + planks);
         helper.succeed();
     }
 

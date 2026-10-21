@@ -3,10 +3,11 @@ package com.darkona.projectbench.gametest;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.config.AutoMode;
-import com.darkona.projectbench.block.bench.BenchStacks;
+import dev.darkona.jdlib.api.inventory.GridFill;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
-import com.darkona.projectbench.blueprint.Blueprint;
+import dev.darkona.jdlib.api.pattern.Blueprint;
+import com.darkona.projectbench.blueprint.BlueprintItem;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.network.RecordRecipe;
 import com.darkona.projectbench.registry.ModBlocks;
@@ -186,7 +187,7 @@ public final class ProjectBenchGameTests {
         bench.blueprintSlot().setItem(0, blueprint);
         helper.assertTrue(bench.matrix().getItem(TOP).is(Items.DIRT) && bench.matrix().getItem(UNDER).isEmpty(), "the blueprint moves nothing in the matrix");
         helper.assertTrue(count(bench.storage(), Items.OAK_PLANKS) == 5, "nor takes from the inventory");
-        helper.assertTrue(bp != null && BenchStacks.missing(bench.matrix(), bp, UNDER), "the window draws the missing ghost");
+        helper.assertTrue(bp != null && GridFill.missing(bench.matrix(), bp.pattern(), UNDER), "the window draws the missing ghost");
 
         menu.clicked(ProjectBenchMenu.STORAGE_START, 0, ClickType.QUICK_MOVE, player);
         helper.assertTrue(bench.matrix().getItem(UNDER).getCount() == 5 && bench.storage().getItem(0).isEmpty(),
@@ -287,7 +288,7 @@ public final class ProjectBenchGameTests {
                 "the torch recorded with its result: " + bp);
         helper.assertTrue(bp.ghost(0).is(Items.COAL) && bp.ghost(3).is(Items.STICK) && bp.ghost(1).isEmpty() && bp.ghost(4).isEmpty(),
                 "shaped: coal over a stick from the top left: " + bp.pattern());
-        helper.assertTrue(bench.matrix().getItem(0).is(Items.DIRT) && BenchStacks.missing(bench.matrix(), bp, 3),
+        helper.assertTrue(bench.matrix().getItem(0).is(Items.DIRT) && GridFill.missing(bench.matrix(), bp.pattern(), 3),
                 "without fill the matrix is left to the viewer; the stick shows as a ghost");
 
         bench.blueprintSlot().setItem(0, new ItemStack(ModItems.BLUEPRINT.get()));
@@ -298,7 +299,7 @@ public final class ProjectBenchGameTests {
         helper.assertTrue(bench.matrix().getItem(3).is(Items.STICK) && bench.matrix().getItem(3).getCount() == 1
                 && count(bench.storage(), Items.STICK) == 1, "fill: the stick it has, one");
         helper.assertTrue(bench.matrix().getItem(0).isEmpty() && count(bench.storage(), Items.DIRT) == 1, "the dirt back to the inventory");
-        helper.assertTrue(BenchStacks.missing(bench.matrix(), bp, 0), "the coal it lacks stays a ghost");
+        helper.assertTrue(GridFill.missing(bench.matrix(), bp.pattern(), 0), "the coal it lacks stays a ghost");
 
         bench.blueprintSlot().setItem(0, new ItemStack(ModItems.BLUEPRINT.get()));
         bench.matrix().clearContent();
@@ -335,9 +336,9 @@ public final class ProjectBenchGameTests {
         bench.storage().setItem(0, new ItemStack(Items.OAK_PLANKS, 2));
         ProjectBenchMenu menu = open(bench, player);
         helper.assertTrue(menu.archiveSlots() == BlueprintArchiveBlockEntity.SLOTS, "one archive beside it: " + menu.archiveSlots());
-        helper.assertTrue(Blueprint.of(menu.archiveItem(3)) != null, "the window sees the archive's blueprint");
+        helper.assertTrue(BlueprintItem.blueprint(menu.archiveItem(3)) != null, "the window sees the archive's blueprint");
         helper.assertTrue(menu.clickMenuButton(player, ProjectBenchMenu.archiveButton(3)), "a click on it");
-        helper.assertTrue(bench.blueprint() != null && Blueprint.of(archive.blueprints().getItem(3)) == null
+        helper.assertTrue(bench.blueprint() != null && BlueprintItem.blueprint(archive.blueprints().getItem(3)) == null
                 && archive.blueprints().getItem(3).is(ModItems.BLUEPRINT.get()), "swaps it with the bench's blank one");
         helper.assertTrue(bench.matrix().isEmpty() && count(bench.storage(), Items.OAK_PLANKS) == 2, "and moves no plank into the matrix");
         helper.assertFalse(menu.clickMenuButton(player, ProjectBenchMenu.archiveButton(7)), "a stack of two with a blueprint in the bench: no swap");
@@ -392,7 +393,7 @@ public final class ProjectBenchGameTests {
                 "the bench's blueprint went to the first empty archive slot: " + archive.blueprints().getItem(1));
         player.getInventory().setItem(0, new ItemStack(ModItems.BLUEPRINT.get(), 3));
         menu.clicked(ProjectBenchMenu.PLAYER_END - 9, 0, ClickType.QUICK_MOVE, player);
-        helper.assertTrue(bench.blueprintSlot().getItem(0).getCount() == 1 && Blueprint.of(bench.blueprintSlot().getItem(0)) == null
+        helper.assertTrue(bench.blueprintSlot().getItem(0).getCount() == 1 && BlueprintItem.blueprint(bench.blueprintSlot().getItem(0)) == null
                         && archive.blueprints().getItem(0).getCount() == 2 && player.getInventory().getItem(0).getCount() == 2,
                 "one blank blueprint goes to the bench's empty slot, ready to record, the rest stay with the player (never filed from here): "
                         + bench.blueprintSlot().getItem(0) + ", " + archive.blueprints().getItem(0));

@@ -3,7 +3,8 @@ package com.darkona.projectbench.client;
 import com.darkona.projectbench.block.bench.ExternalInventories;
 import com.darkona.projectbench.block.bench.Processor;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
-import com.darkona.projectbench.blueprint.Blueprint;
+import dev.darkona.jdlib.api.pattern.Blueprint;
+import com.darkona.projectbench.blueprint.BlueprintItem;
 import dev.darkona.jdlib.JDLib;
 import dev.darkona.jdlib.api.ui.JDNode;
 import dev.darkona.jdlib.api.ui.JDNode.Grow;
@@ -78,14 +79,14 @@ final class BenchPanels {
                         return ItemStack.EMPTY;
                     }
                     ItemStack stack = menu.archiveItem(k);
-                    Blueprint recorded = Blueprint.of(stack);
+                    Blueprint recorded = BlueprintItem.blueprint(stack);
                     return recorded != null ? recorded.result() : stack;
                 }, () -> {
                     int k = index.getAsInt();
                     return k < count && menu.getCarried().isEmpty() ? menu.archiveItem(k) : ItemStack.EMPTY;
                 }, () -> {
                     int k = index.getAsInt();
-                    return k < count && Blueprint.of(menu.archiveItem(k)) != null ? RECORDED : 0;
+                    return k < count && BlueprintItem.blueprint(menu.archiveItem(k)) != null ? RECORDED : 0;
                 }, () -> {
                     int k = index.getAsInt();
                     if (k < count) {

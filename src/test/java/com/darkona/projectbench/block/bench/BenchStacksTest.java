@@ -1,6 +1,6 @@
 package com.darkona.projectbench.block.bench;
 
-import com.darkona.projectbench.blueprint.Blueprint;
+import dev.darkona.jdlib.api.pattern.Blueprint;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,37 +29,6 @@ class BenchStacksTest {
     private static ItemStack named(ItemStack stack, String name) {
         stack.set(DataComponents.CUSTOM_NAME, Component.literal(name));
         return stack;
-    }
-
-    @Test
-    void shiftClickPutsItemsOnTheGhostsThatTakeThem() {
-        ItemStack worn = new ItemStack(Items.SHEARS);
-        worn.setDamageValue(30);
-        List<ItemStack> pattern = new ArrayList<>(List.of(new ItemStack(Items.OAK_PLANKS), new ItemStack(Items.OAK_PLANKS), new ItemStack(Items.SHEARS),
-                new ItemStack(Items.OAK_PLANKS), ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY));
-        Blueprint bp = new Blueprint(pattern, ResourceLocation.withDefaultNamespace("test"), new ItemStack(Items.STICK));
-        SimpleContainer m = container(9, new ItemStack(Items.OAK_PLANKS, 4), ItemStack.EMPTY, ItemStack.EMPTY, named(new ItemStack(Items.OAK_PLANKS), "odd"));
-        assertTrue(BenchStacks.anyGhostAccepts(bp, new ItemStack(Items.OAK_PLANKS)));
-        assertFalse(BenchStacks.anyGhostAccepts(bp, new ItemStack(Items.DIRT)), "no ghost takes dirt");
-        ItemStack planks = new ItemStack(Items.OAK_PLANKS, 10);
-        assertEquals(10, BenchStacks.intoGhosts(m, bp, planks));
-        assertTrue(planks.isEmpty());
-        assertEquals(7, m.getItem(0).getCount(), "onto the emptiest first: both end at seven");
-        assertEquals(7, m.getItem(1).getCount());
-        assertEquals("odd", m.getItem(3).getHoverName().getString(), "a slot holding planks of other components is left alone");
-        assertEquals(1, m.getItem(3).getCount());
-        assertEquals(0, BenchStacks.intoGhosts(m, bp, new ItemStack(Items.DIRT, 5)), "dirt goes nowhere");
-        assertEquals(1, BenchStacks.intoGhosts(m, bp, worn), "a worn tool on the new tool's ghost");
-        assertTrue(m.getItem(2).is(Items.SHEARS) && m.getItem(2).getDamageValue() == 30);
-        ItemStack lots = new ItemStack(Items.OAK_PLANKS, 64);
-        assertEquals(64, BenchStacks.intoGhosts(m, bp, lots));
-        assertEquals(39, m.getItem(0).getCount(), "split evenly");
-        assertEquals(39, m.getItem(1).getCount());
-        lots = new ItemStack(Items.OAK_PLANKS, 64);
-        assertEquals(50, BenchStacks.intoGhosts(m, bp, lots), "up to full stacks");
-        assertEquals(14, lots.getCount(), "the rest stays where it was");
-        assertEquals(64, m.getItem(0).getCount());
-        assertFalse(BenchStacks.missing(m, bp, 1), "no ghost left to draw there");
     }
 
     private static Blueprint ironAndPlanks() {

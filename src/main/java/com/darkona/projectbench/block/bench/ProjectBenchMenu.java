@@ -7,7 +7,8 @@ import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.block.BenchMenu;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import dev.darkona.jdlib.api.inventory.ConcatContainer;
-import com.darkona.projectbench.blueprint.Blueprint;
+import dev.darkona.jdlib.api.pattern.Blueprint;
+import com.darkona.projectbench.blueprint.BlueprintItem;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.blueprint.CostContainer;
 import com.darkona.projectbench.common.ContainerSlot;
@@ -670,7 +671,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     public boolean blankBlueprint() {
-        return Blueprint.blank(slots.get(blueprintIndex(active())).getItem());
+        return BlueprintItem.blank(slots.get(blueprintIndex(active())).getItem());
     }
 
     public boolean recordRecipe(RecipeHolder<CraftingRecipe> holder, boolean fill) {
@@ -817,7 +818,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         ItemStack carried = getCarried();
         Container archive = archiveOf(slot);
         int slotInArchive = slot % BlueprintArchiveBlockEntity.SLOTS;
-        if (archive == null || !Blueprint.recorded(carried) || !archive.canPlaceItem(slotInArchive, carried)) {
+        if (archive == null || !BlueprintItem.recorded(carried) || !archive.canPlaceItem(slotInArchive, carried)) {
             return false;
         }
         ItemStack stored = archive.getItem(slotInArchive);
@@ -865,7 +866,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     private boolean intoArchives(ItemStack stack) {
-        if (!Blueprint.recorded(stack) || !archives.stillValid(player)) {
+        if (!BlueprintItem.recorded(stack) || !archives.stillValid(player)) {
             return false;
         }
         int rest = Stacks.insert(archives, stack).getCount();
@@ -940,11 +941,11 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
             if (!(local == BLUEPRINT && intoArchives(stack)) && !moveItemStackTo(stack, PLAYER_START, PLAYER_END, false)) {
                 return ItemStack.EMPTY;
             }
-        } else if (Blueprint.blank(stack)) {
+        } else if (BlueprintItem.blank(stack)) {
             if (!intoBlueprintSlot(stack)) {
                 return ItemStack.EMPTY;
             }
-        } else if (Feature.BLUEPRINT.enabled() && Blueprint.recorded(stack) && (intoArchives(stack) || intoBlueprintSlot(stack))) {
+        } else if (Feature.BLUEPRINT.enabled() && BlueprintItem.recorded(stack) && (intoArchives(stack) || intoBlueprintSlot(stack))) {
         } else {
             boolean moved = intoCost(stack);
             moved |= !stack.isEmpty() && intoMatrix(stack);
@@ -1112,12 +1113,12 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     private int intoGhosts(ItemStack stack) {
         ProjectBenchBlockEntity target = activeBench();
         Blueprint blueprint = target.blueprint();
-        return blueprint == null ? 0 : BenchStacks.intoGhosts(target.matrix(), blueprint, stack);
+        return blueprint == null ? 0 : GridFill.spread(target.matrix(), blueprint.pattern(), stack);
     }
 
     private boolean ghosted(ItemStack stack) {
         Blueprint blueprint = fillsGhosts();
-        return blueprint != null && BenchStacks.anyGhostAccepts(blueprint, stack);
+        return blueprint != null && GridFill.acceptsAny(blueprint.pattern(), stack);
     }
 
     public boolean ghostWants(int matrixSlot, ItemStack stack) {

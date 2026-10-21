@@ -1,6 +1,6 @@
 package com.darkona.projectbench.block.bench;
 
-import com.darkona.projectbench.blueprint.Blueprint;
+import dev.darkona.jdlib.api.pattern.Blueprint;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 

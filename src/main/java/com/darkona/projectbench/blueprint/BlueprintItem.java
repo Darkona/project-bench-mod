@@ -1,11 +1,15 @@
 package com.darkona.projectbench.blueprint;
 
 import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.Feature;
+import com.darkona.projectbench.registry.ModComponents;
+import dev.darkona.jdlib.api.pattern.Blueprint;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -14,14 +18,27 @@ public class BlueprintItem extends Item {
         super(properties);
     }
 
+    @Nullable
+    public static Blueprint blueprint(ItemStack stack) {
+        return stack.get(ModComponents.BLUEPRINT.get());
+    }
+
+    public static boolean blank(ItemStack stack) {
+        return Feature.BLUEPRINT.enabled() && stack.getItem() instanceof BlueprintItem && !recorded(stack);
+    }
+
+    public static boolean recorded(ItemStack stack) {
+        return stack.getItem() instanceof BlueprintItem && blueprint(stack) != null;
+    }
+
     @Override
     public int getMaxStackSize(ItemStack stack) {
-        return Blueprint.of(stack) != null ? 1 : super.getMaxStackSize(stack);
+        return blueprint(stack) != null ? 1 : super.getMaxStackSize(stack);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag flag) {
-        Blueprint blueprint = Blueprint.of(stack);
+        Blueprint blueprint = blueprint(stack);
         if (blueprint == null) {
             lines.add(Component.translatable("item.projectbench.blueprint.blank").withStyle(ChatFormatting.GRAY));
             return;

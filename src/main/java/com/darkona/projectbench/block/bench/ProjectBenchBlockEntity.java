@@ -10,7 +10,8 @@ import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.block.BenchBlockEntity;
 import dev.darkona.jdlib.api.world.RelativeSide;
 import dev.darkona.jdlib.api.inventory.SidedItemHandler;
-import com.darkona.projectbench.blueprint.Blueprint;
+import dev.darkona.jdlib.api.pattern.Blueprint;
+import com.darkona.projectbench.blueprint.BlueprintItem;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.blueprint.CostContainer;
 import com.darkona.projectbench.config.Config;
@@ -306,7 +307,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
     @Nullable
     public Blueprint blueprint() {
-        return Feature.BLUEPRINT.enabled() ? Blueprint.of(blueprint.getItem(0)) : null;
+        return Feature.BLUEPRINT.enabled() ? BlueprintItem.blueprint(blueprint.getItem(0)) : null;
     }
 
     public ShareMode shareMode() {
@@ -811,7 +812,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     }
 
     public boolean blankBlueprint() {
-        return Blueprint.blank(blueprint.getItem(0));
+        return BlueprintItem.blank(blueprint.getItem(0));
     }
 
     private void write(Blueprint recorded) {
