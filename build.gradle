@@ -100,6 +100,7 @@ neoForge {
         }
 
         configureEach {
+            sourceSet = sourceSets.gametest
             systemProperty 'forge.logging.markers', 'REGISTRIES'
             logLevel = org.slf4j.event.Level.INFO
         }
@@ -138,6 +139,8 @@ dependencies {
     compileOnly "maven.modrinth:inventory-profiles-next:${ipn_version_id}"
 
     testImplementation sourceSets.gametest.output
+    testImplementation 'dev.darkona.jdlib:jdlib-testkit'
+    gametestImplementation 'dev.darkona.jdlib:jdlib-testkit'
     testImplementation "org.junit.jupiter:junit-jupiter:${junit_version}"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
