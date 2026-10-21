@@ -8,7 +8,7 @@ import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.ShareMode;
 import com.darkona.projectbench.registry.ModBlocks;
-import com.mojang.authlib.GameProfile;
+import dev.darkona.jdlib.testkit.TestPlayers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -30,14 +30,12 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.List;
-import java.util.UUID;
 
 import static com.darkona.projectbench.gametest.GameTests.count;
 
@@ -118,7 +116,7 @@ public final class ProcessorGameTests {
             }
         });
         furnace.setItem(Processor.RESULT, new ItemStack(Items.IRON_INGOT, 10));
-        FakePlayer player = FakePlayerFactory.get(helper.getLevel(), new GameProfile(UUID.randomUUID(), "processor-test"));
+        FakePlayer player = TestPlayers.survival(helper, "processor-test");
         Vec3 at = helper.absoluteVec(Vec3.atCenterOf(BENCH.above(3)));
         player.setPos(at);
         ProjectBenchMenu menu = open(bench, player);
