@@ -1,6 +1,6 @@
 package com.darkona.projectbench;
 
-import com.darkona.projectbench.block.bench.RecipeLookup;
+import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.blueprint.Blueprint;
 import com.darkona.projectbench.client.BlockTint;
 import com.darkona.projectbench.client.BlueprintArchiveView;
@@ -47,7 +47,7 @@ public final class ProjectBenchClient {
                 ProjectBench.id("recorded"), (stack, level, entity, seed) -> Blueprint.of(stack) == null ? 0F : 1F)));
         modBus.addListener((RegisterClientReloadListenersEvent e) -> e.registerReloadListener((ResourceManagerReloadListener) manager -> BlockTint.forget()));
 
-        NeoForge.EVENT_BUS.addListener((RecipesUpdatedEvent e) -> RecipeLookup.clearClient());
+        NeoForge.EVENT_BUS.addListener((RecipesUpdatedEvent e) -> ProjectBenchBlockEntity.RECIPES.clearClient());
 
         NeoForge.EVENT_BUS.addListener((ItemTooltipEvent e) -> {
             ItemContainerContents contents = e.getItemStack().get(ModComponents.CONTENTS);
