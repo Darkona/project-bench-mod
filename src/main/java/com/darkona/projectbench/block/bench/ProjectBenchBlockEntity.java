@@ -16,6 +16,7 @@ import com.darkona.projectbench.config.SideMode;
 import com.darkona.projectbench.network.SlotLocks;
 import com.darkona.projectbench.registry.ModBlockEntities;
 import com.darkona.projectbench.registry.ModComponents;
+import dev.darkona.jdlib.api.data.CraftingRecipeCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -68,6 +69,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 public class ProjectBenchBlockEntity extends BenchBlockEntity {
+    public static final CraftingRecipeCache RECIPES = new CraftingRecipeCache(256);
     public static final int MATRIX = 9;
     public static final int STORAGE = 18;
     public static final String STATION_TITLE = "gui.projectbench.project_bench.station";
@@ -391,7 +393,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
         if (input.isEmpty()) {
             return List.of();
         }
-        return RecipeLookup.find(level, input);
+        return RECIPES.find(level, input);
     }
 
     private void updateResult() {
