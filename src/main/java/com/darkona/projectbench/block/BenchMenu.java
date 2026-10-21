@@ -1,5 +1,6 @@
 package com.darkona.projectbench.block;
 
+import dev.darkona.jdlib.api.menu.JDMenuSupport;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,7 +31,7 @@ public abstract class BenchMenu extends AbstractContainerMenu {
     }
 
     public static boolean near(Player player, BlockEntity block) {
-        return !block.isRemoved() && player.distanceToSqr(block.getBlockPos().getCenter()) <= REACH * REACH;
+        return JDMenuSupport.near(player, block, REACH);
     }
 
     protected final ItemStack moveBetween(int index, int ownEnd) {
