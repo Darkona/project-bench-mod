@@ -58,18 +58,6 @@ class BlockTintTest {
     }
 
     @Test
-    void theAverageCountsOnlyTheOpaquePixels() {
-        int red = 0xFF0000FF;
-        int blue = 0xFFFF0000;
-        int clear = 0x00FFFFFF;
-        int rgb = BlockTint.average(4, 2, (x, y) -> x >= 2 ? clear : y == 0 ? red : blue);
-        assertEquals(0x7F007F, rgb, "half red, half blue, the white ignored");
-        assertEquals(0x123456, BlockTint.average(16, 16, (x, y) -> 0xFF563412), "one colour is that colour");
-        assertEquals(BlockTint.PLAIN, BlockTint.average(16, 16, (x, y) -> clear), "nothing opaque: plain");
-        assertEquals(BlockTint.PLAIN, BlockTint.average(0, 0, (x, y) -> red), "no pixels: plain");
-    }
-
-    @Test
     void softeningGoesHalfwayToWhite() {
         assertEquals(0x7F7F7F, BlockTint.soften(0x000000));
         assertEquals(0xFFFFFF, BlockTint.soften(0xFFFFFF));

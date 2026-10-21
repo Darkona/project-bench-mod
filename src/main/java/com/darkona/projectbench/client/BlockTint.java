@@ -1,6 +1,7 @@
 package com.darkona.projectbench.client;
 
 import com.darkona.projectbench.config.ClientConfig;
+import dev.darkona.jdlib.api.render.client.JDColors;
 import dev.darkona.jdlib.api.ui.JDPalette;
 import dev.darkona.jdlib.api.ui.JDTint;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -10,14 +11,12 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor.ABGR32;
 import net.minecraft.util.FastColor.ARGB32;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 import java.util.List;
-import java.util.function.IntBinaryOperator;
 
 public final class BlockTint {
     public static final int PLAIN = JDTint.NONE;
@@ -109,35 +108,8 @@ public final class BlockTint {
         if (sprite.contents().name().equals(MissingTextureAtlasSprite.getLocation())) {
             return NONE;
         }
-        int rgb;
-        try {
-            rgb = average(sprite.contents().width(), sprite.contents().height(), (x, y) -> sprite.getPixelRGBA(0, x, y));
-        } catch (IllegalArgumentException notRgba) {
-            return NONE;
-        }
+        int rgb = JDColors.average(sprite, PLAIN);
         return rgb == PLAIN ? NONE : pack(soften(rgb), USUAL_TEXT);
-    }
-
-    static int average(int width, int height, IntBinaryOperator abgr) {
-        long red = 0;
-        long green = 0;
-        long blue = 0;
-        int count = 0;
-        for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < width; ++x) {
-                int pixel = abgr.applyAsInt(x, y);
-                if (ABGR32.alpha(pixel) >= 128) {
-                    red += ABGR32.red(pixel);
-                    green += ABGR32.green(pixel);
-                    blue += ABGR32.blue(pixel);
-                    ++count;
-                }
-            }
-        }
-        if (count == 0) {
-            return PLAIN;
-        }
-        return (int) (red / count) << 16 | (int) (green / count) << 8 | (int) (blue / count);
     }
 
     static final int SLOT_LIGHTEN = 40;
