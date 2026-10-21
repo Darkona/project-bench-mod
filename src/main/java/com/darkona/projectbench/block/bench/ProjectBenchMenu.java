@@ -1,9 +1,12 @@
 package com.darkona.projectbench.block.bench;
 
+import dev.darkona.jdlib.api.inventory.GridFill;
+import dev.darkona.jdlib.api.inventory.Stacks;
+import dev.darkona.jdlib.api.inventory.Stock;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.block.BenchMenu;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
-import com.darkona.projectbench.block.archive.ConcatContainer;
+import dev.darkona.jdlib.api.inventory.ConcatContainer;
 import com.darkona.projectbench.blueprint.Blueprint;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.blueprint.CostContainer;
@@ -287,7 +290,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     private Stock openStock(ProjectBenchBlockEntity owner) {
-        return Stock.chain(owner.ownStock(), new HandlerStock(() -> {
+        return Stock.chain(owner.ownStock(), Stock.lazyHandler(() -> {
             ExternalInventories.Panel panel = selectedPanel();
             if (panel == null || player.level().isClientSide) {
                 return null;
@@ -355,7 +358,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         for (int i = 0; i < blocks; ++i) {
             out.add(new BlueprintContainer(BlueprintArchiveBlockEntity.SLOTS, () -> Config.get().archiveStack()));
         }
-        return new ConcatContainer(out);
+        return new ConcatContainer(BlueprintArchiveBlockEntity.SLOTS, out);
     }
 
     private static ConcatContainer containers(List<? extends BlueprintArchiveBlockEntity> archives) {
@@ -363,7 +366,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         for (BlueprintArchiveBlockEntity archive : archives) {
             out.add(archive.blueprints());
         }
-        return new ConcatContainer(out);
+        return new ConcatContainer(BlueprintArchiveBlockEntity.SLOTS, out);
     }
 
     @Override
@@ -865,7 +868,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         if (!Blueprint.recorded(stack) || !archives.stillValid(player)) {
             return false;
         }
-        int rest = BenchStacks.insert(archives, stack).getCount();
+        int rest = Stacks.insert(archives, stack).getCount();
         if (rest == stack.getCount()) {
             return false;
         }
@@ -1119,7 +1122,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
 
     public boolean ghostWants(int matrixSlot, ItemStack stack) {
         Blueprint blueprint = fillsGhosts();
-        return blueprint != null && BenchStacks.accepts(blueprint.ghost(matrixSlot), stack);
+        return blueprint != null && GridFill.accepts(blueprint.ghost(matrixSlot), stack);
     }
 
     @Nullable
@@ -1343,7 +1346,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         @Override
         public ItemStack remove(int amount) {
             IItemHandler target = target();
-            return target == null ? ItemStack.EMPTY : BenchStacks.takeAtMostAStack(target, inventorySlot(), amount);
+            return target == null ? ItemStack.EMPTY : Stacks.takeAtMostAStack(target, inventorySlot(), amount);
         }
 
         @Override

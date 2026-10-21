@@ -1,6 +1,6 @@
 package com.darkona.projectbench.config;
 
-import com.darkona.projectbench.block.RelativeSide;
+import dev.darkona.jdlib.api.world.RelativeSide;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.StreamCodec;

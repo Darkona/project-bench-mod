@@ -1,11 +1,15 @@
 package com.darkona.projectbench.block.bench;
 
+import dev.darkona.jdlib.api.inventory.ChainedItemHandler;
+import dev.darkona.jdlib.api.inventory.GridFill;
+import dev.darkona.jdlib.api.inventory.Stacks;
+import dev.darkona.jdlib.api.inventory.Stock;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.block.BenchBlock;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.block.BenchBlockEntity;
-import com.darkona.projectbench.block.RelativeSide;
-import com.darkona.projectbench.block.SidedItemHandler;
+import dev.darkona.jdlib.api.world.RelativeSide;
+import dev.darkona.jdlib.api.inventory.SidedItemHandler;
 import com.darkona.projectbench.blueprint.Blueprint;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.blueprint.CostContainer;
@@ -87,8 +91,8 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     private final InvWrapper storageHandler = new InvWrapper(storage);
     private final SidedItemHandler[][] views = {
             null,
-            sided(new ChainedHandler(storageHandler, matrixHandler), SideMode.INVENTORY),
-            sided(new ChainedHandler(matrixHandler, storageHandler), SideMode.GRID),
+            sided(new ChainedItemHandler(storageHandler, matrixHandler), SideMode.INVENTORY),
+            sided(new ChainedItemHandler(matrixHandler, storageHandler), SideMode.GRID),
             sided(new CombinedInvWrapper(new InvWrapper(blueprint), new InvWrapper(cost)), SideMode.BLUEPRINT),
             sided(new ResultHandler(this), SideMode.RESULT)
     };
@@ -484,7 +488,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
             for (int y = 0; y < input.height(); ++y) {
                 for (int x = 0; x < input.width(); ++x) {
                     substitute.at = x + y * input.width();
-                    BenchStacks.consume(matrix, refill, positioned.left() + x + (positioned.top() + y) * 3,
+                    GridFill.consume(matrix, refill, positioned.left() + x + (positioned.top() + y) * 3,
                             substitute.input == null ? null : substitute);
                 }
             }
@@ -537,7 +541,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
                     out.getStepY() * 0.7, out.getStepZ() * 0.7));
             return;
         }
-        ItemStack rest = BenchStacks.insert(storage, ItemHandlerHelper.insertItemStacked(target, stack, false));
+        ItemStack rest = Stacks.insert(storage, ItemHandlerHelper.insertItemStacked(target, stack, false));
         if (!rest.isEmpty()) {
             Block.popResourceFromFace(level, worldPosition, Direction.UP, rest);
         }
@@ -559,7 +563,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
         }
         int n = Math.min(amount, shown.getCount());
         int extra = shown.getCount() - n;
-        if (extra > 0 && BenchStacks.room(storage, shown) < extra) {
+        if (extra > 0 && Stacks.room(storage, shown) < extra) {
             return ItemStack.EMPTY;
         }
         if (simulate) {
@@ -571,7 +575,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
         }
         made.onCraftedBySystem(level);
         if (made.getCount() > n) {
-            ItemStack rest = BenchStacks.insert(storage, made.split(made.getCount() - n));
+            ItemStack rest = Stacks.insert(storage, made.split(made.getCount() - n));
             if (!rest.isEmpty()) {
                 Block.popResourceFromFace(level, worldPosition, Direction.UP, rest);
             }
@@ -630,7 +634,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
     public void balance() {
         if (Config.get().balanceButton()) {
-            BenchStacks.balance(matrix);
+            Stacks.balance(matrix);
         }
     }
 
@@ -642,8 +646,8 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
         if (level == null || level.isClientSide || !Config.get().clearMatrix()) {
             return;
         }
-        Stock into = player == null ? stockFor(null) : Stock.chain(stockFor(player), Stock.pockets(player.getInventory()));
-        moveMatrix(() -> BenchStacks.clear(matrix, into));
+        Stock into = player == null ? stockFor(null) : Stock.chain(stockFor(player), Stock.playerPockets(player.getInventory()));
+        moveMatrix(() -> GridFill.clear(matrix, into));
     }
 
     public void fillMatrix() {
@@ -655,7 +659,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
         if (level == null || level.isClientSide || bp == null || !Config.get().autoFill()) {
             return;
         }
-        moveMatrix(() -> BenchStacks.fill(matrix, bp, stockFor(player)));
+        moveMatrix(() -> GridFill.fill(matrix, bp.pattern(), stockFor(player)));
     }
 
     private void moveMatrix(BooleanSupplier move) {

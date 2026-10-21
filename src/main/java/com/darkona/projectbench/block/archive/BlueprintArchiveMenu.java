@@ -1,5 +1,7 @@
 package com.darkona.projectbench.block.archive;
 
+import dev.darkona.jdlib.api.inventory.ConcatContainer;
+import dev.darkona.jdlib.api.inventory.Stacks;
 import com.darkona.projectbench.block.bench.BenchStacks;
 import com.darkona.projectbench.block.BenchMenu;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
@@ -80,7 +82,7 @@ public class BlueprintArchiveMenu extends BenchMenu {
             }
             ItemStack stack = slot.getItem();
             ItemStack original = stack.copy();
-            ItemStack rest = BenchStacks.insert(blueprints, stack);
+            ItemStack rest = Stacks.insert(blueprints, stack);
             if (rest.getCount() == stack.getCount()) {
                 return ItemStack.EMPTY;
             }
