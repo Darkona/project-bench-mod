@@ -3,6 +3,7 @@ package com.darkona.projectbench;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.compat.create.CreateCompat;
+import com.darkona.projectbench.compat.jade.JadeCompat;
 import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.ConfigSync;
 import com.darkona.projectbench.config.Config;
@@ -21,7 +22,7 @@ import com.darkona.projectbench.registry.ModTab;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
+import dev.darkona.jdlib.api.compat.Bridges;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -51,9 +52,8 @@ public final class ProjectBench {
         FeatureEvents.register();
         modBus.addListener(ProjectBench::registerCapabilities);
         modBus.addListener(DataGen::gather);
-        if (ModList.get().isLoaded(CreateCompat.MOD_ID)) {
-            modBus.addListener((FMLCommonSetupEvent e) -> e.enqueueWork(CreateCompat::register));
-        }
+        Bridges.ifLoaded(CreateCompat.MOD_ID, () -> modBus.addListener((FMLCommonSetupEvent e) -> e.enqueueWork(CreateCompat::register)));
+        Bridges.ifLoaded(JadeCompat.MOD_ID, () -> JadeCompat.init());
     }
 
     public static ResourceLocation id(String path) {

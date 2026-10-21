@@ -23,7 +23,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModList;
+import dev.darkona.jdlib.api.compat.Bridges;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
@@ -63,8 +63,6 @@ public final class ProjectBenchClient {
 
         BenchXei.register();
 
-        if (ModList.get().isLoaded(PolymorphCompat.MOD_ID)) {
-            PolymorphCompat.init(modBus);
-        }
+        Bridges.ifLoaded(PolymorphCompat.MOD_ID, () -> PolymorphCompat.init(modBus));
     }
 }
