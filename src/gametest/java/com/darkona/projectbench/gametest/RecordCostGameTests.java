@@ -3,6 +3,7 @@ package com.darkona.projectbench.gametest;
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.block.bench.Opening;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.config.Config;
@@ -50,7 +51,7 @@ public final class RecordCostGameTests {
     }
 
     private static ProjectBenchMenu open(ProjectBenchBlockEntity bench, Player player) {
-        ProjectBenchMenu menu = new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), List.of());
+        ProjectBenchMenu menu = new Opening(bench, null, bench.archives(), List.of()).menu(0, player.getInventory());
         player.containerMenu = menu;
         return menu;
     }

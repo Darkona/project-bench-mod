@@ -53,7 +53,7 @@ public final class SlotLockGameTests {
     }
 
     private static ProjectBenchMenu open(ProjectBenchBlockEntity bench, Player player) {
-        return new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), List.of());
+        return new Opening(bench, null, bench.archives(), List.of()).menu(0, player.getInventory());
     }
 
     private static boolean lockedTo(ProjectBenchBlockEntity bench, int slot, ItemStack like) {

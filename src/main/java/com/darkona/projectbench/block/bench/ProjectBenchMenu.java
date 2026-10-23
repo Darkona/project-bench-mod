@@ -159,13 +159,8 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         this(id, inventory, o.first(), o.second(), o.archives(), o.panels());
     }
 
-    public ProjectBenchMenu(int id, Inventory inventory, ProjectBenchBlockEntity bench, List<? extends BlueprintArchiveBlockEntity> archives,
-                            List<ExternalInventories.Panel> outside) {
-        this(id, inventory, bench, null, BlueprintArchiveBlockEntity.shelfOf(archives), outside);
-    }
-
-    public ProjectBenchMenu(int id, Inventory inventory, ProjectBenchBlockEntity first, @Nullable ProjectBenchBlockEntity second,
-                            List<? extends BlueprintArchiveBlockEntity> archives, List<ExternalInventories.Panel> outside) {
+    ProjectBenchMenu(int id, Inventory inventory, ProjectBenchBlockEntity first, @Nullable ProjectBenchBlockEntity second,
+                     List<? extends BlueprintArchiveBlockEntity> archives, List<ExternalInventories.Panel> outside) {
         this(id, inventory, first, second, BlueprintArchiveBlockEntity.shelfOf(archives), outside);
     }
 

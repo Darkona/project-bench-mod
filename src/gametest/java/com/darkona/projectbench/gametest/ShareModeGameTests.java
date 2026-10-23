@@ -3,6 +3,7 @@ package com.darkona.projectbench.gametest;
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.block.bench.Opening;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.ShareMode;
 import net.minecraft.core.BlockPos;
@@ -41,7 +42,7 @@ public final class ShareModeGameTests {
         helper.setBlock(BENCH.east(), Blocks.CHEST);
         ProjectBenchBlockEntity bench = helper.getBlockEntity(BENCH);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        ProjectBenchMenu menu = new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), bench.externalPanels());
+        ProjectBenchMenu menu = new Opening(bench, null, bench.archives(), bench.externalPanels()).menu(0, player.getInventory());
         player.containerMenu = menu;
         helper.assertTrue(menu.outsidePanels().size() == 2, "two tabs, not " + menu.outsidePanels().size());
         return new Setup(bench, helper.getBlockEntity(BENCH.west()), helper.getBlockEntity(BENCH.east()), player, menu);

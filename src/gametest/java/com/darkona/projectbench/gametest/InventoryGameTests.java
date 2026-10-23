@@ -4,6 +4,7 @@ import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.block.bench.Opening;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.BreakMode;
 import com.darkona.projectbench.config.Config;
@@ -142,7 +143,7 @@ public final class InventoryGameTests {
                 && count(moved.costSlot(), Items.WHITE_DYE) == 3, "the same items where it lands, the cost slot's too");
         helper.assertTrue(moved.result().getItem(0).is(Items.STICK), "and its recipe: " + moved.result().getItem(0));
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        ProjectBenchMenu menu = new ProjectBenchMenu(0, player.getInventory(), moved, moved.archives(), List.of());
+        ProjectBenchMenu menu = new Opening(moved, null, moved.archives(), List.of()).menu(0, player.getInventory());
         menu.clicked(ProjectBenchMenu.RESULT, 0, ClickType.PICKUP, player);
         helper.assertTrue(menu.getCarried().is(Items.STICK) && count(moved.storage(), Items.OAK_PLANKS) == 6, "it crafts there, paying from its inventory");
         helper.succeed();
@@ -153,7 +154,7 @@ public final class InventoryGameTests {
         ProjectBenchBlockEntity bench = bench(helper, BENCH);
         fill(bench);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        ProjectBenchMenu menu = new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), List.of());
+        ProjectBenchMenu menu = new Opening(bench, null, bench.archives(), List.of()).menu(0, player.getInventory());
         menu.removed(player);
         helper.assertTrue(count(bench.matrix(), Items.OAK_PLANKS) == 2 && count(bench.storage(), Items.OAK_PLANKS) == 8, "the bench keeps its items");
         helper.assertTrue(player.getInventory().isEmpty(), "and the player got nothing");
@@ -243,7 +244,7 @@ public final class InventoryGameTests {
         ProjectBenchBlockEntity bench = bench(helper, BENCH);
         fill(bench);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        ProjectBenchMenu menu = new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), List.of());
+        ProjectBenchMenu menu = new Opening(bench, null, bench.archives(), List.of()).menu(0, player.getInventory());
         helper.destroyBlock(BENCH);
         menu.clicked(ProjectBenchMenu.RESULT, 0, ClickType.PICKUP, player);
         helper.assertTrue(menu.getCarried().isEmpty(), "no sticks out of a broken bench: " + menu.getCarried());

@@ -6,6 +6,7 @@ import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.config.AutoMode;
 import dev.darkona.jdlib.api.inventory.GridFill;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.block.bench.Opening;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.blueprint.BlueprintItem;
@@ -57,7 +58,7 @@ public final class ProjectBenchGameTests {
     }
 
     private static ProjectBenchMenu open(ProjectBenchBlockEntity bench, Player player) {
-        return new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), List.of());
+        return new Opening(bench, null, bench.archives(), List.of()).menu(0, player.getInventory());
     }
 
     private static void sticksIn(ProjectBenchBlockEntity bench, int planks) {

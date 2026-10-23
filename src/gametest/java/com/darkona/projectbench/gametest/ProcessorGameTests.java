@@ -5,6 +5,7 @@ import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.ExternalInventories;
 import com.darkona.projectbench.block.bench.Processor;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.block.bench.Opening;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.ShareMode;
@@ -48,7 +49,7 @@ public final class ProcessorGameTests {
     }
 
     private static ProjectBenchMenu open(ProjectBenchBlockEntity bench, Player player) {
-        ProjectBenchMenu menu = new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), bench.externalPanels());
+        ProjectBenchMenu menu = new Opening(bench, null, bench.archives(), bench.externalPanels()).menu(0, player.getInventory());
         player.containerMenu = menu;
         return menu;
     }

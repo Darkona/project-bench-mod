@@ -7,6 +7,7 @@ import com.darkona.projectbench.block.archive.BlueprintArchiveBlock.ColumnPart;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.block.archive.BlueprintArchiveMenu;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.block.bench.Opening;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.ShareMode;
 import dev.darkona.jdlib.api.pattern.Blueprint;
@@ -135,7 +136,7 @@ public final class ColumnAndBesideGameTests {
         archive(helper, BENCH.above().west());
         helper.assertTrue(bench.archives().size() == 4, "three of the east column and one west: " + bench.archives().size());
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        ProjectBenchMenu menu = new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), List.of());
+        ProjectBenchMenu menu = new Opening(bench, null, bench.archives(), List.of()).menu(0, player.getInventory());
         helper.assertTrue(menu.archiveSlots() == 4 * BlueprintArchiveBlockEntity.SLOTS, "the panel lists 144");
         helper.succeed();
     }
@@ -156,7 +157,7 @@ public final class ColumnAndBesideGameTests {
         }
         ItemStack sticks = recorded(grid, new ItemStack(Items.STICK, 4));
         bench.blueprintSlot().setItem(0, sticks.copy());
-        ProjectBenchMenu menu = new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), List.of());
+        ProjectBenchMenu menu = new Opening(bench, null, bench.archives(), List.of()).menu(0, player.getInventory());
         helper.assertTrue(menu.archiveSlots() == 3 * BlueprintArchiveBlockEntity.SLOTS, "the panel lists the column of three");
 
         menu.clicked(ProjectBenchMenu.BLUEPRINT, 0, ClickType.QUICK_MOVE, player);
@@ -194,7 +195,7 @@ public final class ColumnAndBesideGameTests {
         bench.matrix().setItem(1, new ItemStack(Items.OAK_PLANKS));
         bench.matrix().setItem(4, new ItemStack(Items.OAK_PLANKS));
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        ProjectBenchMenu menu = new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), bench.externalPanels());
+        ProjectBenchMenu menu = new Opening(bench, null, bench.archives(), bench.externalPanels()).menu(0, player.getInventory());
         helper.assertTrue(menu.outsideSlots() == 27 && menu.outsideItem(0).is(Items.OAK_PLANKS), "the window shows the chest");
         bench.setShareMode(ShareMode.NONE);
         bench.craft(player);
@@ -344,7 +345,7 @@ public final class ColumnAndBesideGameTests {
         ChestBlockEntity chest = helper.getBlockEntity(BENCH.east());
         chest.setItem(0, new ItemStack(Items.DIAMOND, 5));
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        ProjectBenchMenu menu = new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), bench.externalPanels());
+        ProjectBenchMenu menu = new Opening(bench, null, bench.archives(), bench.externalPanels()).menu(0, player.getInventory());
         helper.assertTrue(menu.getSlot(menu.outsideIndex(0)).isActive() && menu.getSlot(menu.outsideIndex(26)).isActive()
                 && !menu.getSlot(menu.outsideIndex(27)).isActive(), "a chest's 27 places are active, the rest not");
         menu.clicked(menu.outsideIndex(0), 0, ClickType.PICKUP, player);
@@ -364,7 +365,7 @@ public final class ColumnAndBesideGameTests {
         chest.setItem(0, new ItemStack(Items.DIAMOND, 5));
         chest.setItem(1, new ItemStack(Items.GOLD_INGOT, 4));
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        ProjectBenchMenu menu = new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), bench.externalPanels());
+        ProjectBenchMenu menu = new Opening(bench, null, bench.archives(), bench.externalPanels()).menu(0, player.getInventory());
         bench.setShareMode(ShareMode.NONE);
         menu.clicked(menu.outsideIndex(0), 0, ClickType.QUICK_MOVE, player);
         helper.assertTrue(count(player.getInventory(), Items.DIAMOND) == 5 && count(bench.storage(), Items.DIAMOND) == 0 && chest.getItem(0).isEmpty(),

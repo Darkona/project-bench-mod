@@ -5,6 +5,7 @@ import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.block.bench.Opening;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
@@ -55,7 +56,7 @@ public final class RulesAndClicksGameTests {
     }
 
     private static ProjectBenchMenu open(ProjectBenchBlockEntity bench, Player player) {
-        return new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), List.of());
+        return new Opening(bench, null, bench.archives(), List.of()).menu(0, player.getInventory());
     }
 
     private static void sticks(ProjectBenchBlockEntity bench, int planks) {
@@ -155,7 +156,7 @@ public final class RulesAndClicksGameTests {
     }
 
     private static ProjectBenchMenu openWithTabs(ProjectBenchBlockEntity bench, Player player) {
-        return new ProjectBenchMenu(0, player.getInventory(), bench, bench.archives(), bench.externalPanels());
+        return new Opening(bench, null, bench.archives(), bench.externalPanels()).menu(0, player.getInventory());
     }
 
     private static ItemStack sticksBlueprint() {
