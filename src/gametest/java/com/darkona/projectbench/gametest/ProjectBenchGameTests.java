@@ -208,8 +208,8 @@ public final class ProjectBenchGameTests {
     public static void recipeSelectorPicksAmongTwo(GameTestHelper helper) {
         RecipeManager manager = helper.getLevel().getRecipeManager();
         List<RecipeHolder<?>> before = new ArrayList<>(manager.getOrderedRecipes());
-        ResourceLocation stick = ProjectBench.id("test_bush_stick");
-        ResourceLocation string = ProjectBench.id("test_bush_string");
+        ResourceLocation stick = Content.id("test_bush_stick");
+        ResourceLocation string = Content.id("test_bush_string");
         List<RecipeHolder<?>> with = new ArrayList<>(before);
         with.add(new RecipeHolder<>(stick, bush(Items.STICK)));
         with.add(new RecipeHolder<>(string, bush(Items.STRING)));

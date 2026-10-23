@@ -1,7 +1,6 @@
 package com.darkona.projectbench.compat.jei;
 
 import com.darkona.projectbench.Content;
-import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
 import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.Feature;
@@ -21,7 +20,7 @@ import java.util.List;
 
 @mezz.jei.api.JeiPlugin
 public final class JeiPlugin implements IModPlugin {
-    private static final ResourceLocation UID = ProjectBench.id("jei");
+    private static final ResourceLocation UID = Content.id("jei");
 
     @Nullable
     private static IJeiRuntime runtime;

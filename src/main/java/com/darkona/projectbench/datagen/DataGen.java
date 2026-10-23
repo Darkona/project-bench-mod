@@ -48,8 +48,8 @@ public final class DataGen {
 
         @Override
         protected void registerModels() {
-            basicItem(ProjectBench.id("blueprint_recorded"));
-            basicItem(Content.Items.BLUEPRINT.get()).override().predicate(ProjectBench.id("recorded"), 1F)
+            basicItem(Content.id("blueprint_recorded"));
+            basicItem(Content.Items.BLUEPRINT.get()).override().predicate(Content.id("recorded"), 1F)
                                                .model(new ModelFile.UncheckedModelFile(modLoc("item/blueprint_recorded"))).end();
         }
     }

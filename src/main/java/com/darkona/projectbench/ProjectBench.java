@@ -11,7 +11,6 @@ import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.datagen.DataGen;
 import dev.darkona.jdlib.api.compat.Bridges;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -39,10 +38,6 @@ public final class ProjectBench {
         modBus.addListener(DataGen::gather);
         Bridges.ifLoaded(CreateCompat.MOD_ID, () -> modBus.addListener((FMLCommonSetupEvent e) -> e.enqueueWork(CreateCompat::register)));
         Bridges.ifLoaded(JadeCompat.MOD_ID, () -> JadeCompat.init());
-    }
-
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {

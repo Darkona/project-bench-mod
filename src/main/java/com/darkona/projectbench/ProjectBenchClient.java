@@ -38,7 +38,7 @@ public final class ProjectBenchClient {
         modBus.addListener((EntityRenderersEvent.RegisterRenderers e) ->
                 e.registerBlockEntityRenderer(Content.BlockEntities.PROJECT_BENCH.get(), ProjectBenchRenderer::new));
         modBus.addListener((FMLClientSetupEvent e) -> e.enqueueWork(() -> ItemProperties.register(Content.Items.BLUEPRINT.get(),
-                ProjectBench.id("recorded"), (stack, level, entity, seed) -> BlueprintItem.blueprint(stack) == null ? 0F : 1F)));
+                Content.id("recorded"), (stack, level, entity, seed) -> BlueprintItem.blueprint(stack) == null ? 0F : 1F)));
         modBus.addListener((RegisterClientReloadListenersEvent e) -> e.registerReloadListener((ResourceManagerReloadListener) manager -> BlockTint.forget()));
 
         NeoForge.EVENT_BUS.addListener((ItemTooltipEvent e) -> {

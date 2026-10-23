@@ -1,7 +1,6 @@
 package com.darkona.projectbench.datagen;
 
 import com.darkona.projectbench.Content;
-import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.BenchUpgrade;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.Feature.Condition;
@@ -78,7 +77,7 @@ final class Recipes extends RecipeProvider {
                 .unlockedBy("has_paper", has(Items.PAPER)).save(blueprint);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Content.Items.BLUEPRINT.get())
                               .requires(Content.Items.BLUEPRINT.get())
-                              .unlockedBy("has_blueprint", has(Content.Items.BLUEPRINT.get())).save(blueprint, ProjectBench.id("blueprint_clear"));
+                              .unlockedBy("has_blueprint", has(Content.Items.BLUEPRINT.get())).save(blueprint, Content.id("blueprint_clear"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Content.Items.BLUEPRINT_ARCHIVE.get())
                            .pattern("LIL").pattern("SCS").pattern("PPP")
                            .define('L', Tags.Items.GEMS_LAPIS).define('I', Tags.Items.INGOTS_IRON).define('S', Items.SMOOTH_STONE)

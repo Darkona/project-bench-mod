@@ -26,11 +26,12 @@ class ArchitectureTest {
     private static final Pattern CLIENT_CLASS = Pattern.compile("(net/minecraft/client/|com/mojang/blaze3d/|" + Pattern.quote(BASE) + "(client/|ProjectBenchClient\\b))[\\w/$]*");
 
     private static final Map<String, Set<String>> MAY_NAME = Map.of(
-            "block", Set.of("", "config"),
-            "blueprint", Set.of("", "block", "config"),
-            "block.archive", Set.of("", "block", "blueprint", "config"),
-            "block.bench", Set.of("", "block", "block.archive", "blueprint", "config"),
-            "config", Set.of("", "block"));
+            "block", Set.of("config"),
+            "blueprint", Set.of("block", "config"),
+            "block.archive", Set.of("block", "blueprint", "config"),
+            "block.bench", Set.of("block", "block.archive", "blueprint", "config"),
+            "config", Set.of("block"));
+    private static final String ROOT_CLASS_THEY_MAY_NAME = "Content";
     private static final Map<String, Set<String>> EXCEPTIONS = Map.of(
             "block/archive/BlueprintArchiveMenu", Set.of("block.bench"));
     private static final Set<String> CLIENT_COMPAT = Set.of("compat.emi", "compat.jei", "compat.polymorph", "compat.xei");
@@ -99,7 +100,8 @@ class ArchitectureTest {
             Set<String> excepted = EXCEPTIONS.getOrDefault(topLevel(name), Set.of());
             for (String other : named) {
                 String to = zone(other);
-                if (!to.equals(from) && !allowed.contains(to) && !excepted.contains(to)) {
+                boolean content = to.isEmpty() && topLevel(other).equals(ROOT_CLASS_THEY_MAY_NAME);
+                if (!to.equals(from) && !allowed.contains(to) && !excepted.contains(to) && !content) {
                     wrong.add(name + " (" + from + ") names " + other);
                 }
             }

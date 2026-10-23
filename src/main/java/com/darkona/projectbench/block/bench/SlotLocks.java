@@ -1,6 +1,6 @@
 package com.darkona.projectbench.block.bench;
 
-import com.darkona.projectbench.ProjectBench;
+import com.darkona.projectbench.Content;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -12,7 +12,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SlotLocks(BlockPos pos, int slot, ItemStack lock) implements CustomPacketPayload {
-    public static final Type<SlotLocks> TYPE = new Type<>(ProjectBench.id("slot_locks"));
+    public static final Type<SlotLocks> TYPE = new Type<>(Content.id("slot_locks"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SlotLocks> CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, SlotLocks::pos,
             ByteBufCodecs.VAR_INT, SlotLocks::slot,

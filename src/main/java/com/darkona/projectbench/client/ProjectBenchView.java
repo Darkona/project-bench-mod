@@ -1,7 +1,6 @@
 package com.darkona.projectbench.client;
 
 import com.darkona.projectbench.Content;
-import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import com.darkona.projectbench.blueprint.CostContainer;
@@ -40,9 +39,9 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
     public static final KeyMapping SWITCH_MATRIX = new KeyMapping("key.projectbench.switch_matrix", KeyConflictContext.GUI,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_TAB, "key.categories.projectbench");
 
-    static final ResourceLocation TEXTURE = ProjectBench.id("textures/gui/project_bench.png");
-    static final ResourceLocation STATION_TEXTURE = ProjectBench.id("textures/gui/project_station.png");
-    private static final ResourceLocation TEMPLATE = ProjectBench.id("ui/project_bench.ui.nbt");
+    static final ResourceLocation TEXTURE = Content.id("textures/gui/project_bench.png");
+    static final ResourceLocation STATION_TEXTURE = Content.id("textures/gui/project_station.png");
+    private static final ResourceLocation TEMPLATE = Content.id("ui/project_bench.ui.nbt");
 
     public static final int ARROW_X = 110;
     public static final int ARROW_Y = 37;
@@ -136,7 +135,7 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
                 () -> menu.active() == which), x + du, y + dv);
     }
 
-    private static final ResourceLocation[] SHEETS = {ProjectBench.id("lss/bench.lss")};
+    private static final ResourceLocation[] SHEETS = {Content.id("lss/bench.lss")};
 
     @Override
     public ResourceLocation[] stylesheets() {
