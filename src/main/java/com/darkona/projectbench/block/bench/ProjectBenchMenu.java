@@ -129,6 +129,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     private final int processorStart;
     private final SlotMap slotMap;
     private final QuickMove moves = new QuickMove(this);
+    private final Clicks clicks = new Clicks(this, moves);
 
     private int openTab;
     private int outsideScroll;
@@ -390,7 +391,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
 
     @Override
     public void clicked(int index, int button, ClickType type, Player player) {
-        if (index >= 0 && index < slots.size() && slots.get(index) instanceof OutsideSlot outside && moves.outsideClick(outside, button, type, player)) {
+        if (index >= 0 && index < slots.size() && slots.get(index) instanceof OutsideSlot outside && clicks.outsideClick(outside, button, type, player)) {
             return;
         }
         if (type == ClickType.CLONE && Config.get().slotLocks()) {
@@ -590,7 +591,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     public boolean recordRecipe(RecipeHolder<CraftingRecipe> holder, boolean fill) {
-        return moves.recordRecipe(holder, fill);
+        return clicks.recordRecipe(holder, fill);
     }
 
     @Override
@@ -672,7 +673,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         if (slot < 0 || slot >= archiveSlots()) {
             return false;
         }
-        return !server || (getCarried().isEmpty() ? moves.swap(slot) : moves.store(slot));
+        return !server || (getCarried().isEmpty() ? clicks.swap(slot) : clicks.store(slot));
     }
 
     private ExternalInventories externalOf(ExternalInventories.Panel panel) {
