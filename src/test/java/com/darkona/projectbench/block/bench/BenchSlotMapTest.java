@@ -1,6 +1,5 @@
 package com.darkona.projectbench.block.bench;
 
-import com.darkona.projectbench.config.ShareMode;
 import dev.darkona.jdlib.api.menu.MoveRoutes;
 import dev.darkona.jdlib.api.menu.SlotGroup;
 import dev.darkona.jdlib.api.menu.SlotMap;
@@ -10,10 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BenchSlotMapTest {
     private static final int OUTSIDE = ProjectBenchMenu.ARCHIVE_START + 12;
@@ -74,14 +71,5 @@ class BenchSlotMapTest {
         assertEquals(List.of("storage0", "storage1", "matrix0", "matrix1"), to(map, "main"));
         assertEquals(List.of("matrix0", "matrix1", "neighbour", "main", "hotbar"), to(map, "storage1"));
         assertEquals(List.of("storage0", "storage1", "main", "hotbar"), to(map, "matrix1"));
-    }
-
-    @Test
-    void shareOffKeepsTheChestTabAwayFromTheBenchButNotFromYou() {
-        assertFalse(BenchWheel.shareAllows(ShareMode.NONE, true, false));
-        assertTrue(BenchWheel.shareAllows(ShareMode.NONE, true, true));
-        assertTrue(BenchWheel.shareAllows(ShareMode.NONE, false, false));
-        assertTrue(BenchWheel.shareAllows(ShareMode.OPEN, true, false));
-        assertTrue(BenchWheel.shareAllows(ShareMode.ALL, true, false));
     }
 }

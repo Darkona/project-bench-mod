@@ -7,6 +7,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -128,6 +129,28 @@ public class BlueprintArchiveBlock extends BenchBlock<BlueprintArchiveBlockEntit
             reconnectRun(level, pos.below());
             BlueprintArchiveBlockEntity.forgetRun(level, pos.above());
             BlueprintArchiveBlockEntity.forgetRun(level, pos.below());
+        }
+    }
+
+    public enum ColumnPart implements StringRepresentable {
+        SINGLE("single"),
+        BOTTOM("bottom"),
+        MIDDLE("middle"),
+        TOP("top");
+
+        private final String id;
+
+        ColumnPart(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return id;
+        }
+
+        public static ColumnPart of(boolean below, boolean above) {
+            return below ? (above ? MIDDLE : TOP) : (above ? BOTTOM : SINGLE);
         }
     }
 }

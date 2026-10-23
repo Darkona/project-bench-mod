@@ -1,27 +1,26 @@
 package com.darkona.projectbench.datagen;
 
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.block.archive.BlueprintArchiveBlock;
-import com.darkona.projectbench.block.archive.ColumnPart;
-import com.darkona.projectbench.block.bench.AutoBenchBlock;
 import com.darkona.projectbench.block.BenchBlock;
+import com.darkona.projectbench.block.archive.BlueprintArchiveBlock;
+import com.darkona.projectbench.block.archive.BlueprintArchiveBlock.ColumnPart;
+import com.darkona.projectbench.block.bench.AutoBenchBlock;
 import com.darkona.projectbench.block.bench.BenchSlabBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
 import com.darkona.projectbench.registry.ModBlocks;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Set;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Set;
 
 final class BlockStates extends BlockStateProvider {
     BlockStates(PackOutput out, ExistingFileHelper files) {

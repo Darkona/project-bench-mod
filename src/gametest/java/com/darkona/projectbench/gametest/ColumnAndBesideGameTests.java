@@ -2,22 +2,24 @@ package com.darkona.projectbench.gametest;
 
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlock;
+import com.darkona.projectbench.block.archive.BlueprintArchiveBlock.ColumnPart;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.block.archive.BlueprintArchiveMenu;
-import com.darkona.projectbench.block.archive.ColumnPart;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
-import dev.darkona.jdlib.api.pattern.Blueprint;
+import com.darkona.projectbench.config.ShareMode;
 import com.darkona.projectbench.registry.ModBlocks;
 import com.darkona.projectbench.registry.ModComponents;
 import com.darkona.projectbench.registry.ModItems;
-import com.darkona.projectbench.config.ShareMode;
+import dev.darkona.jdlib.api.pattern.Blueprint;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -32,10 +34,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.neoforge.items.IItemHandler;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.darkona.projectbench.gametest.GameTests.count;
 
 @GameTestHolder(ProjectBench.MOD_ID)

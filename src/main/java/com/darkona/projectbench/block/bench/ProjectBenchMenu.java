@@ -11,7 +11,7 @@ import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.blueprint.BlueprintItem;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.blueprint.CostContainer;
-import com.darkona.projectbench.common.ContainerSlot;
+import com.darkona.projectbench.block.ContainerSlot;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;

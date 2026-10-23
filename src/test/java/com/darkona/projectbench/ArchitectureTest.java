@@ -25,15 +25,12 @@ class ArchitectureTest {
     private static final Pattern MOD_CLASS = Pattern.compile(Pattern.quote(BASE) + "[\\w/$]+");
     private static final Pattern CLIENT_CLASS = Pattern.compile("(net/minecraft/client/|com/mojang/blaze3d/|" + Pattern.quote(BASE) + "(client/|ProjectBenchClient\\b))[\\w/$]*");
 
-    private static final String COMMON = "common";
     private static final Map<String, Set<String>> MAY_NAME = Map.of(
-            COMMON, Set.of(),
             "block", Set.of("config"),
-            "blueprint", Set.of("config", "registry"),
+            "blueprint", Set.of("block", "config", "registry"),
             "block.archive", Set.of("block", "blueprint", "config", "registry"),
-            "block.bench", Set.of("block", "block.archive", "blueprint", "config", "network", "registry"),
+            "block.bench", Set.of("", "block", "block.archive", "blueprint", "config", "registry"),
             "config", Set.of("", "block", "registry"),
-            "network", Set.of("", "block.bench", "blueprint"),
             "registry", Set.of("", "block", "block.archive", "block.bench", "blueprint", "config"));
     private static final Map<String, Set<String>> EXCEPTIONS = Map.of(
             "block/archive/BlueprintArchiveMenu", Set.of("block.bench"),
@@ -104,7 +101,7 @@ class ArchitectureTest {
             Set<String> excepted = EXCEPTIONS.getOrDefault(topLevel(name), Set.of());
             for (String other : named) {
                 String to = zone(other);
-                if (!to.equals(from) && !to.equals(COMMON) && !allowed.contains(to) && !excepted.contains(to)) {
+                if (!to.equals(from) && !allowed.contains(to) && !excepted.contains(to)) {
                     wrong.add(name + " (" + from + ") names " + other);
                 }
             }

@@ -3,7 +3,7 @@ package com.darkona.projectbench.compat.xei;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import com.darkona.projectbench.client.ProjectBenchView;
 import com.darkona.projectbench.config.ClientConfig;
-import com.darkona.projectbench.network.RecordRecipe;
+import com.darkona.projectbench.block.bench.RecordRecipe;
 import com.darkona.projectbench.registry.ModMenus;
 import dev.darkona.jdlib.api.ui.Rect;
 import dev.darkona.jdlib.api.xei.CraftingTransfer;

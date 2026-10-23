@@ -1,7 +1,6 @@
 package com.darkona.projectbench.client;
 
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.block.bench.BenchWheel;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import dev.darkona.jdlib.api.inventory.GridFill;
@@ -233,7 +232,7 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
     @Override
     public boolean wheelMoves(ProjectBenchMenu menu, Slot from, Slot to) {
         boolean neighbour = inOutside(menu, from) || inOutside(menu, to);
-        if (!BenchWheel.shareAllows(menu.shareMode(), neighbour, inPlayer(from) || inPlayer(to))) {
+        if (!menu.shareMode().allows(neighbour, inPlayer(from) || inPlayer(to))) {
             return false;
         }
         boolean intoGrid = menu.halfOf(to.index) >= 0 && to.index >= menu.matrixStart(menu.halfOf(to.index))

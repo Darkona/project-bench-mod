@@ -1,37 +1,41 @@
 package com.darkona.projectbench.block.bench;
 
-import dev.darkona.jdlib.api.inventory.ChainedItemHandler;
-import dev.darkona.jdlib.api.inventory.GridFill;
-import dev.darkona.jdlib.api.inventory.Stacks;
-import dev.darkona.jdlib.api.inventory.Stock;
-import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.block.BenchBlock;
-import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.block.BenchBlockEntity;
-import dev.darkona.jdlib.api.world.RelativeSide;
-import dev.darkona.jdlib.api.inventory.SidedItemHandler;
-import dev.darkona.jdlib.api.pattern.Blueprint;
-import com.darkona.projectbench.blueprint.BlueprintItem;
+import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
+import com.darkona.projectbench.blueprint.BlueprintItem;
 import com.darkona.projectbench.blueprint.CostContainer;
+import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
 import com.darkona.projectbench.config.SideMode;
-import com.darkona.projectbench.network.SlotLocks;
 import com.darkona.projectbench.registry.ModBlockEntities;
 import com.darkona.projectbench.registry.ModComponents;
 import dev.darkona.jdlib.api.data.CraftingRecipeCache;
+import dev.darkona.jdlib.api.inventory.ChainedItemHandler;
+import dev.darkona.jdlib.api.inventory.GridFill;
+import dev.darkona.jdlib.api.inventory.SidedItemHandler;
+import dev.darkona.jdlib.api.inventory.SlotLockedContainer;
+import dev.darkona.jdlib.api.inventory.Stacks;
+import dev.darkona.jdlib.api.inventory.Stock;
+import dev.darkona.jdlib.api.pattern.Blueprint;
+import dev.darkona.jdlib.api.world.RelativeSide;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -44,34 +48,30 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 
 public class ProjectBenchBlockEntity extends BenchBlockEntity {
     public static final CraftingRecipeCache RECIPES = new CraftingRecipeCache(256);
@@ -1022,6 +1022,33 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
         if (level != null && !level.isClientSide) {
             updateResult();
+        }
+    }
+
+    public static final class Storage extends SlotLockedContainer {
+        public Storage(int size) {
+            super(size);
+        }
+
+        @Override
+        protected boolean locksApply() {
+            return Config.get().slotLocks();
+        }
+    }
+
+    private static final class CraftingGrid extends SimpleContainer implements CraftingContainer {
+        CraftingGrid() {
+            super(ProjectBenchBlockEntity.MATRIX);
+        }
+
+        @Override
+        public int getWidth() {
+            return 3;
+        }
+
+        @Override
+        public int getHeight() {
+            return 3;
         }
     }
 }
