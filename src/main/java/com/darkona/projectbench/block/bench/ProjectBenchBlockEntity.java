@@ -121,14 +121,8 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
     private boolean autocraft = Config.get().autocraftDefault();
 
-    private final MatrixLayout sent = new MatrixLayout();
     private final Substitute substitute = new Substitute();
-    private ItemStack sentResult = ItemStack.EMPTY;
-    private boolean sentOn;
-
-    private final NonNullList<ItemStack> shown = NonNullList.withSize(MATRIX, ItemStack.EMPTY);
-    private ItemStack shownResult = ItemStack.EMPTY;
-    private boolean shownOn;
+    private final Showcase display = new Showcase(this);
 
     private boolean activeSecond;
 
@@ -377,7 +371,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
             updating = false;
         }
         setChanged();
-        sendShowcase(false);
+        display.send(false);
     }
 
     private void blueprintChanged() {
@@ -446,7 +440,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
         chosen = recipes.get(index).id();
         updateResult();
         setChanged();
-        sendShowcase(false);
+        display.send(false);
     }
 
     public void craft(Player player) {
@@ -710,68 +704,26 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     public void toggleShowcase() {
         showcase = !showcase;
         setChanged();
-        sendShowcase(true);
-    }
-
-    private void sendShowcase(boolean force) {
-        if (level == null || level.isClientSide) {
-            return;
-        }
-        boolean on = showcase();
-        boolean changed = force || on != sentOn;
-        if (on) {
-            changed |= sent.update(matrix.getItems());
-            ItemStack made = result.getItem(0);
-            if (!ItemStack.isSameItemSameComponents(made, sentResult)) {
-                sentResult = made.isEmpty() ? ItemStack.EMPTY : made.copyWithCount(1);
-                changed = true;
-            }
-        }
-        sentOn = on;
-        if (changed) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
-        }
+        display.send(true);
     }
 
     @Nullable
     public List<ItemStack> shownItems() {
-        return shownOn ? shown : null;
+        return display.items();
     }
 
     public ItemStack shownResult() {
-        return shownResult;
+        return display.result();
     }
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = new CompoundTag();
-        if (showcase()) {
-            tag.putBoolean("Show", true);
-            tag.put("Items", ContainerHelper.saveAllItems(new CompoundTag(), sentItemsAsList(), registries));
-
-            ItemStack made = result.getItem(0);
-            if (!made.isEmpty()) {
-                tag.put("Made", made.copyWithCount(1).save(registries));
-            }
-        }
-        return tag;
-    }
-
-    private NonNullList<ItemStack> sentItemsAsList() {
-        NonNullList<ItemStack> list = NonNullList.withSize(MATRIX, ItemStack.EMPTY);
-        for (int i = 0; i < MATRIX; ++i) {
-            ItemStack now = matrix.getItem(i);
-            list.set(i, now.isEmpty() ? ItemStack.EMPTY : now.copyWithCount(1));
-        }
-        return list;
+        return display.updateTag(registries);
     }
 
     @Override
     public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
-        shownOn = tag.getBoolean("Show");
-        shown.clear();
-        ContainerHelper.loadAllItems(tag.getCompound("Items"), shown, registries);
-        shownResult = tag.contains("Made") ? ItemStack.parseOptional(registries, tag.getCompound("Made")) : ItemStack.EMPTY;
+        display.receive(tag, registries);
     }
 
     @Override
