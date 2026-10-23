@@ -151,6 +151,14 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     @Nullable
     private final DataSlot active;
 
+    private boolean broadcasting;
+    @Nullable
+    private ExternalInventories.Panel resolvedPanel;
+    @Nullable
+    private IItemHandler resolvedHandler;
+    @Nullable
+    private BlockEntity resolvedMachine;
+
     public ProjectBenchMenu(int id, Inventory inventory, RegistryFriendlyByteBuf buf) {
         this(id, inventory, Opening.Received.read(inventory, buf));
     }
@@ -453,8 +461,30 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         return data != null && i < data.getCount() ? data.get(i) : 0;
     }
 
+    @Override
+    public void broadcastChanges() {
+        ExternalInventories.Panel panel = selectedPanel();
+        resolvedPanel = panel;
+        resolvedHandler = panel == null || panel.processor() != null ? null : externalOf(panel).handler(sideOf(panel));
+        resolvedMachine = resolveMachine();
+        broadcasting = true;
+        try {
+            super.broadcastChanges();
+        } finally {
+            broadcasting = false;
+            resolvedPanel = null;
+            resolvedHandler = null;
+            resolvedMachine = null;
+        }
+    }
+
     @Nullable
     BlockEntity openMachine() {
+        return broadcasting ? resolvedMachine : resolveMachine();
+    }
+
+    @Nullable
+    private BlockEntity resolveMachine() {
         ExternalInventories.Panel panel = selectedPanel();
         if (panel == null || panel.processor() == null || player.level().isClientSide) {
             return null;
@@ -664,7 +694,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
 
     @Nullable
     IItemHandler handlerOf(ExternalInventories.Panel panel) {
-        return externalOf(panel).handler(sideOf(panel));
+        return broadcasting && panel == resolvedPanel ? resolvedHandler : externalOf(panel).handler(sideOf(panel));
     }
 
     public boolean ghostWants(int matrixSlot, ItemStack stack) {
