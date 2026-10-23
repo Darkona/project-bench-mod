@@ -33,8 +33,6 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -44,8 +42,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.ResultContainer;
@@ -76,7 +72,6 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     public static final CraftingRecipeCache RECIPES = new CraftingRecipeCache(256);
     public static final int MATRIX = 9;
     public static final int STORAGE = 18;
-    public static final String STATION_TITLE = "gui.projectbench.project_bench.station";
     private static final Direction[] DIRECTIONS = Direction.values();
     private static final String[] CONTAINER_KEYS = {"Matrix", "Storage", "Blueprint", "Cost"};
 
@@ -839,60 +834,6 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
     public List<ExternalInventories.Panel> externalPanels() {
         return Config.get().external() ? external.panels(Config.get().externalSlots()) : List.of();
-    }
-
-    public record Opening(ProjectBenchBlockEntity first, @Nullable ProjectBenchBlockEntity second,
-                          List<BlueprintArchiveBlockEntity> archives, List<ExternalInventories.Panel> outside) {
-        public ProjectBenchMenu menu(int id, Inventory inventory) {
-            return new ProjectBenchMenu(id, inventory, first, second, archives, outside);
-        }
-    }
-
-    public Opening opening() {
-        ProjectBenchBlock.Pair pair = level == null ? null : ProjectBenchBlock.pair(getBlockState(), level, worldPosition);
-        if (pair == null) {
-            return new Opening(this, null, archives(), externalPanels());
-        }
-        ProjectBenchBlockEntity first = pair.first();
-        ProjectBenchBlockEntity second = pair.second();
-        List<BlueprintArchiveBlockEntity> archives = first.archives();
-        for (BlueprintArchiveBlockEntity archive : second.archives()) {
-            if (!archives.contains(archive)) {
-                archives.add(archive);
-            }
-        }
-        List<ExternalInventories.Panel> outside = new ArrayList<>(first.externalPanels());
-        for (ExternalInventories.Panel panel : second.externalPanels()) {
-            if (!second.external.leftToPartner(panel.sideIndex())) {
-                outside.add(panel.ofSecond());
-            }
-        }
-        return new Opening(first, second, archives, outside);
-    }
-
-    public void open(ServerPlayer player) {
-        Opening opening = opening();
-        Component title = opening.second() == null ? getBlockState().getBlock().getName() : Component.translatable(STATION_TITLE);
-        player.openMenu(new SimpleMenuProvider((id, inventory, p) -> opening.menu(id, inventory), title), buf -> {
-            buf.writeBlockPos(opening.first().worldPosition);
-            buf.writeVarInt(opening.archives().size());
-            buf.writeVarInt(opening.outside().size());
-            for (ExternalInventories.Panel panel : opening.outside()) {
-                buf.writeVarInt(panel.slots());
-                ComponentSerialization.STREAM_CODEC.encode(buf, panel.title());
-                ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, panel.icon());
-                buf.writeBoolean(panel.handsOff());
-                buf.writeByte(panel.processor() == null ? 0 : panel.processor().ordinal() + 1);
-            }
-            buf.writeByte(opening.second() == null ? 0 : 1);
-            if (opening.second() != null) {
-                buf.writeBlockPos(opening.second().worldPosition);
-            }
-            opening.first().storage.writeLocks(buf);
-            if (opening.second() != null) {
-                opening.second().storage.writeLocks(buf);
-            }
-        });
     }
 
     @Override

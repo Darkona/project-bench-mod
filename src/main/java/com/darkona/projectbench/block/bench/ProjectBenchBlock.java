@@ -179,6 +179,6 @@ public class ProjectBenchBlock extends BenchBlock<ProjectBenchBlockEntity> {
 
     @Override
     protected void open(ProjectBenchBlockEntity entity, ServerPlayer player) {
-        entity.open(player);
+        Opening.of(entity).open(player, entity);
     }
 }

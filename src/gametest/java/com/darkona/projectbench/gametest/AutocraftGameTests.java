@@ -6,6 +6,7 @@ import dev.darkona.jdlib.api.world.RelativeSide;
 import com.darkona.projectbench.block.bench.AutoBenchBlock;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.block.BenchBlock;
+import com.darkona.projectbench.block.bench.Opening;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.config.Config;
@@ -314,7 +315,7 @@ public final class AutocraftGameTests {
         }
         ProjectBenchBlockEntity auto = helper.getBlockEntity(BENCH);
         ProjectBenchBlockEntity slab = helper.getBlockEntity(BENCH.east());
-        helper.assertTrue(auto.partner() == null && slab.partner() == null && !auto.opening().menu(0, helper.makeMockPlayer(GameType.SURVIVAL).getInventory()).station(),
+        helper.assertTrue(auto.partner() == null && slab.partner() == null && !Opening.of(auto).menu(0, helper.makeMockPlayer(GameType.SURVIVAL).getInventory()).station(),
                 "no Project Station");
         helper.assertTrue(auto.automates() && auto.sideMode(Direction.EAST) != SideMode.NONE, "the Auto automates, its side toward the slab open");
         sticks(auto, 0);

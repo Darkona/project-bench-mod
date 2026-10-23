@@ -5,6 +5,7 @@ import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.block.bench.Opening;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.BreakMode;
 import com.darkona.projectbench.config.Config;
@@ -212,7 +213,7 @@ public final class SlotLockGameTests {
         ProjectBenchBlock.Pair pair = DoubleBenchGameTests.joinedAt(helper, at);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.setPos(Vec3.atCenterOf(helper.absolutePos(at)));
-        ProjectBenchMenu menu = pair.first().opening().menu(0, player.getInventory());
+        ProjectBenchMenu menu = Opening.of(pair.first()).menu(0, player.getInventory());
         helper.assertTrue(menu.station(), "a double bench opens the Project Station");
         ProjectBenchBlockEntity second = pair.second();
         second.storage().setItem(0, new ItemStack(Items.COBBLESTONE));

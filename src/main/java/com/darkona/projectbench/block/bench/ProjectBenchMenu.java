@@ -25,8 +25,6 @@ import com.darkona.projectbench.config.ShareMode;
 import dev.darkona.jdlib.api.menu.SlotMap;
 import dev.darkona.jdlib.api.menu.SlotMapped;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -156,41 +154,11 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     private final DataSlot active;
 
     public ProjectBenchMenu(int id, Inventory inventory, RegistryFriendlyByteBuf buf) {
-        this(id, inventory, ClientOpening.read(inventory, buf));
+        this(id, inventory, Opening.Received.read(inventory, buf));
     }
 
-    private ProjectBenchMenu(int id, Inventory inventory, ClientOpening o) {
-        this(id, inventory, o.first, o.second, o.archives, o.panels);
-    }
-
-    private record ClientOpening(ProjectBenchBlockEntity first, @Nullable ProjectBenchBlockEntity second, ConcatContainer archives,
-                                 List<ExternalInventories.Panel> panels) {
-        static ClientOpening read(Inventory inventory, RegistryFriendlyByteBuf buf) {
-            ProjectBenchBlockEntity first = (ProjectBenchBlockEntity) inventory.player.level().getBlockEntity(buf.readBlockPos());
-            ConcatContainer archives = clientArchives(buf.readVarInt());
-            List<ExternalInventories.Panel> panels = readPanels(buf);
-            int station = buf.readByte();
-            ProjectBenchBlockEntity second = station == 0 ? null : (ProjectBenchBlockEntity) inventory.player.level().getBlockEntity(buf.readBlockPos());
-            first.storage().readLocks(buf);
-            if (second != null) {
-                second.storage().readLocks(buf);
-            }
-            return new ClientOpening(first, second, archives, panels);
-        }
-    }
-
-    private static List<ExternalInventories.Panel> readPanels(RegistryFriendlyByteBuf buf) {
-        int panelCount = buf.readVarInt();
-        List<ExternalInventories.Panel> panels = new ArrayList<>(panelCount);
-        for (int i = 0; i < panelCount; ++i) {
-            int slots = buf.readVarInt();
-            Component title = ComponentSerialization.STREAM_CODEC.decode(buf);
-            ItemStack icon = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
-            boolean handsOff = buf.readBoolean();
-            int processor = buf.readByte();
-            panels.add(new ExternalInventories.Panel(-1, slots, title, icon, handsOff, processor == 0 ? null : Processor.values()[processor - 1]));
-        }
-        return panels;
+    private ProjectBenchMenu(int id, Inventory inventory, Opening.Received o) {
+        this(id, inventory, o.first(), o.second(), o.archives(), o.panels());
     }
 
     public ProjectBenchMenu(int id, Inventory inventory, ProjectBenchBlockEntity bench, List<? extends BlueprintArchiveBlockEntity> archives,
@@ -350,14 +318,6 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
             public void set(int ignored) {
             }
         };
-    }
-
-    private static ConcatContainer clientArchives(int blocks) {
-        List<Container> out = new ArrayList<>(blocks);
-        for (int i = 0; i < blocks; ++i) {
-            out.add(new BlueprintContainer(BlueprintArchiveBlockEntity.SLOTS, () -> Config.get().archiveStack()));
-        }
-        return new ConcatContainer(BlueprintArchiveBlockEntity.SLOTS, out);
     }
 
     private static ConcatContainer containers(List<? extends BlueprintArchiveBlockEntity> archives) {

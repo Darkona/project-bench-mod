@@ -7,6 +7,7 @@ import com.darkona.projectbench.block.BenchBlock;
 import com.darkona.projectbench.block.bench.BenchSlabBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.block.bench.Opening;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.config.Config;
@@ -495,7 +496,7 @@ public final class DoubleBenchGameTests {
     }
 
     private static ProjectBenchMenu station(ProjectBenchBlockEntity half, Player player) {
-        ProjectBenchMenu menu = half.opening().menu(0, player.getInventory());
+        ProjectBenchMenu menu = Opening.of(half).menu(0, player.getInventory());
         if (!menu.station()) {
             throw new GameTestAssertException("a double bench opens the Project Station");
         }
@@ -600,7 +601,7 @@ public final class DoubleBenchGameTests {
         BlockPos at = new BlockPos(1, 2, 2);
         place(helper, Content.Items.SLAB_PROJECT_BENCH.get(), at);
         ProjectBenchBlockEntity slab = helper.getBlockEntity(at);
-        ProjectBenchBlockEntity.Opening opening = slab.opening();
+        Opening opening = Opening.of(slab);
         ProjectBenchMenu menu = opening.menu(0, playerAt(helper, at).getInventory());
         helper.assertTrue(opening.second() == null && !menu.station() && menu.active() == 0, "a slab on its own is a bench");
         helper.assertTrue(menu.slots.size() == ProjectBenchMenu.ARCHIVE_START + ProjectBenchMenu.OUTSIDE_VISIBLE + 1 + ProjectBenchMenu.PROCESSOR_SLOTS
@@ -739,7 +740,7 @@ public final class DoubleBenchGameTests {
         }
         helper.setBlock(left.east(), Blocks.BARREL);
         helper.setBlock(at.west(), Blocks.BARREL);
-        int tabs = pair.second().opening().outside().size();
+        int tabs = Opening.of(pair.second()).outside().size();
         helper.assertTrue(tabs == 8, "eight inventories, eight tabs, not " + tabs);
         Player player = playerAt(helper, at);
         ProjectBenchMenu menu = station(pair.first(), player);
@@ -765,7 +766,7 @@ public final class DoubleBenchGameTests {
         }
         helper.setBlock(at.north(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.SOUTH).setValue(ChestBlock.TYPE, ChestType.RIGHT));
         helper.setBlock(left.north(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.SOUTH).setValue(ChestBlock.TYPE, ChestType.LEFT));
-        tabs = pair.first().opening().outside().size();
+        tabs = Opening.of(pair.first()).outside().size();
         helper.assertTrue(tabs == 7, "a double chest in front of both is one tab: " + tabs);
         helper.succeed();
     }
