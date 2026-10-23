@@ -13,14 +13,17 @@ import com.darkona.projectbench.blueprint.BlueprintItem;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.blueprint.CostContainer;
 import com.darkona.projectbench.block.ContainerSlot;
+import com.darkona.projectbench.block.bench.BenchSlots.ArchiveSlot;
+import com.darkona.projectbench.block.bench.BenchSlots.OutsideSlot;
+import com.darkona.projectbench.block.bench.BenchSlots.ProcessorSlot;
+import com.darkona.projectbench.block.bench.BenchSlots.RealOutsideSlot;
+import com.darkona.projectbench.block.bench.BenchSlots.RealProcessorSlot;
+import com.darkona.projectbench.block.bench.BenchSlots.ResultSlot;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
 import dev.darkona.jdlib.api.menu.SlotMap;
 import dev.darkona.jdlib.api.menu.SlotMapped;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -36,12 +39,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.anti_ad.mc.ipn.api.IPNSlotsIgnoreForInventoryTypes;
@@ -49,7 +48,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.IntSupplier;
 
 @IPNSlotsIgnoreForInventoryTypes(value = {}, ignoreCraftingSlots = true)
@@ -125,7 +123,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     private final ProjectBenchBlockEntity bench;
     @Nullable
     private final ProjectBenchBlockEntity second;
-    private final Player player;
+    final Player player;
 
     private final ConcatContainer archives;
 
@@ -227,7 +225,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         for (int i = 0; i < OUTSIDE_VISIBLE; ++i) {
             int x = outsideX + i % OUTSIDE_COLUMNS * 18;
             int y = OUTSIDE_Y + i / OUTSIDE_COLUMNS * 18;
-            addSlot(client ? new OutsideSlot(shown, i, x, y) : new RealOutsideSlot(shown, i, x, y));
+            addSlot(client ? new OutsideSlot(this, shown, i, x, y) : new RealOutsideSlot(this, shown, i, x, y));
         }
         if (second != null) {
             addBench(second, 2);
@@ -245,7 +243,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
             int machineSlot = brewing ? i - Processor.BREWING_STAND.firstSlot() : i;
             int x = outsideX + at[i][0];
             int y = OUTSIDE_Y + at[i][1];
-            addSlot(client ? new ProcessorSlot(machine, i, brewing, machineSlot, x, y) : new RealProcessorSlot(machine, i, brewing, machineSlot, x, y));
+            addSlot(client ? new ProcessorSlot(this, machine, i, brewing, machineSlot, x, y) : new RealProcessorSlot(this, machine, i, brewing, machineSlot, x, y));
         }
         int benchHalves = second == null ? 1 : 2;
         int[] matrixStarts = new int[benchHalves];
@@ -321,7 +319,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
                 addSlot(new Slot(owner.matrix(), column + row * 3, matrixX + column * 18, MATRIX_Y + row * 18));
             }
         }
-        addSlot(new ResultSlot(owner, which, halfX(which, RESULT_X, 16), RESULT_Y));
+        addSlot(new ResultSlot(this, owner, which, halfX(which, RESULT_X, 16), RESULT_Y));
         int storageX = storageRow < 0 ? 8 : STATION_STORAGE_X;
         int storageY = STORAGE_Y + Math.max(0, storageRow) * 18;
         for (int row = 0; row < 2; ++row) {
@@ -556,7 +554,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     @Nullable
-    private BlockEntity openMachine() {
+    BlockEntity openMachine() {
         ExternalInventories.Panel panel = selectedPanel();
         if (panel == null || panel.processor() == null || player.level().isClientSide) {
             return null;
@@ -586,11 +584,11 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     @Nullable
-    private ExternalInventories.Panel selectedPanel() {
+    ExternalInventories.Panel selectedPanel() {
         return openTab >= 0 && openTab < outsidePanels.size() ? outsidePanels.get(openTab) : null;
     }
 
-    private static boolean handsOff(@Nullable ExternalInventories.Panel panel) {
+    static boolean handsOff(@Nullable ExternalInventories.Panel panel) {
         return panel != null && panel.handsOff() && Config.get().protectVaults();
     }
 
@@ -1096,7 +1094,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     @Nullable
-    private IItemHandler handlerOf(ExternalInventories.Panel panel) {
+    IItemHandler handlerOf(ExternalInventories.Panel panel) {
         return externalOf(panel).handler(sideOf(panel));
     }
 
@@ -1153,372 +1151,5 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     @Override
     public boolean stillValid(Player player) {
         return near(player, bench) && (second == null || bench.partner() == second && near(player, second));
-    }
-
-    private final class ResultSlot extends Slot {
-        private final ProjectBenchBlockEntity owner;
-        private final int which;
-        private int removeCount;
-
-        ResultSlot(ProjectBenchBlockEntity owner, int which, int x, int y) {
-            super(owner.result(), 0, x, y);
-            this.owner = owner;
-            this.which = which;
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return false;
-        }
-
-        @Override
-        public ItemStack getItem() {
-            return craftable(which) ? super.getItem() : ItemStack.EMPTY;
-        }
-
-        @Override
-        public boolean mayPickup(Player taker) {
-            return !owner.isRemoved() && craftable(which);
-        }
-
-        @Override
-        public ItemStack remove(int amount) {
-            if (hasItem()) {
-                removeCount += Math.min(amount, getItem().getCount());
-            }
-            return super.remove(amount);
-        }
-
-        @Override
-        protected void onQuickCraft(ItemStack stack, int amount) {
-            removeCount += amount;
-            checkTakeAchievements(stack);
-        }
-
-        @Override
-        protected void onSwapCraft(int amount) {
-            removeCount += amount;
-        }
-
-        @Override
-        protected void checkTakeAchievements(ItemStack stack) {
-            if (removeCount > 0) {
-                stack.onCraftedBy(player.level(), player, removeCount);
-                EventHooks.firePlayerCraftingEvent(player, stack, owner.matrix());
-            }
-            owner.result().awardUsedRecipes(player, owner.matrix().getItems());
-            removeCount = 0;
-        }
-
-        @Override
-        public void onTake(Player taker, ItemStack stack) {
-            checkTakeAchievements(stack);
-            owner.craft(taker);
-        }
-
-        @Override
-        public boolean isFake() {
-            return true;
-        }
-    }
-
-    private static final class ArchiveSlot extends Slot {
-        private final ConcatContainer archives;
-
-        ArchiveSlot(ConcatContainer archives, int slot) {
-            super(archives, slot, -10000, -10000);
-            this.archives = archives;
-        }
-
-        @Override
-        public void setChanged() {
-            archives.partOf(getContainerSlot()).setChanged();
-        }
-
-        @Override
-        public boolean isActive() {
-            return false;
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return false;
-        }
-
-        @Override
-        public boolean mayPickup(Player player) {
-            return false;
-        }
-    }
-
-    private class OutsideSlot extends Slot {
-        private final int visibleIndex;
-
-        OutsideSlot(Container shown, int visibleIndex, int x, int y) {
-            super(shown, visibleIndex, x, y);
-            this.visibleIndex = visibleIndex;
-        }
-
-        int inventorySlot() {
-            return (outsideScroll + visibleIndex / OUTSIDE_COLUMNS) * OUTSIDE_COLUMNS + visibleIndex % OUTSIDE_COLUMNS;
-        }
-
-        @Nullable
-        ExternalInventories.Panel panel() {
-            ExternalInventories.Panel panel = selectedPanel();
-            return panel != null && panel.processor() == null && inventorySlot() < panel.slots() ? panel : null;
-        }
-
-        @Override
-        public boolean isActive() {
-            return panel() != null;
-        }
-
-        @Override
-        public ItemStack remove(int amount) {
-            return super.remove(Math.min(amount, super.getItem().getMaxStackSize()));
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return !handsOff(selectedPanel());
-        }
-
-        @Override
-        public boolean mayPickup(Player taker) {
-            return !handsOff(selectedPanel());
-        }
-
-        @Override
-        public int getMaxStackSize() {
-            return 99;
-        }
-
-        @Override
-        public int getMaxStackSize(ItemStack stack) {
-            return Math.min(stack.getMaxStackSize(), 99);
-        }
-
-        @Override
-        public void setChanged() {
-        }
-
-        @Override
-        public boolean isFake() {
-            return true;
-        }
-
-        ItemStack putBack(ItemStack stack) {
-            ExternalInventories.Panel panel = selectedPanel();
-            IItemHandler inventory = panel == null ? null : handlerOf(panel);
-            return inventory == null ? stack : ItemHandlerHelper.insertItemStacked(inventory, stack, false);
-        }
-    }
-
-    private final class RealOutsideSlot extends OutsideSlot {
-        RealOutsideSlot(Container shown, int visibleIndex, int x, int y) {
-            super(shown, visibleIndex, x, y);
-        }
-
-        @Nullable
-        private IItemHandler target() {
-            ExternalInventories.Panel panel = panel();
-            IItemHandler inventory = panel == null ? null : handlerOf(panel);
-            return inventory != null && inventorySlot() < inventory.getSlots() ? inventory : null;
-        }
-
-        @Override
-        public ItemStack getItem() {
-            IItemHandler target = target();
-            return target == null ? ItemStack.EMPTY : target.getStackInSlot(inventorySlot());
-        }
-
-        @Override
-        public void set(ItemStack stack) {
-            if (panel() != null) {
-                IItemHandler target = target();
-                ItemStack rest = target == null ? stack : ExternalInventories.set(target, inventorySlot(), stack);
-                if (!rest.isEmpty()) {
-                    player.drop(rest, false);
-                }
-            }
-        }
-
-        @Override
-        public ItemStack remove(int amount) {
-            IItemHandler target = target();
-            return target == null ? ItemStack.EMPTY : Stacks.takeAtMostAStack(target, inventorySlot(), amount);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            IItemHandler target = super.mayPlace(stack) ? target() : null;
-            return target != null && target.isItemValid(inventorySlot(), stack);
-        }
-
-        @Override
-        public boolean mayPickup(Player taker) {
-            IItemHandler target = super.mayPickup(taker) ? target() : null;
-            return target != null && !target.extractItem(inventorySlot(), 1, true).isEmpty();
-        }
-
-        @Override
-        public int getMaxStackSize(ItemStack stack) {
-            IItemHandler target = target();
-            int slot = inventorySlot();
-            return target == null || !target.isItemValid(slot, stack) ? 0 : Math.min(target.getSlotLimit(slot), stack.getMaxStackSize());
-        }
-    }
-
-    private class ProcessorSlot extends Slot {
-        final boolean brewing;
-        final int machineSlot;
-        private int removeCount;
-
-        ProcessorSlot(Container shown, int index, boolean brewing, int machineSlot, int x, int y) {
-            super(shown, index, x, y);
-            this.brewing = brewing;
-            this.machineSlot = machineSlot;
-        }
-
-        @Nullable
-        Processor processor() {
-            Processor processor = openProcessor();
-            return processor != null && processor.brewing() == brewing ? processor : null;
-        }
-
-        boolean result() {
-            Processor processor = processor();
-            return processor != null && processor.resultSlot(machineSlot);
-        }
-
-        @Override
-        public boolean isActive() {
-            return processor() != null;
-        }
-
-        void countTaken(int amount) {
-            if (result() && hasItem()) {
-                removeCount += Math.min(amount, getItem().getCount());
-            }
-        }
-
-        @Override
-        public ItemStack remove(int amount) {
-            countTaken(amount);
-            return super.remove(amount);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            Processor processor = processor();
-            return processor != null && !processor.resultSlot(machineSlot) && processor.predictPlace(machineSlot, stack, getItem(), player.level());
-        }
-
-        @Override
-        public boolean mayPickup(Player taker) {
-            return processor() != null;
-        }
-
-        @Override
-        public int getMaxStackSize() {
-            Processor processor = processor();
-            return processor != null && processor.bottleSlot(machineSlot) ? 1 : super.getMaxStackSize();
-        }
-
-        @Override
-        protected void onQuickCraft(ItemStack stack, int amount) {
-            removeCount += amount;
-            checkTakeAchievements(stack);
-        }
-
-        @Override
-        protected void checkTakeAchievements(ItemStack stack) {
-            if (!result()) {
-                return;
-            }
-            stack.onCraftedBy(player.level(), player, removeCount);
-            if (player instanceof ServerPlayer serverPlayer && openMachine() instanceof AbstractFurnaceBlockEntity furnace) {
-                furnace.awardUsedRecipesAndPopExperience(serverPlayer);
-            }
-            removeCount = 0;
-            EventHooks.firePlayerSmeltedEvent(player, stack);
-        }
-
-        @Override
-        public void onTake(Player taker, ItemStack stack) {
-            Processor processor = processor();
-            if (processor != null && processor.resultSlot(machineSlot)) {
-                checkTakeAchievements(stack);
-            } else if (processor != null && processor.bottleSlot(machineSlot) && taker instanceof ServerPlayer serverPlayer) {
-                Optional<Holder<Potion>> potion = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).potion();
-                if (potion.isPresent()) {
-                    EventHooks.onPlayerBrewedPotion(taker, stack);
-                    CriteriaTriggers.BREWED_POTION.trigger(serverPlayer, potion.get());
-                }
-            }
-            super.onTake(taker, stack);
-        }
-
-        @Override
-        public boolean isFake() {
-            return true;
-        }
-    }
-
-    private final class RealProcessorSlot extends ProcessorSlot {
-        RealProcessorSlot(Container shown, int index, boolean brewing, int machineSlot, int x, int y) {
-            super(shown, index, brewing, machineSlot, x, y);
-        }
-
-        @Nullable
-        private Container machine() {
-            return processor() != null && openMachine() instanceof Container container ? container : null;
-        }
-
-        @Override
-        public ItemStack getItem() {
-            Container machine = machine();
-            return machine == null ? ItemStack.EMPTY : machine.getItem(machineSlot);
-        }
-
-        @Override
-        public void set(ItemStack stack) {
-            Container machine = machine();
-            if (machine != null) {
-                machine.setItem(machineSlot, stack);
-                machine.setChanged();
-            } else if (!stack.isEmpty()) {
-                player.drop(stack, false);
-            }
-        }
-
-        @Override
-        public ItemStack remove(int amount) {
-            countTaken(amount);
-            Container machine = machine();
-            return machine == null ? ItemStack.EMPTY : machine.removeItem(machineSlot, amount);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            Container machine = result() ? null : machine();
-            return machine != null && machine.canPlaceItem(machineSlot, stack);
-        }
-
-        @Override
-        public boolean mayPickup(Player taker) {
-            return machine() != null;
-        }
-
-        @Override
-        public void setChanged() {
-            Container machine = machine();
-            if (machine != null) {
-                machine.setChanged();
-            } else {
-                super.setChanged();
-            }
-        }
     }
 }
