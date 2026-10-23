@@ -1,7 +1,7 @@
 package com.darkona.projectbench.client;
 
 import com.darkona.projectbench.config.ClientConfig;
-import dev.darkona.jdlib.api.render.client.JDColors;
+import dev.darkona.jdlib.api.image.JDColors;
 import dev.darkona.jdlib.api.ui.JDPalette;
 import dev.darkona.jdlib.api.ui.JDTint;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
