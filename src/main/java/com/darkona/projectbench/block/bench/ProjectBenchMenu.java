@@ -42,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.IntSupplier;
 
 @IPNSlotsIgnoreForInventoryTypes(value = {}, ignoreCraftingSlots = true)
@@ -205,30 +206,25 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         SimpleContainer machine = new SimpleContainer(PROCESSOR_SLOTS);
         int[][] at = {{48, 0}, {48, 36}, {108, 18}, {48, 34}, {71, 41}, {94, 34}, {71, 0}, {9, 0}};
         for (int i = 0; i < PROCESSOR_SLOTS; ++i) {
-            boolean brewing = i >= Processor.BREWING_STAND.firstSlot();
-            int machineSlot = brewing ? i - Processor.BREWING_STAND.firstSlot() : i;
             int x = outsideX + at[i][0];
             int y = OUTSIDE_Y + at[i][1];
-            addSlot(client ? new ProcessorSlot(this, machine, i, brewing, machineSlot, x, y) : new RealProcessorSlot(this, machine, i, brewing, machineSlot, x, y));
+            addSlot(client ? new ProcessorSlot(this, machine, i, x, y) : new RealProcessorSlot(this, machine, i, x, y));
         }
-        int benchHalves = second == null ? 1 : 2;
-        int[] matrixStarts = new int[benchHalves];
-        int[] resultIndexes = new int[benchHalves];
-        int[] storageStarts = new int[benchHalves];
-        for (int which = 0; which < benchHalves; ++which) {
-            matrixStarts[which] = matrixStart(which);
-            resultIndexes[which] = resultIndex(which);
-            storageStarts[which] = storageStart(which);
-        }
-        slotMap = BenchSlotMap.build(matrixStarts, resultIndexes, storageStarts, outsideStart);
-        windowStocks = second == null ? new Stock[]{openStock(bench)} : new Stock[]{openStock(bench), openStock(second)};
         int halves = second == null ? 1 : 2;
+        int[] matrixStarts = new int[halves];
+        int[] resultIndexes = new int[halves];
+        int[] storageStarts = new int[halves];
         List<List<Slot>> matrices = new ArrayList<>(halves);
         List<List<Slot>> stocks = new ArrayList<>(halves);
         for (int which = 0; which < halves; ++which) {
+            matrixStarts[which] = matrixStart(which);
+            resultIndexes[which] = resultIndex(which);
+            storageStarts[which] = storageStart(which);
             matrices.add(List.copyOf(slots.subList(matrixStart(which), matrixStart(which) + ProjectBenchBlockEntity.MATRIX)));
             stocks.add(List.copyOf(stockSlots(second == null ? new int[]{0} : new int[]{which, 1 - which})));
         }
+        slotMap = BenchSlotMap.build(matrixStarts, resultIndexes, storageStarts, outsideStart);
+        windowStocks = second == null ? new Stock[]{openStock(bench)} : new Stock[]{openStock(bench), openStock(second)};
         matrixSlots = List.copyOf(matrices);
         stockSlots = List.copyOf(stocks);
         choice = new DataSlot[halves];
@@ -285,7 +281,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
                 addSlot(new Slot(owner.matrix(), column + row * 3, matrixX + column * 18, MATRIX_Y + row * 18));
             }
         }
-        addSlot(new ResultSlot(this, owner, which, halfX(which, RESULT_X, 16), RESULT_Y));
+        addSlot(new ResultSlot(this, which, halfX(which, RESULT_X, 16), RESULT_Y));
         int storageX = storageRow < 0 ? 8 : STATION_STORAGE_X;
         int storageY = STORAGE_Y + Math.max(0, storageRow) * 18;
         for (int row = 0; row < 2; ++row) {
@@ -340,7 +336,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     public ProjectBenchBlockEntity benchOf(int which) {
-        return which == 1 && second != null ? second : bench;
+        return half(which) == 1 ? Objects.requireNonNull(second) : bench;
     }
 
     public ProjectBenchBlockEntity activeBench() {
@@ -348,7 +344,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     int base(int which) {
-        return which == 1 && second != null ? secondStart : 0;
+        return half(which) == 1 ? secondStart : 0;
     }
 
     public int matrixStart(int which) {
@@ -368,7 +364,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     public int costIndex(int which) {
-        return costStart + (which == 1 && second != null ? 1 : 0);
+        return costStart + half(which);
     }
 
     public int missingCost() {
@@ -552,10 +548,6 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
 
     public int choice(int which) {
         return choice[half(which)].get();
-    }
-
-    public static int recipeButton(int i) {
-        return BUTTON_RECIPE + i;
     }
 
     public static int recipeButton(int which, int i) {

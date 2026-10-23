@@ -224,9 +224,9 @@ public final class ProjectBenchGameTests {
             helper.assertTrue(listed.size() == 2 && listed.get(0).id().equals(stick) && listed.get(1).id().equals(string),
                     "two recipes, by id: " + listed);
             helper.assertTrue(menu.choice(0) == 0 && bench.result().getItem(0).is(Items.STICK), "the first one: " + bench.result().getItem(0));
-            helper.assertTrue(menu.clickMenuButton(player, ProjectBenchMenu.recipeButton(1)), "the selector picks the second");
+            helper.assertTrue(menu.clickMenuButton(player, ProjectBenchMenu.recipeButton(0, 1)), "the selector picks the second");
             helper.assertTrue(menu.choice(0) == 1 && bench.result().getItem(0).is(Items.STRING), "string now: " + bench.result().getItem(0));
-            menu.clickMenuButton(player, ProjectBenchMenu.recipeButton(5));
+            menu.clickMenuButton(player, ProjectBenchMenu.recipeButton(0, 5));
             helper.assertTrue(menu.choice(0) == 1, "a recipe past the list changes nothing");
             bench.matrix().setItem(4, ItemStack.EMPTY);
             bench.matrix().setItem(4, new ItemStack(Items.DEAD_BUSH));

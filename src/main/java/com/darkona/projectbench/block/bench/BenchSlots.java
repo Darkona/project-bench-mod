@@ -26,14 +26,12 @@ final class BenchSlots {
 
     static final class ResultSlot extends Slot {
         private final ProjectBenchMenu menu;
-        private final ProjectBenchBlockEntity owner;
         private final int which;
         private int removeCount;
 
-        ResultSlot(ProjectBenchMenu menu, ProjectBenchBlockEntity owner, int which, int x, int y) {
-            super(owner.result(), 0, x, y);
+        ResultSlot(ProjectBenchMenu menu, int which, int x, int y) {
+            super(menu.benchOf(which).result(), 0, x, y);
             this.menu = menu;
-            this.owner = owner;
             this.which = which;
         }
 
@@ -49,7 +47,7 @@ final class BenchSlots {
 
         @Override
         public boolean mayPickup(Player taker) {
-            return !owner.isRemoved() && menu.craftable(which);
+            return !menu.benchOf(which).isRemoved() && menu.craftable(which);
         }
 
         @Override
@@ -73,6 +71,7 @@ final class BenchSlots {
 
         @Override
         protected void checkTakeAchievements(ItemStack stack) {
+            ProjectBenchBlockEntity owner = menu.benchOf(which);
             if (removeCount > 0) {
                 stack.onCraftedBy(menu.player.level(), menu.player, removeCount);
                 EventHooks.firePlayerCraftingEvent(menu.player, stack, owner.matrix());
@@ -84,7 +83,7 @@ final class BenchSlots {
         @Override
         public void onTake(Player taker, ItemStack stack) {
             checkTakeAchievements(stack);
-            owner.craft(taker);
+            menu.benchOf(which).craft(taker);
         }
 
         @Override
@@ -94,16 +93,13 @@ final class BenchSlots {
     }
 
     static final class ArchiveSlot extends Slot {
-        private final ConcatContainer archives;
-
         ArchiveSlot(ConcatContainer archives, int slot) {
             super(archives, slot, -10000, -10000);
-            this.archives = archives;
         }
 
         @Override
         public void setChanged() {
-            archives.partOf(getContainerSlot()).setChanged();
+            ((ConcatContainer) container).partOf(getContainerSlot()).setChanged();
         }
 
         @Override
@@ -249,11 +245,11 @@ final class BenchSlots {
         final int machineSlot;
         private int removeCount;
 
-        ProcessorSlot(ProjectBenchMenu menu, Container shown, int index, boolean brewing, int machineSlot, int x, int y) {
+        ProcessorSlot(ProjectBenchMenu menu, Container shown, int index, int x, int y) {
             super(shown, index, x, y);
             this.menu = menu;
-            this.brewing = brewing;
-            this.machineSlot = machineSlot;
+            this.brewing = index >= Processor.BREWING_STAND.firstSlot();
+            this.machineSlot = brewing ? index - Processor.BREWING_STAND.firstSlot() : index;
         }
 
         @Nullable
@@ -342,8 +338,8 @@ final class BenchSlots {
     }
 
     static final class RealProcessorSlot extends ProcessorSlot {
-        RealProcessorSlot(ProjectBenchMenu menu, Container shown, int index, boolean brewing, int machineSlot, int x, int y) {
-            super(menu, shown, index, brewing, machineSlot, x, y);
+        RealProcessorSlot(ProjectBenchMenu menu, Container shown, int index, int x, int y) {
+            super(menu, shown, index, x, y);
         }
 
         @Nullable
