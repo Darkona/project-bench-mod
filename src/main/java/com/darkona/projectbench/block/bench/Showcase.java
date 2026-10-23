@@ -13,16 +13,16 @@ import java.util.List;
 
 import static com.darkona.projectbench.block.bench.ProjectBenchBlockEntity.MATRIX;
 
-final class Showcase {
+public final class Showcase {
     private final ProjectBenchBlockEntity bench;
 
     private final MatrixLayout sent = new MatrixLayout();
     private ItemStack sentResult = ItemStack.EMPTY;
     private boolean sentOn;
 
-    private final NonNullList<ItemStack> shown = NonNullList.withSize(MATRIX, ItemStack.EMPTY);
+    @Nullable
+    private List<ItemStack> shown;
     private ItemStack shownResult = ItemStack.EMPTY;
-    private boolean shownOn;
 
     Showcase(ProjectBenchBlockEntity bench) {
         this.bench = bench;
@@ -73,18 +73,22 @@ final class Showcase {
     }
 
     void receive(CompoundTag tag, HolderLookup.Provider registries) {
-        shownOn = tag.getBoolean("Show");
-        shown.clear();
-        ContainerHelper.loadAllItems(tag.getCompound("Items"), shown, registries);
+        if (tag.getBoolean("Show")) {
+            NonNullList<ItemStack> items = NonNullList.withSize(MATRIX, ItemStack.EMPTY);
+            ContainerHelper.loadAllItems(tag.getCompound("Items"), items, registries);
+            shown = items;
+        } else {
+            shown = null;
+        }
         shownResult = tag.contains("Made") ? ItemStack.parseOptional(registries, tag.getCompound("Made")) : ItemStack.EMPTY;
     }
 
     @Nullable
-    List<ItemStack> items() {
-        return shownOn ? shown : null;
+    public List<ItemStack> items() {
+        return shown;
     }
 
-    ItemStack result() {
+    public ItemStack result() {
         return shownResult;
     }
 }

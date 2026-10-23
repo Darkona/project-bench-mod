@@ -707,13 +707,8 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
         display.send(true);
     }
 
-    @Nullable
-    public List<ItemStack> shownItems() {
-        return display.items();
-    }
-
-    public ItemStack shownResult() {
-        return display.result();
+    public Showcase display() {
+        return display;
     }
 
     @Override

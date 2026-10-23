@@ -48,7 +48,7 @@ public final class ProjectBenchRenderer implements BlockEntityRenderer<ProjectBe
     public void render(ProjectBenchBlockEntity bench, float partialTick, PoseStack pose, MultiBufferSource buffers, int packedLight, int overlay) {
         boolean drawItems = ClientConfig.showcaseItems();
         boolean drawResult = ClientConfig.showcaseResult();
-        List<ItemStack> shown = bench.shownItems();
+        List<ItemStack> shown = bench.display().items();
         Level level = bench.getLevel();
         if (shown == null || level == null || !drawItems && !drawResult) {
             return;
@@ -70,7 +70,7 @@ public final class ProjectBenchRenderer implements BlockEntityRenderer<ProjectBe
             items.renderStatic(shown.get(i), ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, pose, buffers, level, seed + i);
             pose.popPose();
         }
-        ItemStack made = drawResult ? bench.shownResult() : ItemStack.EMPTY;
+        ItemStack made = drawResult ? bench.display().result() : ItemStack.EMPTY;
         if (!made.isEmpty()) {
             float time = level.getGameTime() + partialTick;
             pose.pushPose();
