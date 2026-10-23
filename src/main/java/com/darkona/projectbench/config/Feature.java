@@ -1,7 +1,7 @@
 package com.darkona.projectbench.config;
 
 import com.darkona.projectbench.Content;
-import com.darkona.projectbench.block.bench.ProjectBenchBlock;
+import com.darkona.projectbench.block.BenchBlock;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -20,6 +20,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -88,10 +89,7 @@ public enum Feature {
     }
 
     public static boolean allows(Block block) {
-        if (block instanceof ProjectBenchBlock bench && bench.kind().automatic()) {
-            return BENCH.enabled();
-        }
-        return !(block instanceof ProjectBenchBlock) && block != Content.Blocks.BLUEPRINT_ARCHIVE.get() || allows(block.asItem());
+        return !(block instanceof BenchBlock<?> bench) || bench.feature().enabled();
     }
 
     public static void refuse(@Nullable Player player, ItemLike thing) {
@@ -122,38 +120,37 @@ public enum Feature {
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, Feature::onRightClickItem);
     }
 
+    private static void deny(ICancellableEvent event, @Nullable Player player, ItemLike thing) {
+        event.setCanceled(true);
+        refuse(player, thing);
+    }
+
     private static void onPlace(BlockEvent.EntityPlaceEvent event) {
         BlockState placed = event.getPlacedBlock();
         if (!Feature.allows(placed.getBlock()) || !Feature.allows(placed.getBlock().asItem())) {
-            event.setCanceled(true);
-            if (event.getEntity() instanceof Player player) {
-                Feature.refuse(player, placed.getBlock());
-            }
+            deny(event, event.getEntity() instanceof Player player ? player : null, placed.getBlock());
         }
     }
 
     private static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         ItemStack held = event.getItemStack();
         if (!held.isEmpty() && !Feature.allows(held.getItem())) {
-            event.setCanceled(true);
             event.setCancellationResult(InteractionResult.FAIL);
-            Feature.refuse(event.getEntity(), held.getItem());
+            deny(event, event.getEntity(), held.getItem());
             return;
         }
         BlockState clicked = event.getLevel().getBlockState(event.getPos());
         if (!Feature.allows(clicked.getBlock())) {
-            event.setCanceled(true);
             event.setCancellationResult(InteractionResult.FAIL);
-            Feature.refuse(event.getEntity(), clicked.getBlock());
+            deny(event, event.getEntity(), clicked.getBlock());
         }
     }
 
     private static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
         ItemStack held = event.getItemStack();
         if (!held.isEmpty() && !Feature.allows(held.getItem())) {
-            event.setCanceled(true);
             event.setCancellationResult(InteractionResult.FAIL);
-            Feature.refuse(event.getEntity(), held.getItem());
+            deny(event, event.getEntity(), held.getItem());
         }
     }
 

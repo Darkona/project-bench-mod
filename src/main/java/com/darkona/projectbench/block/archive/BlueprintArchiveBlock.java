@@ -3,6 +3,7 @@ package com.darkona.projectbench.block.archive;
 import com.darkona.projectbench.block.BenchBlock;
 import com.darkona.projectbench.config.BreakMode;
 import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.Feature;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,6 +27,11 @@ public class BlueprintArchiveBlock extends BenchBlock<BlueprintArchiveBlockEntit
     public BlueprintArchiveBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState().setValue(PART, ColumnPart.SINGLE));
+    }
+
+    @Override
+    public Feature feature() {
+        return Feature.ARCHIVE;
     }
 
     @Override

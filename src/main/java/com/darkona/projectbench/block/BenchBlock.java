@@ -1,6 +1,7 @@
 package com.darkona.projectbench.block;
 
 import com.darkona.projectbench.config.BreakMode;
+import com.darkona.projectbench.config.Feature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,6 +39,8 @@ public abstract class BenchBlock<T extends BlockEntity> extends BaseEntityBlock 
     protected abstract void open(T entity, ServerPlayer player);
 
     protected abstract BreakMode breakMode();
+
+    public abstract Feature feature();
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

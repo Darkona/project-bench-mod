@@ -64,6 +64,14 @@ public class ProjectBenchBlock extends BenchBlock<ProjectBenchBlockEntity> {
     }
 
     @Override
+    public Feature feature() {
+        return switch (kind) {
+            case BENCH, AUTO, EJECTING -> Feature.BENCH;
+            case SLAB -> Feature.SLAB_BENCH;
+        };
+    }
+
+    @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
