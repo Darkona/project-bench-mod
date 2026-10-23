@@ -109,14 +109,18 @@ public class BlueprintArchiveBlockEntity extends BenchBlockEntity implements Men
         List<BlueprintArchiveBlockEntity> c = column();
         ConcatContainer s = shelf;
         if (s == null) {
-            List<BlueprintContainer> parts = new ArrayList<>(c.size());
-            for (BlueprintArchiveBlockEntity b : c) {
-                parts.add(b.blueprints);
-            }
-            s = new ConcatContainer(BlueprintArchiveBlockEntity.SLOTS, parts);
+            s = shelfOf(c);
             shelf = s;
         }
         return s;
+    }
+
+    public static ConcatContainer shelfOf(List<? extends BlueprintArchiveBlockEntity> archives) {
+        List<BlueprintContainer> parts = new ArrayList<>(archives.size());
+        for (BlueprintArchiveBlockEntity archive : archives) {
+            parts.add(archive.blueprints);
+        }
+        return new ConcatContainer(SLOTS, parts);
     }
 
     private List<BlueprintArchiveBlockEntity> worksOutColumn() {

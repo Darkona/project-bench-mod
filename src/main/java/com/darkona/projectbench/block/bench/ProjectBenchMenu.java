@@ -24,7 +24,6 @@ import dev.darkona.jdlib.api.menu.SlotMap;
 import dev.darkona.jdlib.api.menu.SlotMapped;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -162,12 +161,12 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
 
     public ProjectBenchMenu(int id, Inventory inventory, ProjectBenchBlockEntity bench, List<? extends BlueprintArchiveBlockEntity> archives,
                             List<ExternalInventories.Panel> outside) {
-        this(id, inventory, bench, null, containers(archives), outside);
+        this(id, inventory, bench, null, BlueprintArchiveBlockEntity.shelfOf(archives), outside);
     }
 
     public ProjectBenchMenu(int id, Inventory inventory, ProjectBenchBlockEntity first, @Nullable ProjectBenchBlockEntity second,
                             List<? extends BlueprintArchiveBlockEntity> archives, List<ExternalInventories.Panel> outside) {
-        this(id, inventory, first, second, containers(archives), outside);
+        this(id, inventory, first, second, BlueprintArchiveBlockEntity.shelfOf(archives), outside);
     }
 
     private ProjectBenchMenu(int id, Inventory inventory, ProjectBenchBlockEntity bench, @Nullable ProjectBenchBlockEntity second,
@@ -312,14 +311,6 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
             public void set(int ignored) {
             }
         };
-    }
-
-    private static ConcatContainer containers(List<? extends BlueprintArchiveBlockEntity> archives) {
-        List<Container> out = new ArrayList<>(archives.size());
-        for (BlueprintArchiveBlockEntity archive : archives) {
-            out.add(archive.blueprints());
-        }
-        return new ConcatContainer(BlueprintArchiveBlockEntity.SLOTS, out);
     }
 
     @Override
