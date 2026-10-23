@@ -3,8 +3,9 @@ package com.darkona.projectbench.datagen;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.BenchUpgrade;
 import com.darkona.projectbench.config.Feature;
-import com.darkona.projectbench.config.FeatureCondition;
+import com.darkona.projectbench.config.Feature.Condition;
 import com.darkona.projectbench.registry.ModItems;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.HolderLookup;
@@ -23,8 +24,6 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.concurrent.CompletableFuture;
 
 final class Recipes extends RecipeProvider {
     Recipes(PackOutput out, CompletableFuture<HolderLookup.Provider> lookup) {
@@ -52,10 +51,10 @@ final class Recipes extends RecipeProvider {
 
     @Override
     protected void buildRecipes(RecipeOutput out) {
-        RecipeOutput bench = out.withConditions(new FeatureCondition(Feature.BENCH));
-        RecipeOutput slab = out.withConditions(new FeatureCondition(Feature.SLAB_BENCH));
-        RecipeOutput blueprint = out.withConditions(new FeatureCondition(Feature.BLUEPRINT));
-        RecipeOutput archive = out.withConditions(new FeatureCondition(Feature.ARCHIVE));
+        RecipeOutput bench = out.withConditions(new Condition(Feature.BENCH));
+        RecipeOutput slab = out.withConditions(new Condition(Feature.SLAB_BENCH));
+        RecipeOutput blueprint = out.withConditions(new Condition(Feature.BLUEPRINT));
+        RecipeOutput archive = out.withConditions(new Condition(Feature.ARCHIVE));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.PROJECT_BENCH.get())
                 .pattern("RGR").pattern("SBS").pattern("PCP")
                 .define('R', Tags.Items.DUSTS_REDSTONE).define('G', Tags.Items.INGOTS_GOLD).define('S', Items.SMOOTH_STONE)
@@ -65,7 +64,7 @@ final class Recipes extends RecipeProvider {
                            .pattern(" B ").pattern("III")
                            .define('B', ModItems.PROJECT_BENCH.get()).define('I', Tags.Items.INGOTS_IRON)
                            .unlockedBy("has_project_bench", has(ModItems.PROJECT_BENCH.get())).save(slab);
-        RecipeOutput autocraft = upgrades(out.withConditions(new FeatureCondition(Feature.AUTOCRAFT)));
+        RecipeOutput autocraft = upgrades(out.withConditions(new Condition(Feature.AUTOCRAFT)));
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.AUTO_PROJECT_BENCH.get())
                 .pattern("IBI").pattern("RCR").pattern("PLP")
                 .define('I', Tags.Items.INGOTS_IRON).define('B', ModItems.PROJECT_BENCH.get()).define('R', Tags.Items.DUSTS_REDSTONE)

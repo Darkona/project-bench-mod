@@ -3,19 +3,29 @@ package com.darkona.projectbench.config;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
 import com.darkona.projectbench.registry.ModBlocks;
 import com.darkona.projectbench.registry.ModItems;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.Nullable;
-
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import org.jetbrains.annotations.Nullable;
 
 public enum Feature {
     BENCH(Config.Settings::bench, ModItems.PROJECT_BENCH),
@@ -104,6 +114,68 @@ public enum Feature {
     static void changed() {
         for (Runnable l : LISTENERS) {
             l.run();
+        }
+    }
+
+    public static void guardUse() {
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, Feature::onPlace);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, Feature::onRightClickBlock);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, Feature::onRightClickItem);
+    }
+
+    private static void onPlace(BlockEvent.EntityPlaceEvent event) {
+        BlockState placed = event.getPlacedBlock();
+        if (!Feature.allows(placed.getBlock()) || !Feature.allows(placed.getBlock().asItem())) {
+            event.setCanceled(true);
+            if (event.getEntity() instanceof Player player) {
+                Feature.refuse(player, placed.getBlock());
+            }
+        }
+    }
+
+    private static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        ItemStack held = event.getItemStack();
+        if (!held.isEmpty() && !Feature.allows(held.getItem())) {
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.FAIL);
+            Feature.refuse(event.getEntity(), held.getItem());
+            return;
+        }
+        BlockState clicked = event.getLevel().getBlockState(event.getPos());
+        if (!Feature.allows(clicked.getBlock())) {
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.FAIL);
+            Feature.refuse(event.getEntity(), clicked.getBlock());
+        }
+    }
+
+    private static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        ItemStack held = event.getItemStack();
+        if (!held.isEmpty() && !Feature.allows(held.getItem())) {
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.FAIL);
+            Feature.refuse(event.getEntity(), held.getItem());
+        }
+    }
+
+    public record Condition(String feature) implements ICondition {
+        public static final MapCodec<Condition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+                Codec.STRING.fieldOf("feature").forGetter(Condition::feature)
+        ).apply(i, Condition::new));
+
+        public Condition(Feature feature) {
+            this(feature.key());
+        }
+
+        @Override
+        public boolean test(IContext context) {
+            Feature f = Feature.byKey(feature);
+            return f != null && f.configured();
+        }
+
+        @Override
+        public MapCodec<? extends ICondition> codec() {
+            return CODEC;
         }
     }
 }
