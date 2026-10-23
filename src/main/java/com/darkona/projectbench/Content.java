@@ -49,14 +49,30 @@ public final class Content {
         return ResourceLocation.fromNamespaceAndPath(ProjectBench.MOD_ID, path);
     }
 
+    private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ProjectBench.MOD_ID);
+
+    private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITIONS = DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, ProjectBench.MOD_ID);
+
     public static void register(IEventBus modBus) {
+        TABS.register("projectbench", () -> CreativeModeTab.builder()
+                .title(Component.translatable("itemGroup.projectbench"))
+                .icon(() -> new ItemStack(Items.PROJECT_BENCH.get()))
+                .displayItems((parameters, output) -> {
+                    for (Feature f : Feature.values()) {
+                        if (f.enabled()) {
+                            output.accept(f.item());
+                        }
+                    }
+                })
+                .build());
+        CONDITIONS.register("feature", () -> Condition.CODEC);
         Blocks.BLOCKS.register(modBus);
         Items.ITEMS.register(modBus);
         BlockEntities.BLOCK_ENTITIES.register(modBus);
         Menus.MENUS.register(modBus);
         Components.COMPONENTS.register(modBus);
-        Tab.TABS.register(modBus);
-        Conditions.CONDITIONS.register(modBus);
+        TABS.register(modBus);
+        CONDITIONS.register(modBus);
         Recipes.SERIALIZERS.register(modBus);
     }
 
@@ -91,18 +107,17 @@ public final class Content {
     public static final class Items {
         public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ProjectBench.MOD_ID);
 
-        public static final DeferredItem<BlockItem> PROJECT_BENCH = ITEMS.registerSimpleBlockItem(Blocks.PROJECT_BENCH, new Item.Properties());
+        public static final DeferredItem<BlockItem> PROJECT_BENCH = ITEMS.registerSimpleBlockItem(Blocks.PROJECT_BENCH);
 
-        public static final DeferredItem<BlockItem> SLAB_PROJECT_BENCH = ITEMS.registerSimpleBlockItem(Blocks.SLAB_PROJECT_BENCH, new Item.Properties());
+        public static final DeferredItem<BlockItem> SLAB_PROJECT_BENCH = ITEMS.registerSimpleBlockItem(Blocks.SLAB_PROJECT_BENCH);
 
-        public static final DeferredItem<BlockItem> AUTO_PROJECT_BENCH = ITEMS.registerSimpleBlockItem(Blocks.AUTO_PROJECT_BENCH, new Item.Properties());
+        public static final DeferredItem<BlockItem> AUTO_PROJECT_BENCH = ITEMS.registerSimpleBlockItem(Blocks.AUTO_PROJECT_BENCH);
 
-        public static final DeferredItem<BlockItem> EJECTING_AUTO_PROJECT_BENCH = ITEMS.registerSimpleBlockItem(Blocks.EJECTING_AUTO_PROJECT_BENCH,
-                new Item.Properties());
+        public static final DeferredItem<BlockItem> EJECTING_AUTO_PROJECT_BENCH = ITEMS.registerSimpleBlockItem(Blocks.EJECTING_AUTO_PROJECT_BENCH);
 
         public static final DeferredItem<BlueprintItem> BLUEPRINT = ITEMS.register("blueprint", () -> new BlueprintItem(new Item.Properties()));
 
-        public static final DeferredItem<BlockItem> BLUEPRINT_ARCHIVE = ITEMS.registerSimpleBlockItem(Blocks.BLUEPRINT_ARCHIVE, new Item.Properties());
+        public static final DeferredItem<BlockItem> BLUEPRINT_ARCHIVE = ITEMS.registerSimpleBlockItem(Blocks.BLUEPRINT_ARCHIVE);
     }
 
     public static final class BlockEntities {
@@ -132,33 +147,14 @@ public final class Content {
         public static final DeferredHolder<DataComponentType<?>, DataComponentType<Blueprint>> BLUEPRINT = COMPONENTS.register("blueprint",
                 () -> DataComponentType.<Blueprint>builder().persistent(Blueprint.CODEC).networkSynchronized(Blueprint.STREAM_CODEC).cacheEncoding().build());
 
-        public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> CONTENTS = COMPONENTS.register("contents",
-                () -> DataComponentType.<ItemContainerContents>builder().persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC).cacheEncoding().build());
+        public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> CONTENTS = containerContents("contents");
 
-        public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> SLOT_LOCKS = COMPONENTS.register("slot_locks",
-                () -> DataComponentType.<ItemContainerContents>builder().persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC).cacheEncoding().build());
-    }
+        public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> SLOT_LOCKS = containerContents("slot_locks");
 
-    public static final class Tab {
-        public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ProjectBench.MOD_ID);
-
-        public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("projectbench", () -> CreativeModeTab.builder()
-                .title(Component.translatable("itemGroup.projectbench"))
-                .icon(() -> new ItemStack(Items.PROJECT_BENCH.get()))
-                .displayItems((parameters, output) -> {
-                    for (Feature f : Feature.values()) {
-                        if (f.enabled()) {
-                            output.accept(f.item());
-                        }
-                    }
-                })
-                .build());
-    }
-
-    public static final class Conditions {
-        public static final DeferredRegister<MapCodec<? extends ICondition>> CONDITIONS = DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, ProjectBench.MOD_ID);
-
-        public static final DeferredHolder<MapCodec<? extends ICondition>, MapCodec<Condition>> FEATURE = CONDITIONS.register("feature", () -> Condition.CODEC);
+        private static DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> containerContents(String name) {
+            return COMPONENTS.register(name,
+                    () -> DataComponentType.<ItemContainerContents>builder().persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC).cacheEncoding().build());
+        }
     }
 
     public static final class Recipes {

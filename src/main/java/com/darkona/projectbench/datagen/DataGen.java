@@ -3,7 +3,6 @@ package com.darkona.projectbench.datagen;
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -23,6 +22,7 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public final class DataGen {
     private DataGen() {
@@ -69,16 +69,18 @@ public final class DataGen {
     }
 
     static final class Loot extends BlockLootSubProvider {
+        private final List<Block> known = Content.Blocks.BLOCKS.getEntries().stream().<Block>map(DeferredHolder::get).toList();
+
         Loot(HolderLookup.Provider registries) {
             super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
         }
 
         @Override
         protected void generate() {
-            for (DeferredBlock<ProjectBenchBlock> bench : Content.Blocks.BENCHES) {
-                withContents(bench.get(), true);
+            Block archive = Content.Blocks.BLUEPRINT_ARCHIVE.get();
+            for (Block block : known) {
+                withContents(block, block != archive);
             }
-            withContents(Content.Blocks.BLUEPRINT_ARCHIVE.get(), false);
         }
 
         private void withContents(Block block, boolean locks) {
@@ -89,11 +91,6 @@ public final class DataGen {
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
-            List<Block> known = new ArrayList<>();
-            for (DeferredBlock<ProjectBenchBlock> bench : Content.Blocks.BENCHES) {
-                known.add(bench.get());
-            }
-            known.add(Content.Blocks.BLUEPRINT_ARCHIVE.get());
             return known;
         }
     }
