@@ -3,7 +3,9 @@ package com.darkona.projectbench.client;
 import com.darkona.projectbench.block.bench.MatrixLayout;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
+import com.darkona.projectbench.client.RecipeSelector.Choices;
 import dev.darkona.jdlib.api.pattern.Blueprint;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
@@ -13,9 +15,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-import java.util.List;
-
-final class BenchChoices implements RecipeChoices {
+final class BenchChoices implements Choices {
     private final ProjectBenchMenu menu;
     private final Matrix[] matrices;
 
@@ -42,7 +42,7 @@ final class BenchChoices implements RecipeChoices {
         return matrices.length;
     }
 
-    RecipeChoices half(int which) {
+    Choices half(int which) {
         return matrices[which];
     }
 
@@ -52,7 +52,7 @@ final class BenchChoices implements RecipeChoices {
         }
     }
 
-    private final class Matrix implements RecipeChoices {
+    private final class Matrix implements Choices {
         private final int which;
         private final MatrixLayout listed = new MatrixLayout();
         private List<RecipeHolder<CraftingRecipe>> recipes = List.of();

@@ -4,23 +4,29 @@ import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
-import dev.darkona.jdlib.api.inventory.GridFill;
-import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.blueprint.CostContainer;
+import com.darkona.projectbench.client.RecipeSelector.Choices;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
+import dev.darkona.jdlib.api.inventory.GridFill;
+import dev.darkona.jdlib.api.pattern.Blueprint;
 import dev.darkona.jdlib.api.ui.JDNode;
 import dev.darkona.jdlib.api.ui.JDNode.Icon;
 import dev.darkona.jdlib.api.ui.JDViews;
 import dev.darkona.jdlib.api.ui.LockView;
 import dev.darkona.jdlib.api.ui.MenuView;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntFunction;
+import java.util.function.IntSupplier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,12 +35,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BooleanSupplier;
-import java.util.function.IntFunction;
-import java.util.function.IntSupplier;
 
 public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
     public static final KeyMapping SWITCH_MATRIX = new KeyMapping("key.projectbench.switch_matrix", KeyConflictContext.GUI,
@@ -80,7 +80,7 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
     private BenchCost cost;
 
     @Nullable
-    public static RecipeChoices choicesOf(ProjectBenchMenu menu) {
+    public static Choices choicesOf(ProjectBenchMenu menu) {
         BenchChoices current = choices;
         return current != null && current.menu() == menu ? current : null;
     }
