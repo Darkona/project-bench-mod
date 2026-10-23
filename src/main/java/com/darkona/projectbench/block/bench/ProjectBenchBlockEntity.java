@@ -1,5 +1,6 @@
 package com.darkona.projectbench.block.bench;
 
+import com.darkona.projectbench.Content;
 import com.darkona.projectbench.block.BenchBlock;
 import com.darkona.projectbench.block.BenchBlockEntity;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
@@ -11,8 +12,6 @@ import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
 import com.darkona.projectbench.config.SideMode;
-import com.darkona.projectbench.registry.ModBlockEntities;
-import com.darkona.projectbench.registry.ModComponents;
 import dev.darkona.jdlib.api.data.CraftingRecipeCache;
 import dev.darkona.jdlib.api.inventory.ChainedItemHandler;
 import dev.darkona.jdlib.api.inventory.GridFill;
@@ -156,7 +155,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     private final Stock ownStock = Stock.lazy(() -> pairs() ? pairOwn : own);
 
     public ProjectBenchBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.PROJECT_BENCH.get(), pos, state);
+        super(Content.BlockEntities.PROJECT_BENCH.get(), pos, state);
         matrix.addListener(c -> contentsChanged());
 
         storage.addListener(c -> setChanged());
@@ -817,7 +816,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
     private void write(Blueprint recorded) {
         ItemStack written = blueprint.getItem(0).copy();
-        written.set(ModComponents.BLUEPRINT.get(), recorded);
+        written.set(Content.Components.BLUEPRINT.get(), recorded);
         blueprint.setItem(0, written);
         cost.charge();
     }
@@ -918,9 +917,9 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
             for (SimpleContainer container : containers) {
                 all.addAll(container.getItems());
             }
-            components.set(ModComponents.CONTENTS.get(), ItemContainerContents.fromItems(all));
+            components.set(Content.Components.CONTENTS.get(), ItemContainerContents.fromItems(all));
             if (storage.anyLock()) {
-                components.set(ModComponents.SLOT_LOCKS.get(), storage.locksAsContents());
+                components.set(Content.Components.SLOT_LOCKS.get(), storage.locksAsContents());
             }
         }
     }
@@ -928,11 +927,11 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     @Override
     protected void applyImplicitComponents(DataComponentInput input) {
         super.applyImplicitComponents(input);
-        ItemContainerContents locks = input.get(ModComponents.SLOT_LOCKS);
+        ItemContainerContents locks = input.get(Content.Components.SLOT_LOCKS);
         if (locks != null) {
             storage.setLocks(locks);
         }
-        ItemContainerContents contents = input.get(ModComponents.CONTENTS);
+        ItemContainerContents contents = input.get(Content.Components.CONTENTS);
         if (contents == null) {
             return;
         }

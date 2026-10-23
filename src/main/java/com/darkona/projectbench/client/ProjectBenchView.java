@@ -1,5 +1,6 @@
 package com.darkona.projectbench.client;
 
+import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
@@ -9,7 +10,6 @@ import com.darkona.projectbench.blueprint.CostContainer;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.Config;
-import com.darkona.projectbench.registry.ModItems;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -291,7 +291,7 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
                 LockView.filters(slot -> storageLock(menu, which, slot))), slot -> storageLock(menu, which, slot).isEmpty() ? null : JDViews.LOCK_CLOSED,
                 JDNode.Corner.TOP_LEFT, LOCK_SIZE), station, which),
                 storageX - 1, storageY - 1));
-        kids.add(JDViews.at(JDViews.ghostItem(JDViews.slot("blueprint" + half, menu.slots.get(menu.blueprintIndex(which))), new ItemStack(ModItems.BLUEPRINT.get())),
+        kids.add(JDViews.at(JDViews.ghostItem(JDViews.slot("blueprint" + half, menu.slots.get(menu.blueprintIndex(which))), new ItemStack(Content.Items.BLUEPRINT.get())),
                 ProjectBenchMenu.halfX(which, ProjectBenchMenu.BLUEPRINT_X, 16) - 1, ProjectBenchMenu.BLUEPRINT_Y - 1));
         kids.add(JDViews.at(JDViews.ghostItem(JDViews.slot("cost" + half, menu.slots.get(menu.costIndex(which))), slot -> cost.ghost()),
                 ProjectBenchMenu.halfX(which, ProjectBenchMenu.COST_X, 16) - 1, ProjectBenchMenu.COST_Y - 1));

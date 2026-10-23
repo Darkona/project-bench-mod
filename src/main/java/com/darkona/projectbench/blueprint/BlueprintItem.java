@@ -1,8 +1,8 @@
 package com.darkona.projectbench.blueprint;
 
+import com.darkona.projectbench.Content;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
-import com.darkona.projectbench.registry.ModComponents;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -20,7 +20,7 @@ public class BlueprintItem extends Item {
 
     @Nullable
     public static Blueprint blueprint(ItemStack stack) {
-        return stack.get(ModComponents.BLUEPRINT.get());
+        return stack.get(Content.Components.BLUEPRINT.get());
     }
 
     public static boolean blank(ItemStack stack) {

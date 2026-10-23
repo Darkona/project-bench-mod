@@ -26,12 +26,11 @@ class ArchitectureTest {
     private static final Pattern CLIENT_CLASS = Pattern.compile("(net/minecraft/client/|com/mojang/blaze3d/|" + Pattern.quote(BASE) + "(client/|ProjectBenchClient\\b))[\\w/$]*");
 
     private static final Map<String, Set<String>> MAY_NAME = Map.of(
-            "block", Set.of("config"),
-            "blueprint", Set.of("block", "config", "registry"),
-            "block.archive", Set.of("block", "blueprint", "config", "registry"),
-            "block.bench", Set.of("", "block", "block.archive", "blueprint", "config", "registry"),
-            "config", Set.of("", "block", "registry"),
-            "registry", Set.of("", "block", "block.archive", "block.bench", "blueprint", "config"));
+            "block", Set.of("", "config"),
+            "blueprint", Set.of("", "block", "config"),
+            "block.archive", Set.of("", "block", "blueprint", "config"),
+            "block.bench", Set.of("", "block", "block.archive", "blueprint", "config"),
+            "config", Set.of("", "block"));
     private static final Map<String, Set<String>> EXCEPTIONS = Map.of(
             "block/archive/BlueprintArchiveMenu", Set.of("block.bench"),
             "config/Feature", Set.of("block.bench"));

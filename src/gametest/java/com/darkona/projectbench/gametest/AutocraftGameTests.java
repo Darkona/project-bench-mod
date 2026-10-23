@@ -1,5 +1,6 @@
 package com.darkona.projectbench.gametest;
 
+import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import dev.darkona.jdlib.api.world.RelativeSide;
 import com.darkona.projectbench.block.bench.AutoBenchBlock;
@@ -10,9 +11,6 @@ import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.SideMode;
-import com.darkona.projectbench.registry.ModBlocks;
-import com.darkona.projectbench.registry.ModComponents;
-import com.darkona.projectbench.registry.ModItems;
 import com.darkona.projectbench.config.ShareMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -56,7 +54,7 @@ public final class AutocraftGameTests {
     }
 
     private static ProjectBenchBlockEntity auto(GameTestHelper helper, boolean ejecting) {
-        helper.setBlock(BENCH, (ejecting ? ModBlocks.EJECTING_AUTO_PROJECT_BENCH : ModBlocks.AUTO_PROJECT_BENCH).get().defaultBlockState()
+        helper.setBlock(BENCH, (ejecting ? Content.Blocks.EJECTING_AUTO_PROJECT_BENCH : Content.Blocks.AUTO_PROJECT_BENCH).get().defaultBlockState()
                 .setValue(BenchBlock.FACING, Direction.NORTH));
         ProjectBenchBlockEntity bench = helper.getBlockEntity(BENCH);
         for (int i = 0; i < AutoMode.values().length && bench.autoMode() != AutoMode.ITEM; ++i) {
@@ -246,7 +244,7 @@ public final class AutocraftGameTests {
             Config.CONFIG.override(Config.Settings.builder().autocraft(false).autocraftDefault(true).build());
             helper.assertFalse(bench.automates() || bench.autocraftButton() != 0, "it does not automate and has no button");
             helper.assertTrue(Feature.allows(helper.getBlockState(BENCH).getBlock()), "it still opens and works");
-            helper.assertFalse(Feature.allows(ModItems.AUTO_PROJECT_BENCH.get()) || Feature.allows(ModItems.EJECTING_AUTO_PROJECT_BENCH.get()),
+            helper.assertFalse(Feature.allows(Content.Items.AUTO_PROJECT_BENCH.get()) || Feature.allows(Content.Items.EJECTING_AUTO_PROJECT_BENCH.get()),
                     "but no more can be placed");
             bench.craftOnPulse();
             helper.assertTrue(count(below, Items.STICK) == 0 && planks(bench) == 12, "a pulse crafts nothing");
@@ -254,7 +252,7 @@ public final class AutocraftGameTests {
                     "the sides are a plain bench's");
             bench.craft(player);
             helper.assertTrue(planks(bench) == 10, "crafting by hand works");
-            helper.assertTrue(upgrade(helper, upgradeGrid(new ItemStack(ModItems.PROJECT_BENCH.get()))).isEmpty(), "and the upgrade recipe does not match");
+            helper.assertTrue(upgrade(helper, upgradeGrid(new ItemStack(Content.Items.PROJECT_BENCH.get()))).isEmpty(), "and the upgrade recipe does not match");
         } finally {
             Config.CONFIG.clearOverride();
         }
@@ -276,19 +274,19 @@ public final class AutocraftGameTests {
     @GameTest(template = GameTests.EMPTY)
     public static void upgradingKeepsWhatTheBenchHolds(GameTestHelper helper) {
         ItemContainerContents held = ItemContainerContents.fromItems(List.of(new ItemStack(Items.DIAMOND, 3), ItemStack.EMPTY, new ItemStack(Items.STICK, 9)));
-        ItemStack bench = new ItemStack(ModItems.PROJECT_BENCH.get());
-        bench.set(ModComponents.CONTENTS.get(), held);
+        ItemStack bench = new ItemStack(Content.Items.PROJECT_BENCH.get());
+        bench.set(Content.Components.CONTENTS.get(), held);
         ItemContainerContents locks = ItemContainerContents.fromItems(List.of(ItemStack.EMPTY, new ItemStack(Items.DIAMOND)));
-        bench.set(ModComponents.SLOT_LOCKS.get(), locks);
+        bench.set(Content.Components.SLOT_LOCKS.get(), locks);
         ItemStack auto = upgrade(helper, upgradeGrid(bench));
-        helper.assertTrue(auto.is(ModItems.AUTO_PROJECT_BENCH.get()) && held.equals(auto.get(ModComponents.CONTENTS.get())),
+        helper.assertTrue(auto.is(Content.Items.AUTO_PROJECT_BENCH.get()) && held.equals(auto.get(Content.Components.CONTENTS.get())),
                 "a bench with contents makes an Auto with the same contents: " + auto);
-        helper.assertTrue(locks.equals(auto.get(ModComponents.SLOT_LOCKS.get())), "and the same slot locks");
+        helper.assertTrue(locks.equals(auto.get(Content.Components.SLOT_LOCKS.get())), "and the same slot locks");
         ItemStack ejecting = upgrade(helper, CraftingInput.of(2, 1, List.of(new ItemStack(Items.DROPPER), auto)));
-        helper.assertTrue(ejecting.is(ModItems.EJECTING_AUTO_PROJECT_BENCH.get()) && held.equals(ejecting.get(ModComponents.CONTENTS.get())),
+        helper.assertTrue(ejecting.is(Content.Items.EJECTING_AUTO_PROJECT_BENCH.get()) && held.equals(ejecting.get(Content.Components.CONTENTS.get())),
                 "an Auto and a dropper make the ejecting one, contents and all: " + ejecting);
-        ItemStack empty = upgrade(helper, upgradeGrid(new ItemStack(ModItems.PROJECT_BENCH.get())));
-        helper.assertTrue(empty.is(ModItems.AUTO_PROJECT_BENCH.get()) && !empty.has(ModComponents.CONTENTS.get()), "an empty bench, an empty Auto");
+        ItemStack empty = upgrade(helper, upgradeGrid(new ItemStack(Content.Items.PROJECT_BENCH.get())));
+        helper.assertTrue(empty.is(Content.Items.AUTO_PROJECT_BENCH.get()) && !empty.has(Content.Components.CONTENTS.get()), "an empty bench, an empty Auto");
 
         helper.setBlock(BENCH, Blocks.AIR);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -304,11 +302,11 @@ public final class AutocraftGameTests {
 
     @GameTest(template = GameTests.EMPTY)
     public static void anAutomaticBenchNeverJoinsASlab(GameTestHelper helper) {
-        place(helper, ModItems.AUTO_PROJECT_BENCH.get(), BENCH);
-        place(helper, ModItems.SLAB_PROJECT_BENCH.get(), BENCH.east());
+        place(helper, Content.Items.AUTO_PROJECT_BENCH.get(), BENCH);
+        place(helper, Content.Items.SLAB_PROJECT_BENCH.get(), BENCH.east());
         BlockPos slabFirst = new BlockPos(1, 1, 3);
-        place(helper, ModItems.SLAB_PROJECT_BENCH.get(), slabFirst);
-        place(helper, ModItems.EJECTING_AUTO_PROJECT_BENCH.get(), slabFirst.west());
+        place(helper, Content.Items.SLAB_PROJECT_BENCH.get(), slabFirst);
+        place(helper, Content.Items.EJECTING_AUTO_PROJECT_BENCH.get(), slabFirst.west());
         for (BlockPos at : new BlockPos[]{BENCH, BENCH.east(), slabFirst, slabFirst.west()}) {
             helper.assertTrue(helper.getBlockState(at).getValue(ProjectBenchBlock.TYPE) == ChestType.SINGLE
                     && ProjectBenchBlock.pair(helper.getBlockState(at), helper.getLevel(), helper.absolutePos(at)) == null,

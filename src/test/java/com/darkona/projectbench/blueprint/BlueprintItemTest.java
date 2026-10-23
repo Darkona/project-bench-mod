@@ -1,7 +1,6 @@
 package com.darkona.projectbench.blueprint;
 
-import com.darkona.projectbench.registry.ModComponents;
-import com.darkona.projectbench.registry.ModItems;
+import com.darkona.projectbench.Content;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -27,12 +26,12 @@ class BlueprintItemTest {
 
     @Test
     void equalRecipesStack() {
-        ItemStack a = new ItemStack(ModItems.BLUEPRINT.get());
-        ItemStack b = new ItemStack(ModItems.BLUEPRINT.get());
+        ItemStack a = new ItemStack(Content.Items.BLUEPRINT.get());
+        ItemStack b = new ItemStack(Content.Items.BLUEPRINT.get());
         assertNull(BlueprintItem.blueprint(a), "a new blueprint is blank");
         assertFalse(BlueprintItem.recorded(a));
-        a.set(ModComponents.BLUEPRINT.get(), sticks());
-        b.set(ModComponents.BLUEPRINT.get(), sticks());
+        a.set(Content.Components.BLUEPRINT.get(), sticks());
+        b.set(Content.Components.BLUEPRINT.get(), sticks());
         assertTrue(BlueprintItem.recorded(a));
         assertTrue(ItemStack.isSameItemSameComponents(a, b), "two blueprints of the same recipe are the same item");
         assertEquals(1, a.getMaxStackSize(), "a recorded blueprint does not stack");

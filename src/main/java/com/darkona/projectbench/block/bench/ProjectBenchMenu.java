@@ -1,5 +1,6 @@
 package com.darkona.projectbench.block.bench;
 
+import com.darkona.projectbench.Content;
 import dev.darkona.jdlib.api.inventory.GridFill;
 import dev.darkona.jdlib.api.inventory.Stacks;
 import dev.darkona.jdlib.api.inventory.Stock;
@@ -15,7 +16,6 @@ import com.darkona.projectbench.block.ContainerSlot;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
-import com.darkona.projectbench.registry.ModMenus;
 import dev.darkona.jdlib.api.menu.SlotMap;
 import dev.darkona.jdlib.api.menu.SlotMapped;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -207,7 +207,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
 
     private ProjectBenchMenu(int id, Inventory inventory, ProjectBenchBlockEntity bench, @Nullable ProjectBenchBlockEntity second,
                              ConcatContainer archives, List<ExternalInventories.Panel> panels) {
-        super(ModMenus.PROJECT_BENCH.get(), id);
+        super(Content.Menus.PROJECT_BENCH.get(), id);
         this.bench = bench;
         this.second = second;
         this.player = inventory.player;

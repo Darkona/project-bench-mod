@@ -10,14 +10,6 @@ import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.datagen.DataGen;
-import com.darkona.projectbench.registry.ModBlockEntities;
-import com.darkona.projectbench.registry.ModBlocks;
-import com.darkona.projectbench.registry.ModComponents;
-import com.darkona.projectbench.registry.ModConditions;
-import com.darkona.projectbench.registry.ModItems;
-import com.darkona.projectbench.registry.ModMenus;
-import com.darkona.projectbench.registry.ModRecipes;
-import com.darkona.projectbench.registry.ModTab;
 import dev.darkona.jdlib.api.compat.Bridges;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -34,14 +26,7 @@ public final class ProjectBench {
     public static final String MOD_ID = "projectbench";
 
     public ProjectBench(IEventBus modBus, ModContainer container) {
-        ModBlocks.BLOCKS.register(modBus);
-        ModItems.ITEMS.register(modBus);
-        ModBlockEntities.BLOCK_ENTITIES.register(modBus);
-        ModMenus.MENUS.register(modBus);
-        ModComponents.COMPONENTS.register(modBus);
-        ModTab.TABS.register(modBus);
-        ModConditions.CONDITIONS.register(modBus);
-        ModRecipes.SERIALIZERS.register(modBus);
+        Content.register(modBus);
         container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         container.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
         Config.register(modBus);
@@ -61,7 +46,7 @@ public final class ProjectBench {
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.PROJECT_BENCH.get(), ProjectBenchBlockEntity::itemHandler);
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.BLUEPRINT_ARCHIVE.get(), BlueprintArchiveBlockEntity::itemHandler);
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Content.BlockEntities.PROJECT_BENCH.get(), ProjectBenchBlockEntity::itemHandler);
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Content.BlockEntities.BLUEPRINT_ARCHIVE.get(), BlueprintArchiveBlockEntity::itemHandler);
     }
 }

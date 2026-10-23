@@ -1,5 +1,6 @@
 package com.darkona.projectbench.gametest;
 
+import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import dev.darkona.jdlib.api.world.RelativeSide;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
@@ -7,8 +8,6 @@ import com.darkona.projectbench.block.BenchBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.config.Config;
-import com.darkona.projectbench.registry.ModBlocks;
-import com.darkona.projectbench.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -39,7 +38,7 @@ public final class AutomationGameTests {
     }
 
     private static ProjectBenchBlockEntity bench(GameTestHelper helper, BlockPos at, Direction facing) {
-        helper.setBlock(at, ModBlocks.PROJECT_BENCH.get().defaultBlockState().setValue(BenchBlock.FACING, facing));
+        helper.setBlock(at, Content.Blocks.PROJECT_BENCH.get().defaultBlockState().setValue(BenchBlock.FACING, facing));
         return helper.getBlockEntity(at);
     }
 
@@ -79,7 +78,7 @@ public final class AutomationGameTests {
     }
 
     private static void recordSticks(GameTestHelper helper, ProjectBenchBlockEntity bench) {
-        bench.blueprintSlot().setItem(0, new ItemStack(ModItems.BLUEPRINT.get()));
+        bench.blueprintSlot().setItem(0, new ItemStack(Content.Items.BLUEPRINT.get()));
         bench.matrix().setItem(1, new ItemStack(Items.OAK_PLANKS));
         bench.matrix().setItem(4, new ItemStack(Items.OAK_PLANKS));
         bench.costSlot().setItem(0, new ItemStack(Items.WHITE_DYE));
@@ -186,13 +185,13 @@ public final class AutomationGameTests {
         IItemHandler front = handler(helper, BENCH, Direction.NORTH);
         helper.assertTrue(front.getSlots() == 2, "the blueprint slot and the cost slot: " + front.getSlots());
         helper.assertTrue(push(front, new ItemStack(Items.DIRT)).getCount() == 1, "dirt does not go in");
-        helper.assertTrue(push(front, new ItemStack(ModItems.BLUEPRINT.get(), 3)).getCount() == 2
+        helper.assertTrue(push(front, new ItemStack(Content.Items.BLUEPRINT.get(), 3)).getCount() == 2
                 && bench.blueprintSlot().getItem(0).getCount() == 1, "one blueprint goes in");
         helper.assertTrue(push(front, new ItemStack(Items.WHITE_DYE, 5)).isEmpty() && bench.costSlot().getItem(0).getCount() == 5,
                 "the dye goes into the cost slot");
         helper.assertTrue(bench.storage().isEmpty() && bench.matrix().isEmpty(), "and nowhere else");
         ItemStack out = front.extractItem(0, 64, false);
-        helper.assertTrue(out.is(ModItems.BLUEPRINT.get()) && bench.blueprintSlot().isEmpty(), "the blueprint comes out the front");
+        helper.assertTrue(out.is(Content.Items.BLUEPRINT.get()) && bench.blueprintSlot().isEmpty(), "the blueprint comes out the front");
         out = front.extractItem(1, 64, false);
         helper.assertTrue(out.is(Items.WHITE_DYE) && out.getCount() == 5 && bench.costSlot().isEmpty(), "and so does the dye");
         helper.succeed();
@@ -204,7 +203,7 @@ public final class AutomationGameTests {
         IItemHandler blueprintSide = handler(helper, BENCH, Direction.NORTH);
         try {
             Config.CONFIG.override(Config.Settings.builder().blueprint(false).build());
-            helper.assertTrue(blueprintSide.insertItem(0, new ItemStack(ModItems.BLUEPRINT.get()), false).getCount() == 1,
+            helper.assertTrue(blueprintSide.insertItem(0, new ItemStack(Content.Items.BLUEPRINT.get()), false).getCount() == 1,
                     "the blueprint view a pipe kept goes quiet");
             IItemHandler front = handler(helper, BENCH, Direction.NORTH);
             helper.assertTrue(front.getSlots() == ProjectBenchBlockEntity.STORAGE + ProjectBenchBlockEntity.MATRIX, "the front is an inventory side now");
@@ -259,32 +258,32 @@ public final class AutomationGameTests {
         IItemHandler after = cache.getCapability();
         helper.assertTrue(after != null && after.getSlots() == ProjectBenchBlockEntity.STORAGE + ProjectBenchBlockEntity.MATRIX,
                 "turned to face south, the pipe on the east asks again and gets a side: " + (after == null ? 0 : after.getSlots()));
-        helper.assertTrue(before.insertItem(0, new ItemStack(ModItems.BLUEPRINT.get()), false).getCount() == 1, "the old view went quiet");
+        helper.assertTrue(before.insertItem(0, new ItemStack(Content.Items.BLUEPRINT.get()), false).getCount() == 1, "the old view went quiet");
         helper.succeed();
     }
 
     @GameTest(template = GameTests.EMPTY)
     public static void theArchiveTakesBlueprintsAndGivesThemBelow(GameTestHelper helper) {
         BlockPos at = BENCH;
-        helper.setBlock(at, ModBlocks.BLUEPRINT_ARCHIVE.get());
+        helper.setBlock(at, Content.Blocks.BLUEPRINT_ARCHIVE.get());
         BlueprintArchiveBlockEntity archive = helper.getBlockEntity(at);
         IItemHandler side = handler(helper, at, Direction.WEST);
         helper.assertTrue(side.getSlots() == BlueprintArchiveBlockEntity.SLOTS, "the archive's 36 slots");
         helper.assertTrue(side.insertItem(0, new ItemStack(Items.DIRT, 3), false).getCount() == 3 && archive.blueprints().isEmpty(), "dirt does not go in");
-        helper.assertTrue(side.insertItem(0, new ItemStack(ModItems.BLUEPRINT.get(), 5), false).isEmpty(), "blueprints do");
+        helper.assertTrue(side.insertItem(0, new ItemStack(Content.Items.BLUEPRINT.get(), 5), false).isEmpty(), "blueprints do");
         helper.assertTrue(side.extractItem(0, 64, false).isEmpty(), "a side takes nothing out");
         ItemStack back = handler(helper, at, Direction.DOWN).extractItem(0, 64, false);
-        helper.assertTrue(back.is(ModItems.BLUEPRINT.get()) && back.getCount() == 5 && archive.blueprints().isEmpty(), "the bottom does");
+        helper.assertTrue(back.is(Content.Items.BLUEPRINT.get()) && back.getCount() == 5 && archive.blueprints().isEmpty(), "the bottom does");
         helper.succeed();
     }
 
     @GameTest(template = GameTests.EMPTY, batch = "projectbench_switches")
     public static void theArchivesSidesTurnWithIt(GameTestHelper helper) {
         BlockPos at = BENCH;
-        helper.setBlock(at, ModBlocks.BLUEPRINT_ARCHIVE.get().defaultBlockState().setValue(BenchBlock.FACING, Direction.EAST));
+        helper.setBlock(at, Content.Blocks.BLUEPRINT_ARCHIVE.get().defaultBlockState().setValue(BenchBlock.FACING, Direction.EAST));
         try {
             Config.CONFIG.override(Config.Settings.builder().archiveInsert(1 << RelativeSide.BACK.ordinal()).archiveExtract(1 << RelativeSide.FRONT.ordinal()).build());
-            ItemStack blueprint = new ItemStack(ModItems.BLUEPRINT.get(), 2);
+            ItemStack blueprint = new ItemStack(Content.Items.BLUEPRINT.get(), 2);
             helper.assertTrue(handler(helper, at, Direction.EAST).insertItem(0, blueprint, false).getCount() == 2, "facing east, the east is the front: no way in");
             helper.assertTrue(handler(helper, at, Direction.WEST).insertItem(0, blueprint, false).isEmpty(), "the west is the back: in");
             helper.assertTrue(handler(helper, at, Direction.WEST).extractItem(0, 64, false).isEmpty(), "but not out");

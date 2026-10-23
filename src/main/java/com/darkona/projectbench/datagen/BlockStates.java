@@ -1,5 +1,6 @@
 package com.darkona.projectbench.datagen;
 
+import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.BenchBlock;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlock;
@@ -7,7 +8,6 @@ import com.darkona.projectbench.block.archive.BlueprintArchiveBlock.ColumnPart;
 import com.darkona.projectbench.block.bench.AutoBenchBlock;
 import com.darkona.projectbench.block.bench.BenchSlabBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
-import com.darkona.projectbench.registry.ModBlocks;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
@@ -32,13 +32,13 @@ final class BlockStates extends BlockStateProvider {
         ResourceLocation bottom = modLoc("block/project_bench_bottom");
         ModelFile bench = models().orientableWithBottom("project_bench", modLoc("block/project_bench_side"),
                 modLoc("block/project_bench_front"), bottom, modLoc("block/project_bench_top"));
-        getVariantBuilder(ModBlocks.PROJECT_BENCH.get()).forAllStatesExcept(state -> ConfiguredModel.builder().modelFile(bench)
+        getVariantBuilder(Content.Blocks.PROJECT_BENCH.get()).forAllStatesExcept(state -> ConfiguredModel.builder().modelFile(bench)
                 .rotationY(((int) state.getValue(BenchBlock.FACING).toYRot() + 180) % 360).build(), ProjectBenchBlock.TYPE);
-        simpleBlockItem(ModBlocks.PROJECT_BENCH.get(), bench);
+        simpleBlockItem(Content.Blocks.PROJECT_BENCH.get(), bench);
 
         slab();
-        automatic(ModBlocks.AUTO_PROJECT_BENCH.get(), "auto_project_bench", false);
-        automatic(ModBlocks.EJECTING_AUTO_PROJECT_BENCH.get(), "ejecting_auto_project_bench", true);
+        automatic(Content.Blocks.AUTO_PROJECT_BENCH.get(), "auto_project_bench", false);
+        automatic(Content.Blocks.EJECTING_AUTO_PROJECT_BENCH.get(), "ejecting_auto_project_bench", true);
 
         Map<ColumnPart, ModelFile> parts = new EnumMap<>(ColumnPart.class);
         for (ColumnPart part : ColumnPart.values()) {
@@ -47,13 +47,13 @@ final class BlockStates extends BlockStateProvider {
             parts.put(part, models().orientableWithBottom("blueprint_archive" + suffix, modLoc("block/blueprint_archive_side"),
                     modLoc("block/blueprint_archive_front" + suffix), mcLoc("block/oak_planks"), mcLoc("block/chiseled_bookshelf_top")));
         }
-        horizontalBlock(ModBlocks.BLUEPRINT_ARCHIVE.get(), state -> parts.get(state.getValue(BlueprintArchiveBlock.PART)));
-        simpleBlockItem(ModBlocks.BLUEPRINT_ARCHIVE.get(), parts.get(ColumnPart.SINGLE));
+        horizontalBlock(Content.Blocks.BLUEPRINT_ARCHIVE.get(), state -> parts.get(state.getValue(BlueprintArchiveBlock.PART)));
+        simpleBlockItem(Content.Blocks.BLUEPRINT_ARCHIVE.get(), parts.get(ColumnPart.SINGLE));
     }
 
     private void slab() {
         ModelFile board = slabModel("slab_project_bench_board", true, false, false, false, false);
-        MultiPartBlockStateBuilder states = getMultipartBuilder(ModBlocks.SLAB_PROJECT_BENCH.get());
+        MultiPartBlockStateBuilder states = getMultipartBuilder(Content.Blocks.SLAB_PROJECT_BENCH.get());
         for (Direction facing : Direction.Plane.HORIZONTAL) {
             states.part().modelFile(board).rotationY(((int) facing.toYRot() + 180) % 360).addModel().condition(BenchBlock.FACING, facing).end();
         }
@@ -65,7 +65,7 @@ final class BlockStates extends BlockStateProvider {
                 states.part().modelFile(leg).addModel().condition(BenchSlabBlock.legs(ns), true).condition(BenchSlabBlock.legs(we), true).end();
             }
         }
-        simpleBlockItem(ModBlocks.SLAB_PROJECT_BENCH.get(), slabModel("slab_project_bench", true, true, true, true, true));
+        simpleBlockItem(Content.Blocks.SLAB_PROJECT_BENCH.get(), slabModel("slab_project_bench", true, true, true, true, true));
     }
 
     private void automatic(Block block, String name, boolean ejecting) {

@@ -1,5 +1,6 @@
 package com.darkona.projectbench.gametest;
 
+import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
@@ -7,8 +8,6 @@ import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.BreakMode;
 import com.darkona.projectbench.config.Config;
-import com.darkona.projectbench.registry.ModBlocks;
-import com.darkona.projectbench.registry.ModComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -48,7 +47,7 @@ public final class SlotLockGameTests {
     }
 
     private static ProjectBenchBlockEntity bench(GameTestHelper helper) {
-        helper.setBlock(BENCH, ModBlocks.PROJECT_BENCH.get());
+        helper.setBlock(BENCH, Content.Blocks.PROJECT_BENCH.get());
         return helper.getBlockEntity(BENCH);
     }
 
@@ -197,7 +196,7 @@ public final class SlotLockGameTests {
         try {
             Config.CONFIG.override(Config.Settings.builder().benchOnBreak(BreakMode.SILK_TOUCH).archiveOnBreak(BreakMode.DROP_ALL).build());
             ItemStack dropped = breakWithSilkTouch(helper);
-            helper.assertTrue(dropped.has(ModComponents.SLOT_LOCKS.get()), "the bench broken with Silk Touch keeps its locks");
+            helper.assertTrue(dropped.has(Content.Components.SLOT_LOCKS.get()), "the bench broken with Silk Touch keeps its locks");
             ProjectBenchBlockEntity placed = bench(helper);
             placed.applyComponentsFromItemStack(dropped);
             helper.assertTrue(lockedTo(placed, 2, cobble) && placed.storage().getItem(2).getCount() == 2, "placed again, locked again");

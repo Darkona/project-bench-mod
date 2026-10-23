@@ -1,11 +1,11 @@
 package com.darkona.projectbench.block.archive;
 
+import com.darkona.projectbench.Content;
 import dev.darkona.jdlib.api.inventory.ConcatContainer;
 import dev.darkona.jdlib.api.inventory.Stacks;
 import com.darkona.projectbench.block.BenchMenu;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.config.Config;
-import com.darkona.projectbench.registry.ModMenus;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,7 +30,7 @@ public class BlueprintArchiveMenu extends BenchMenu {
     }
 
     public BlueprintArchiveMenu(int id, Inventory inventory, @Nullable ConcatContainer shelf, int blocks) {
-        super(ModMenus.BLUEPRINT_ARCHIVE.get(), id);
+        super(Content.Menus.BLUEPRINT_ARCHIVE.get(), id);
         this.totalRows = Math.max(1, blocks) * BlueprintArchiveBlockEntity.SLOTS / COLUMNS;
         this.rows = Math.min(totalRows, MAX_ROWS);
         this.server = shelf != null;

@@ -1,5 +1,6 @@
 package com.darkona.projectbench.block.archive;
 
+import com.darkona.projectbench.Content;
 import dev.darkona.jdlib.api.inventory.ConcatContainer;
 import com.darkona.projectbench.block.BenchMenu;
 import com.darkona.projectbench.block.BenchBlockEntity;
@@ -9,8 +10,6 @@ import dev.darkona.jdlib.api.inventory.SidedItemHandler;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
-import com.darkona.projectbench.registry.ModComponents;
-import com.darkona.projectbench.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -69,7 +68,7 @@ public class BlueprintArchiveBlockEntity extends BenchBlockEntity implements Men
     private ConcatContainer shelf;
 
     public BlueprintArchiveBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.BLUEPRINT_ARCHIVE.get(), pos, state);
+        super(Content.BlockEntities.BLUEPRINT_ARCHIVE.get(), pos, state);
     }
 
     public BlueprintContainer blueprints() {
@@ -180,14 +179,14 @@ public class BlueprintArchiveBlockEntity extends BenchBlockEntity implements Men
     protected void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
         if (keeping()) {
-            components.set(ModComponents.CONTENTS.get(), ItemContainerContents.fromItems(blueprints.getItems()));
+            components.set(Content.Components.CONTENTS.get(), ItemContainerContents.fromItems(blueprints.getItems()));
         }
     }
 
     @Override
     protected void applyImplicitComponents(DataComponentInput input) {
         super.applyImplicitComponents(input);
-        ItemContainerContents contents = input.get(ModComponents.CONTENTS);
+        ItemContainerContents contents = input.get(Content.Components.CONTENTS);
         if (contents != null) {
             contents.copyInto(blueprints.getItems());
         }

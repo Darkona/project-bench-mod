@@ -1,12 +1,12 @@
 package com.darkona.projectbench.gametest;
 
+import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.block.bench.HandsOff;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.block.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.ShareMode;
-import com.darkona.projectbench.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -45,7 +45,7 @@ public final class HandsOffGameTests {
     }
 
     private static Setup setup(GameTestHelper helper) {
-        helper.setBlock(BENCH, ModBlocks.PROJECT_BENCH.get());
+        helper.setBlock(BENCH, Content.Blocks.PROJECT_BENCH.get());
         helper.setBlock(BENCH.west(), Blocks.BARREL);
         helper.setBlock(BENCH.east(), Blocks.TRAPPED_CHEST);
         ProjectBenchBlockEntity bench = helper.getBlockEntity(BENCH);

@@ -1,9 +1,9 @@
 package com.darkona.projectbench.block.bench;
 
+import com.darkona.projectbench.Content;
 import dev.darkona.jdlib.api.inventory.Stock;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
-import com.darkona.projectbench.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -144,7 +144,7 @@ public final class ExternalInventories implements Stock {
         BlockPos at = probe.setWithOffset(bench.getBlockPos(), side);
         BlockCapabilityCache<IItemHandler, Direction> cache = caches.existing(sideIndex);
         Block there = cache != null && kinds[sideIndex] != UNKNOWN ? blocks[sideIndex] : server.getBlockState(at).getBlock();
-        if (there == ModBlocks.BLUEPRINT_ARCHIVE.get() || !Feature.allows(there)) {
+        if (there == Content.Blocks.BLUEPRINT_ARCHIVE.get() || !Feature.allows(there)) {
             return null;
         }
         if (cache == null) {

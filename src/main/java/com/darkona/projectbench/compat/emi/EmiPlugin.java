@@ -1,8 +1,8 @@
 package com.darkona.projectbench.compat.emi;
 
+import com.darkona.projectbench.Content;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
 import com.darkona.projectbench.config.ClientConfig;
-import com.darkona.projectbench.registry.ModBlocks;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
@@ -16,7 +16,7 @@ public final class EmiPlugin implements dev.emi.emi.api.EmiPlugin {
         if (!ClientConfig.emi()) {
             return;
         }
-        for (DeferredBlock<ProjectBenchBlock> bench : ModBlocks.BENCHES) {
+        for (DeferredBlock<ProjectBenchBlock> bench : Content.Blocks.BENCHES) {
             registry.addWorkstation(VanillaEmiRecipeCategories.CRAFTING, EmiStack.of(bench.get()));
         }
     }

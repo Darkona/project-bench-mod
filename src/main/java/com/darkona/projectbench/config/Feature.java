@@ -1,8 +1,7 @@
 package com.darkona.projectbench.config;
 
+import com.darkona.projectbench.Content;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
-import com.darkona.projectbench.registry.ModBlocks;
-import com.darkona.projectbench.registry.ModItems;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -28,12 +27,12 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.Nullable;
 
 public enum Feature {
-    BENCH(Config.Settings::bench, ModItems.PROJECT_BENCH),
-    SLAB_BENCH(s -> s.bench() && s.slab(), ModItems.SLAB_PROJECT_BENCH),
-    AUTOCRAFT(s -> s.bench() && s.autocraft(), ModItems.AUTO_PROJECT_BENCH),
-    EJECTING(s -> s.bench() && s.autocraft(), ModItems.EJECTING_AUTO_PROJECT_BENCH),
-    BLUEPRINT(s -> s.bench() && s.blueprint(), ModItems.BLUEPRINT),
-    ARCHIVE(s -> s.bench() && s.blueprint() && s.archive(), ModItems.BLUEPRINT_ARCHIVE);
+    BENCH(Config.Settings::bench, Content.Items.PROJECT_BENCH),
+    SLAB_BENCH(s -> s.bench() && s.slab(), Content.Items.SLAB_PROJECT_BENCH),
+    AUTOCRAFT(s -> s.bench() && s.autocraft(), Content.Items.AUTO_PROJECT_BENCH),
+    EJECTING(s -> s.bench() && s.autocraft(), Content.Items.EJECTING_AUTO_PROJECT_BENCH),
+    BLUEPRINT(s -> s.bench() && s.blueprint(), Content.Items.BLUEPRINT),
+    ARCHIVE(s -> s.bench() && s.blueprint() && s.archive(), Content.Items.BLUEPRINT_ARCHIVE);
 
     private static final Feature[] VALUES = values();
 
@@ -92,7 +91,7 @@ public enum Feature {
         if (block instanceof ProjectBenchBlock bench && bench.kind().automatic()) {
             return BENCH.enabled();
         }
-        return !(block instanceof ProjectBenchBlock) && block != ModBlocks.BLUEPRINT_ARCHIVE.get() || allows(block.asItem());
+        return !(block instanceof ProjectBenchBlock) && block != Content.Blocks.BLUEPRINT_ARCHIVE.get() || allows(block.asItem());
     }
 
     public static void refuse(@Nullable Player player, ItemLike thing) {

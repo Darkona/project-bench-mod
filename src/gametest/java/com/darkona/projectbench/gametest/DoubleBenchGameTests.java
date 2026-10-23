@@ -1,5 +1,6 @@
 package com.darkona.projectbench.gametest;
 
+import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.block.BenchBlock;
@@ -11,7 +12,6 @@ import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.block.bench.RecordRecipe;
-import com.darkona.projectbench.registry.ModItems;
 import com.darkona.projectbench.config.ShareMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -113,8 +113,8 @@ public final class DoubleBenchGameTests {
 
     @GameTest(template = GameTests.EMPTY)
     public static void aSlabJoinsASlabOrABenchBesideIt(GameTestHelper helper) {
-        Item slab = ModItems.SLAB_PROJECT_BENCH.get();
-        Item bench = ModItems.PROJECT_BENCH.get();
+        Item slab = Content.Items.SLAB_PROJECT_BENCH.get();
+        Item bench = Content.Items.PROJECT_BENCH.get();
         BlockPos a = new BlockPos(1, 1, 0);
         place(helper, slab, a);
         place(helper, slab, a.east());
@@ -162,8 +162,8 @@ public final class DoubleBenchGameTests {
 
     @GameTest(template = GameTests.EMPTY)
     public static void threeInARowMakeOnePair(GameTestHelper helper) {
-        Item slab = ModItems.SLAB_PROJECT_BENCH.get();
-        Item bench = ModItems.PROJECT_BENCH.get();
+        Item slab = Content.Items.SLAB_PROJECT_BENCH.get();
+        Item bench = Content.Items.PROJECT_BENCH.get();
         BlockPos a = new BlockPos(0, 1, 0);
         place(helper, slab, a);
         place(helper, slab, a.east());
@@ -201,11 +201,11 @@ public final class DoubleBenchGameTests {
     public static void slabSwitchedOff(GameTestHelper helper) {
         BlockPos bench = new BlockPos(1, 1, 1);
         BlockPos slab = bench.east();
-        place(helper, ModItems.PROJECT_BENCH.get(), bench);
-        place(helper, ModItems.SLAB_PROJECT_BENCH.get(), slab);
+        place(helper, Content.Items.PROJECT_BENCH.get(), bench);
+        place(helper, Content.Items.SLAB_PROJECT_BENCH.get(), slab);
         assertPair(helper, slab, bench, "switched on");
         BlockPos lone = new BlockPos(1, 1, 3);
-        place(helper, ModItems.SLAB_PROJECT_BENCH.get(), lone);
+        place(helper, Content.Items.SLAB_PROJECT_BENCH.get(), lone);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         try {
             Config.CONFIG.override(Config.Settings.builder().slab(false).slabShare(true).build());
@@ -218,9 +218,9 @@ public final class DoubleBenchGameTests {
                     new BlockHitResult(Vec3.atCenterOf(helper.absolutePos(bench)), Direction.NORTH, helper.absolutePos(bench), false)).isCanceled(),
                     "the bench beside it opens its own window");
             BlockPos more = new BlockPos(1, 1, 4);
-            place(helper, ModItems.SLAB_PROJECT_BENCH.get(), more);
+            place(helper, Content.Items.SLAB_PROJECT_BENCH.get(), more);
             helper.assertTrue(helper.getBlockState(more).isAir(), "a slab switched off is not placed");
-            place(helper, ModItems.PROJECT_BENCH.get(), lone.east());
+            place(helper, Content.Items.PROJECT_BENCH.get(), lone.east());
             helper.assertTrue(type(helper, lone.east()) == ChestType.SINGLE && type(helper, lone) == ChestType.SINGLE,
                     "a bench placed beside a slab switched off does not join it");
         } finally {
@@ -234,8 +234,8 @@ public final class DoubleBenchGameTests {
     public static void breakingOneHalfDropsOnlyItsOwn(GameTestHelper helper) {
         BlockPos bench = new BlockPos(1, 1, 1);
         BlockPos slab = bench.east();
-        place(helper, ModItems.PROJECT_BENCH.get(), bench);
-        place(helper, ModItems.SLAB_PROJECT_BENCH.get(), slab);
+        place(helper, Content.Items.PROJECT_BENCH.get(), bench);
+        place(helper, Content.Items.SLAB_PROJECT_BENCH.get(), slab);
         assertPair(helper, slab, bench, "bench and slab");
         ProjectBenchBlockEntity left = helper.getBlockEntity(slab);
         ProjectBenchBlockEntity right = helper.getBlockEntity(bench);
@@ -245,19 +245,19 @@ public final class DoubleBenchGameTests {
 
         helper.getLevel().destroyBlock(helper.absolutePos(slab), true);
         assertAlone(helper, bench, "the bench left behind");
-        helper.assertTrue(dropped(helper, Items.COBBLESTONE) == 3 && dropped(helper, Items.STICK) == 1 && dropped(helper, ModItems.SLAB_PROJECT_BENCH.get()) == 1,
+        helper.assertTrue(dropped(helper, Items.COBBLESTONE) == 3 && dropped(helper, Items.STICK) == 1 && dropped(helper, Content.Items.SLAB_PROJECT_BENCH.get()) == 1,
                 "the slab drops itself and what it held");
         helper.assertTrue(dropped(helper, Items.DIRT) == 0 && GameTests.count(right.storage(), Items.DIRT) == 7, "the bench keeps its own");
 
         helper.getLevel().destroyBlock(helper.absolutePos(bench), true);
-        helper.assertTrue(dropped(helper, Items.DIRT) == 7 && dropped(helper, ModItems.PROJECT_BENCH.get()) == 1
+        helper.assertTrue(dropped(helper, Items.DIRT) == 7 && dropped(helper, Content.Items.PROJECT_BENCH.get()) == 1
                 && dropped(helper, Items.COBBLESTONE) == 3 && dropped(helper, Items.STICK) == 1, "then the bench drops its own, nothing twice");
         helper.succeed();
     }
 
     static ProjectBenchBlock.Pair joinedAt(GameTestHelper helper, BlockPos at) {
-        place(helper, ModItems.PROJECT_BENCH.get(), at);
-        place(helper, ModItems.SLAB_PROJECT_BENCH.get(), at.east());
+        place(helper, Content.Items.PROJECT_BENCH.get(), at);
+        place(helper, Content.Items.SLAB_PROJECT_BENCH.get(), at.east());
         assertPair(helper, at.east(), at, "bench and slab");
         return new ProjectBenchBlock.Pair(helper.getBlockEntity(at.east()), helper.getBlockEntity(at));
     }
@@ -377,8 +377,8 @@ public final class DoubleBenchGameTests {
     @GameTest(template = GameTests.EMPTY, batch = "projectbench_switches")
     public static void aBenchSwitchedOffIsNotBeside(GameTestHelper helper) {
         BlockPos at = new BlockPos(1, 1, 1);
-        place(helper, ModItems.PROJECT_BENCH.get(), at);
-        place(helper, ModItems.SLAB_PROJECT_BENCH.get(), at.south(), Direction.UP, WEST, false);
+        place(helper, Content.Items.PROJECT_BENCH.get(), at);
+        place(helper, Content.Items.SLAB_PROJECT_BENCH.get(), at.south(), Direction.UP, WEST, false);
         assertAlone(helper, at, "a slab behind the bench");
         ProjectBenchBlockEntity bench = helper.getBlockEntity(at);
         ProjectBenchBlockEntity slab = helper.getBlockEntity(at.south());
@@ -431,7 +431,7 @@ public final class DoubleBenchGameTests {
 
     @GameTest(template = GameTests.EMPTY)
     public static void aSideAgainstASolidFaceHasNoLegs(GameTestHelper helper) {
-        Item slab = ModItems.SLAB_PROJECT_BENCH.get();
+        Item slab = Content.Items.SLAB_PROJECT_BENCH.get();
         BlockPos at = new BlockPos(2, 1, 2);
         place(helper, slab, at);
         assertLegs(helper, at, "NSWE", "on its own");
@@ -461,8 +461,8 @@ public final class DoubleBenchGameTests {
 
     @GameTest(template = GameTests.EMPTY)
     public static void aPairHasNoLegsInsideAndAPileKeepsThem(GameTestHelper helper) {
-        Item slab = ModItems.SLAB_PROJECT_BENCH.get();
-        Item bench = ModItems.PROJECT_BENCH.get();
+        Item slab = Content.Items.SLAB_PROJECT_BENCH.get();
+        Item bench = Content.Items.PROJECT_BENCH.get();
         BlockPos a = new BlockPos(1, 1, 2);
         place(helper, slab, a);
         place(helper, slab, a.east());
@@ -534,8 +534,8 @@ public final class DoubleBenchGameTests {
         Player player = playerAt(helper, at);
         ProjectBenchMenu menu = station(pair.first(), player);
         player.containerMenu = menu;
-        pair.first().blueprintSlot().setItem(0, new ItemStack(ModItems.BLUEPRINT.get()));
-        pair.second().blueprintSlot().setItem(0, new ItemStack(ModItems.BLUEPRINT.get()));
+        pair.first().blueprintSlot().setItem(0, new ItemStack(Content.Items.BLUEPRINT.get()));
+        pair.second().blueprintSlot().setItem(0, new ItemStack(Content.Items.BLUEPRINT.get()));
         pair.second().storage().setItem(0, new ItemStack(Items.STICK));
         pair.second().costSlot().setItem(0, new ItemStack(Items.WHITE_DYE));
         makeActive(helper, menu, player, 1);
@@ -561,7 +561,7 @@ public final class DoubleBenchGameTests {
         helper.assertTrue(left.x == ProjectBenchMenu.halfX(0, ProjectBenchMenu.COST_X, 16) && right.x == ProjectBenchMenu.halfX(1, ProjectBenchMenu.COST_X, 16)
                 && left.x + right.x + 16 == ProjectBenchMenu.STATION_WIDTH, "in mirror, each beside its own blueprint");
         for (ProjectBenchBlockEntity half : new ProjectBenchBlockEntity[]{pair.first(), pair.second()}) {
-            half.blueprintSlot().setItem(0, new ItemStack(ModItems.BLUEPRINT.get()));
+            half.blueprintSlot().setItem(0, new ItemStack(Content.Items.BLUEPRINT.get()));
             layOutSticks(half);
         }
         pair.first().costSlot().setItem(0, new ItemStack(Items.WHITE_DYE, 2));
@@ -598,7 +598,7 @@ public final class DoubleBenchGameTests {
     @GameTest(template = GameTests.EMPTY)
     public static void aBenchAloneOpensItsOwnWindow(GameTestHelper helper) {
         BlockPos at = new BlockPos(1, 2, 2);
-        place(helper, ModItems.SLAB_PROJECT_BENCH.get(), at);
+        place(helper, Content.Items.SLAB_PROJECT_BENCH.get(), at);
         ProjectBenchBlockEntity slab = helper.getBlockEntity(at);
         ProjectBenchBlockEntity.Opening opening = slab.opening();
         ProjectBenchMenu menu = opening.menu(0, playerAt(helper, at).getInventory());

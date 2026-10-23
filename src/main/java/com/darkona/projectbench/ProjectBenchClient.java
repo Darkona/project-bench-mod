@@ -8,10 +8,6 @@ import com.darkona.projectbench.client.ProjectBenchRenderer;
 import com.darkona.projectbench.client.ProjectBenchView;
 import com.darkona.projectbench.compat.polymorph.PolymorphCompat;
 import com.darkona.projectbench.compat.xei.BenchXei;
-import com.darkona.projectbench.registry.ModBlockEntities;
-import com.darkona.projectbench.registry.ModItems;
-import com.darkona.projectbench.registry.ModMenus;
-import com.darkona.projectbench.registry.ModComponents;
 import dev.darkona.jdlib.api.ui.client.JDMenus;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -35,18 +31,18 @@ import net.neoforged.neoforge.common.NeoForge;
 public final class ProjectBenchClient {
     public ProjectBenchClient(IEventBus modBus) {
         modBus.addListener((RegisterMenuScreensEvent e) -> {
-            JDMenus.register(e, ModMenus.PROJECT_BENCH, new ProjectBenchView());
-            JDMenus.register(e, ModMenus.BLUEPRINT_ARCHIVE, new BlueprintArchiveView());
+            JDMenus.register(e, Content.Menus.PROJECT_BENCH, new ProjectBenchView());
+            JDMenus.register(e, Content.Menus.BLUEPRINT_ARCHIVE, new BlueprintArchiveView());
         });
         modBus.addListener((RegisterKeyMappingsEvent e) -> e.register(ProjectBenchView.SWITCH_MATRIX));
         modBus.addListener((EntityRenderersEvent.RegisterRenderers e) ->
-                e.registerBlockEntityRenderer(ModBlockEntities.PROJECT_BENCH.get(), ProjectBenchRenderer::new));
-        modBus.addListener((FMLClientSetupEvent e) -> e.enqueueWork(() -> ItemProperties.register(ModItems.BLUEPRINT.get(),
+                e.registerBlockEntityRenderer(Content.BlockEntities.PROJECT_BENCH.get(), ProjectBenchRenderer::new));
+        modBus.addListener((FMLClientSetupEvent e) -> e.enqueueWork(() -> ItemProperties.register(Content.Items.BLUEPRINT.get(),
                 ProjectBench.id("recorded"), (stack, level, entity, seed) -> BlueprintItem.blueprint(stack) == null ? 0F : 1F)));
         modBus.addListener((RegisterClientReloadListenersEvent e) -> e.registerReloadListener((ResourceManagerReloadListener) manager -> BlockTint.forget()));
 
         NeoForge.EVENT_BUS.addListener((ItemTooltipEvent e) -> {
-            ItemContainerContents contents = e.getItemStack().get(ModComponents.CONTENTS);
+            ItemContainerContents contents = e.getItemStack().get(Content.Components.CONTENTS);
             if (contents != null) {
                 e.getToolTip().add(Component.translatable("tooltip." + ProjectBench.MOD_ID + ".contents", contents.nonEmptyStream().count()).withStyle(ChatFormatting.GRAY));
             }
