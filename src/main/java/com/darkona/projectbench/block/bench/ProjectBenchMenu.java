@@ -2,7 +2,6 @@ package com.darkona.projectbench.block.bench;
 
 import com.darkona.projectbench.Content;
 import dev.darkona.jdlib.api.inventory.GridFill;
-import dev.darkona.jdlib.api.inventory.Stacks;
 import dev.darkona.jdlib.api.inventory.Stock;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.block.BenchMenu;
@@ -20,7 +19,6 @@ import com.darkona.projectbench.block.bench.BenchSlots.RealOutsideSlot;
 import com.darkona.projectbench.block.bench.BenchSlots.RealProcessorSlot;
 import com.darkona.projectbench.block.bench.BenchSlots.ResultSlot;
 import com.darkona.projectbench.config.Config;
-import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
 import dev.darkona.jdlib.api.menu.SlotMap;
 import dev.darkona.jdlib.api.menu.SlotMapped;
@@ -36,11 +34,9 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.anti_ad.mc.ipn.api.IPNSlotsIgnoreForInventoryTypes;
 import org.jetbrains.annotations.Nullable;
 
@@ -118,20 +114,21 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     public static final int STATION_STORAGE_X = (STATION_WIDTH - 9 * 18) / 2 + 1;
     public static final int STATION_PLAYER_Y = PLAYER_Y + 36;
 
-    private final ProjectBenchBlockEntity bench;
+    final ProjectBenchBlockEntity bench;
     @Nullable
-    private final ProjectBenchBlockEntity second;
+    final ProjectBenchBlockEntity second;
     final Player player;
 
-    private final ConcatContainer archives;
+    final ConcatContainer archives;
 
-    private final List<ExternalInventories.Panel> outsidePanels;
+    final List<ExternalInventories.Panel> outsidePanels;
 
     private final int outsideStart;
     private final int secondStart;
-    private final int costStart;
+    final int costStart;
     private final int processorStart;
     private final SlotMap slotMap;
+    private final QuickMove moves = new QuickMove(this);
 
     private int openTab;
     private int outsideScroll;
@@ -349,7 +346,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         return benchOf(active());
     }
 
-    private int base(int which) {
+    int base(int which) {
         return which == 1 && second != null ? secondStart : 0;
     }
 
@@ -393,7 +390,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
 
     @Override
     public void clicked(int index, int button, ClickType type, Player player) {
-        if (index >= 0 && index < slots.size() && slots.get(index) instanceof OutsideSlot outside && outsideClick(outside, button, type, player)) {
+        if (index >= 0 && index < slots.size() && slots.get(index) instanceof OutsideSlot outside && moves.outsideClick(outside, button, type, player)) {
             return;
         }
         if (type == ClickType.CLONE && Config.get().slotLocks()) {
@@ -406,46 +403,6 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
             }
         }
         super.clicked(index, button, type, player);
-    }
-
-    private boolean outsideClick(OutsideSlot slot, int button, ClickType type, Player player) {
-        ItemStack present = slot.getItem();
-        int stack = present.getMaxStackSize();
-        boolean oversized = present.getCount() > stack;
-        if (type == ClickType.SWAP && (button >= 0 && button < Inventory.getSelectionSize() || button == Inventory.SLOT_OFFHAND)) {
-            Inventory inventory = player.getInventory();
-            if (present.isEmpty()) {
-                return false;
-            }
-            if (!inventory.getItem(button).isEmpty()) {
-                return oversized;
-            }
-            if (slot.mayPickup(player)) {
-                inventory.setItem(button, slot.safeTake(Math.min(present.getCount(), stack), Integer.MAX_VALUE, player));
-            }
-            return true;
-        }
-        if (!oversized || button != 0 && button != 1) {
-            return false;
-        }
-        if (type == ClickType.QUICK_MOVE) {
-            if (slot.mayPickup(player)) {
-                quickMoveStack(player, slot.index);
-            }
-            return true;
-        }
-        if (type == ClickType.PICKUP) {
-            ItemStack carried = getCarried();
-            if (carried.isEmpty()) {
-                slot.tryRemove(button == 0 ? stack : (stack + 1) / 2, Integer.MAX_VALUE, player).ifPresent(taken -> {
-                    setCarried(taken);
-                    slot.onTake(player, taken);
-                });
-                return true;
-            }
-            return true;
-        }
-        return false;
     }
 
     public int halfOf(int index) {
@@ -633,55 +590,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     public boolean recordRecipe(RecipeHolder<CraftingRecipe> holder, boolean fill) {
-        ProjectBenchBlockEntity target = activeBench();
-        if (!target.record(holder)) {
-            return false;
-        }
-        Blueprint recorded = target.blueprint();
-        List<Ingredient> grid = Blueprint.grid(holder.value());
-        if (!fill || recorded == null || grid == null) {
-            return true;
-        }
-        List<Slot> stock = stockSlots();
-        int start = matrixStart(active());
-        for (int i = 0; i < ProjectBenchBlockEntity.MATRIX; ++i) {
-            Slot at = slots.get(start + i);
-            Ingredient want = grid.get(i);
-            ItemStack held = at.getItem();
-            if (!held.isEmpty() && !want.test(held)) {
-                ItemStack rest = held.copy();
-                intoStorage(rest, active());
-                if (!rest.isEmpty()) {
-                    moveItemStackTo(rest, PLAYER_START, PLAYER_END, false);
-                }
-                at.set(rest);
-            }
-            if (!want.isEmpty() && at.getItem().isEmpty()) {
-                Slot from = source(stock, recorded.ghost(i), want);
-                if (from != null) {
-                    at.set(from.remove(1));
-                }
-            }
-        }
-        return true;
-    }
-
-    @Nullable
-    private Slot source(List<Slot> stock, ItemStack ghost, Ingredient want) {
-        Slot any = null;
-        for (Slot slot : stock) {
-            ItemStack s = slot.getItem();
-            if (s.isEmpty() || !want.test(s) || !slot.mayPickup(player)) {
-                continue;
-            }
-            if (s.is(ghost.getItem())) {
-                return slot;
-            }
-            if (any == null) {
-                any = slot;
-            }
-        }
-        return any;
+        return moves.recordRecipe(holder, fill);
     }
 
     @Override
@@ -763,286 +672,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         if (slot < 0 || slot >= archiveSlots()) {
             return false;
         }
-        return !server || (getCarried().isEmpty() ? swap(slot) : store(slot));
-    }
-
-    @Nullable
-    private Container archiveOf(int slot) {
-        Container archive = archives.partOf(slot);
-        return archive.stillValid(player) ? archive : null;
-    }
-
-    private boolean store(int slot) {
-        ItemStack carried = getCarried();
-        Container archive = archiveOf(slot);
-        int slotInArchive = slot % BlueprintArchiveBlockEntity.SLOTS;
-        if (archive == null || !BlueprintItem.recorded(carried) || !archive.canPlaceItem(slotInArchive, carried)) {
-            return false;
-        }
-        ItemStack stored = archive.getItem(slotInArchive);
-        int max = Math.min(archive.getMaxStackSize(carried), carried.getMaxStackSize());
-        if (stored.isEmpty() || ItemStack.isSameItemSameComponents(stored, carried)) {
-            int moved = Math.min(carried.getCount(), max - stored.getCount());
-            if (moved <= 0) {
-                return false;
-            }
-            archive.setItem(slotInArchive, carried.copyWithCount(stored.getCount() + moved));
-            carried.shrink(moved);
-            setCarried(carried);
-            return true;
-        }
-        if (carried.getCount() > max) {
-            return false;
-        }
-        archive.setItem(slotInArchive, carried);
-        setCarried(stored);
-        return true;
-    }
-
-    private boolean intoCost(ItemStack stack) {
-        int at = costIndex(active());
-        return slots.get(at).mayPlace(stack) && moveItemStackTo(stack, at, at + 1, false);
-    }
-
-    private boolean intoBlueprintSlot(ItemStack stack) {
-        int at = blueprintIndex(active());
-        return !slots.get(at).hasItem() && moveItemStackTo(stack, at, at + 1, false);
-    }
-
-    private boolean intoStorage(ItemStack stack, int which) {
-        boolean moved = benchOf(which).storage().insertLocked(stack);
-        if (second != null) {
-            moved |= benchOf(1 - which).storage().insertLocked(stack);
-        }
-        int start = storageStart(which);
-        moved |= !stack.isEmpty() && moveItemStackTo(stack, start, start + ProjectBenchBlockEntity.STORAGE, false);
-        if (second != null && !stack.isEmpty()) {
-            int other = storageStart(1 - which);
-            moved |= moveItemStackTo(stack, other, other + ProjectBenchBlockEntity.STORAGE, false);
-        }
-        return moved;
-    }
-
-    private boolean intoArchives(ItemStack stack) {
-        if (!BlueprintItem.recorded(stack) || !archives.stillValid(player)) {
-            return false;
-        }
-        int rest = Stacks.insert(archives, stack).getCount();
-        if (rest == stack.getCount()) {
-            return false;
-        }
-        stack.setCount(rest);
-        return true;
-    }
-
-    private boolean swap(int slot) {
-        Container archive = archiveOf(slot);
-        int slotInArchive = slot % BlueprintArchiveBlockEntity.SLOTS;
-        if (archive == null) {
-            return false;
-        }
-        ItemStack stored = archive.getItem(slotInArchive);
-        BlueprintContainer target = activeBench().blueprintSlot();
-        ItemStack held = target.getItem(0);
-        if (stored.isEmpty() && held.isEmpty()) {
-            return false;
-        }
-        if (stored.getCount() > 1) {
-            if (!held.isEmpty()) {
-                return false;
-            }
-            target.setItem(0, archive.removeItem(slotInArchive, 1));
-            return true;
-        }
-        archive.setItem(slotInArchive, held);
-        target.setItem(0, stored);
-        return true;
-    }
-
-    @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        Slot slot = slots.get(index);
-        if (slot instanceof OutsideSlot outside) {
-            return fromOutside(outside);
-        }
-        if (slot instanceof ProcessorSlot machineSlot) {
-            return fromProcessor(machineSlot);
-        }
-        int half = halfOf(index);
-        boolean fromCost = index >= costStart;
-        if (!slot.hasItem() || half < 0 && !fromCost && (index < PLAYER_START || index >= PLAYER_END)) {
-            return ItemStack.EMPTY;
-        }
-        int local = half < 0 ? -1 : index - base(half);
-        ItemStack stack = slot.getItem();
-        ItemStack original = stack.copy();
-        if (local == RESULT) {
-            if (!fits(stack) || !moveItemStackTo(stack, PLAYER_START, PLAYER_END, true)) {
-                return ItemStack.EMPTY;
-            }
-            slot.onQuickCraft(stack, original);
-        } else if (fromCost) {
-            if (!moveItemStackTo(stack, PLAYER_START, PLAYER_END, false)) {
-                return ItemStack.EMPTY;
-            }
-        } else if (half >= 0 && local < STORAGE_START) {
-            if (!intoStorage(stack, half) && !moveItemStackTo(stack, PLAYER_START, PLAYER_END, false)) {
-                return ItemStack.EMPTY;
-            }
-        } else if (half >= 0 && local < BLUEPRINT) {
-            boolean moved = intoMatrix(stack);
-            moved |= !stack.isEmpty() && intoNeighbours(stack);
-            if (!stack.isEmpty() && !moveItemStackTo(stack, PLAYER_START, PLAYER_END, false) && !moved) {
-                return ItemStack.EMPTY;
-            }
-        } else if (half >= 0) {
-            if (!(local == BLUEPRINT && intoArchives(stack)) && !moveItemStackTo(stack, PLAYER_START, PLAYER_END, false)) {
-                return ItemStack.EMPTY;
-            }
-        } else if (BlueprintItem.blank(stack)) {
-            if (!intoBlueprintSlot(stack)) {
-                return ItemStack.EMPTY;
-            }
-        } else if (Feature.BLUEPRINT.enabled() && BlueprintItem.recorded(stack) && (intoArchives(stack) || intoBlueprintSlot(stack))) {
-        } else {
-            boolean moved = intoCost(stack);
-            moved |= !stack.isEmpty() && intoMatrix(stack);
-            moved |= !stack.isEmpty() && intoProcessor(stack);
-            boolean stored = !stack.isEmpty() && intoStorage(stack, active());
-            stored |= !stack.isEmpty() && intoNeighbours(stack);
-            if (!stack.isEmpty() && !stored) {
-                boolean hotbar = index >= PLAYER_END - 9;
-                if (!moveItemStackTo(stack, hotbar ? PLAYER_START : PLAYER_END - 9, hotbar ? PLAYER_END - 9 : PLAYER_END, false) && !moved) {
-                    return ItemStack.EMPTY;
-                }
-            }
-        }
-        if (stack.isEmpty()) {
-            slot.setByPlayer(ItemStack.EMPTY);
-        } else {
-            slot.setChanged();
-        }
-        if (stack.getCount() == original.getCount()) {
-            return ItemStack.EMPTY;
-        }
-        slot.onTake(player, stack);
-        return original;
-    }
-
-    private ItemStack fromOutside(OutsideSlot slot) {
-        if (player.level().isClientSide || !slot.isActive() || !slot.mayPickup(player)) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack present = slot.getItem();
-        if (present.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack taken = slot.remove(Math.min(present.getCount(), present.getMaxStackSize()));
-        if (taken.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack original = taken.copy();
-        if (bench.shareMode() != ShareMode.NONE) {
-            intoMatrix(taken);
-            if (!taken.isEmpty()) {
-                intoStorage(taken, active());
-            }
-        }
-        if (!taken.isEmpty()) {
-            moveItemStackTo(taken, PLAYER_START, PLAYER_END, true);
-        }
-        if (!taken.isEmpty()) {
-            ItemStack rest = slot.putBack(taken);
-            if (!rest.isEmpty()) {
-                player.drop(rest, false);
-            }
-        }
-        int moved = original.getCount() - taken.getCount();
-        return moved > 0 ? original.copyWithCount(moved) : ItemStack.EMPTY;
-    }
-
-    private ItemStack fromProcessor(ProcessorSlot slot) {
-        if (!slot.isActive() || !slot.hasItem() || !slot.mayPickup(player)) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack stack = slot.getItem();
-        ItemStack original = stack.copy();
-        boolean result = slot.result();
-        if (!moveItemStackTo(stack, PLAYER_START, PLAYER_END, result || slot.brewing)) {
-            return ItemStack.EMPTY;
-        }
-        if (result) {
-            slot.onQuickCraft(stack, original);
-        }
-        if (stack.isEmpty()) {
-            slot.setByPlayer(ItemStack.EMPTY);
-        } else {
-            slot.setChanged();
-        }
-        if (stack.getCount() == original.getCount()) {
-            return ItemStack.EMPTY;
-        }
-        slot.onTake(player, stack);
-        return original;
-    }
-
-    private boolean intoProcessor(ItemStack stack) {
-        Processor processor = openProcessor();
-        if (processor == null) {
-            return false;
-        }
-        int target = processor.shiftTarget(stack, player.level());
-        if (target < 0) {
-            return false;
-        }
-        if (processor.brewing() && target == Processor.BOTTLES) {
-            int first = processorIndex(processor, 0);
-            return moveItemStackTo(stack, first, first + 3, false);
-        }
-        int at = processorIndex(processor, target);
-        if (moveItemStackTo(stack, at, at + 1, false)) {
-            return true;
-        }
-        int ingredient = processorIndex(processor, Processor.INGREDIENT);
-        return processor.brewing() && target == Processor.BREWING_FUEL && moveItemStackTo(stack, ingredient, ingredient + 1, false);
-    }
-
-    private boolean intoNeighbours(ItemStack stack) {
-        if (player.level().isClientSide) {
-            return false;
-        }
-        return switch (bench.shareMode()) {
-            case NONE -> false;
-            case OPEN -> intoOpenTab(stack);
-            case ALL -> intoEveryTab(stack);
-        };
-    }
-
-    private boolean intoEveryTab(ItemStack stack) {
-        int before = stack.getCount();
-        for (int pass = 0; pass < 2 && !stack.isEmpty(); ++pass) {
-            for (int i = 0, n = outsidePanels.size(); i < n && !stack.isEmpty(); ++i) {
-                ExternalInventories.Panel panel = outsidePanels.get(i);
-                IItemHandler inventory = playerTarget(panel);
-                if (inventory != null && (pass == 1 || ExternalInventories.holds(inventory, stack))) {
-                    stack.setCount(ItemHandlerHelper.insertItemStacked(inventory, stack.copy(), false).getCount());
-                }
-            }
-        }
-        return stack.getCount() != before;
-    }
-
-    private boolean intoOpenTab(ItemStack stack) {
-        IItemHandler inventory = playerTarget(selectedPanel());
-        if (inventory == null) {
-            return false;
-        }
-        ItemStack rest = ItemHandlerHelper.insertItemStacked(inventory, stack.copy(), false);
-        if (rest.getCount() == stack.getCount()) {
-            return false;
-        }
-        stack.setCount(rest.getCount());
-        return true;
+        return !server || (getCarried().isEmpty() ? moves.swap(slot) : moves.store(slot));
     }
 
     private ExternalInventories externalOf(ExternalInventories.Panel panel) {
@@ -1058,49 +688,24 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         return externalOf(panel).handler(sideOf(panel));
     }
 
-    @Nullable
-    private IItemHandler playerTarget(@Nullable ExternalInventories.Panel panel) {
-        return panel == null || handsOff(panel) ? null : handlerOf(panel);
-    }
-
-    private boolean intoMatrix(ItemStack stack) {
-        boolean moved = ghosted(stack) && intoGhosts(stack) > 0;
-        return !stack.isEmpty() && BenchStacks.topUp(activeBench().matrix(), stack) > 0 || moved;
-    }
-
-    private int intoGhosts(ItemStack stack) {
-        ProjectBenchBlockEntity target = activeBench();
-        Blueprint blueprint = target.blueprint();
-        return blueprint == null ? 0 : GridFill.spread(target.matrix(), blueprint.pattern(), stack);
-    }
-
-    private boolean ghosted(ItemStack stack) {
-        Blueprint blueprint = fillsGhosts();
-        return blueprint != null && GridFill.acceptsAny(blueprint.pattern(), stack);
-    }
-
     public boolean ghostWants(int matrixSlot, ItemStack stack) {
         Blueprint blueprint = fillsGhosts();
         return blueprint != null && GridFill.accepts(blueprint.ghost(matrixSlot), stack);
     }
 
     @Nullable
-    private Blueprint fillsGhosts() {
+    Blueprint fillsGhosts() {
         Blueprint blueprint = activeBench().blueprint();
         return blueprint != null && Config.get().shiftClickFillsGhosts() ? blueprint : null;
     }
 
-    private boolean fits(ItemStack stack) {
-        int room = 0;
-        for (int i = PLAYER_START; i < PLAYER_END && room < stack.getCount(); ++i) {
-            ItemStack present = slots.get(i).getItem();
-            if (present.isEmpty()) {
-                room += stack.getMaxStackSize();
-            } else if (ItemStack.isSameItemSameComponents(present, stack)) {
-                room += present.getMaxStackSize() - present.getCount();
-            }
-        }
-        return room >= stack.getCount();
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        return moves.quickMove(player, index);
+    }
+
+    boolean moveTo(ItemStack stack, int start, int end, boolean reverse) {
+        return moveItemStackTo(stack, start, end, reverse);
     }
 
     @Override
