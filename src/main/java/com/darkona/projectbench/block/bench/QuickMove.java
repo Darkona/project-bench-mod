@@ -82,8 +82,7 @@ final class QuickMove {
             if (!intoBlueprintSlot(stack)) {
                 return ItemStack.EMPTY;
             }
-        } else if (Feature.BLUEPRINT.enabled() && BlueprintItem.recorded(stack) && (intoArchives(stack) || intoBlueprintSlot(stack))) {
-        } else {
+        } else if (!filesBlueprint(stack)) {
             boolean moved = intoCost(stack);
             moved |= !stack.isEmpty() && intoMatrix(stack);
             moved |= !stack.isEmpty() && intoProcessor(stack);
@@ -96,6 +95,10 @@ final class QuickMove {
                 }
             }
         }
+        return finish(slot, stack, original, player);
+    }
+
+    private ItemStack finish(Slot slot, ItemStack stack, ItemStack original, Player player) {
         if (stack.isEmpty()) {
             slot.setByPlayer(ItemStack.EMPTY);
         } else {
@@ -106,6 +109,10 @@ final class QuickMove {
         }
         slot.onTake(player, stack);
         return original;
+    }
+
+    private boolean filesBlueprint(ItemStack stack) {
+        return Feature.BLUEPRINT.enabled() && BlueprintItem.recorded(stack) && (intoArchives(stack) || intoBlueprintSlot(stack));
     }
 
     private ItemStack fromOutside(OutsideSlot slot) {
@@ -153,16 +160,7 @@ final class QuickMove {
         if (result) {
             slot.onQuickCraft(stack, original);
         }
-        if (stack.isEmpty()) {
-            slot.setByPlayer(ItemStack.EMPTY);
-        } else {
-            slot.setChanged();
-        }
-        if (stack.getCount() == original.getCount()) {
-            return ItemStack.EMPTY;
-        }
-        slot.onTake(menu.player, stack);
-        return original;
+        return finish(slot, stack, original, menu.player);
     }
 
     private boolean intoCost(ItemStack stack) {
@@ -176,15 +174,14 @@ final class QuickMove {
     }
 
     private boolean intoStorage(ItemStack stack, int which) {
-        boolean moved = menu.benchOf(which).storage().insertLocked(stack);
-        if (menu.second != null) {
-            moved |= menu.benchOf(1 - which).storage().insertLocked(stack);
+        int halves = menu.second == null ? 1 : 2;
+        boolean moved = false;
+        for (int i = 0; i < halves; ++i) {
+            moved |= menu.benchOf(i == 0 ? which : 1 - which).storage().insertLocked(stack);
         }
-        int start = menu.storageStart(which);
-        moved |= !stack.isEmpty() && menu.moveTo(stack, start, start + ProjectBenchBlockEntity.STORAGE, false);
-        if (menu.second != null && !stack.isEmpty()) {
-            int other = menu.storageStart(1 - which);
-            moved |= menu.moveTo(stack, other, other + ProjectBenchBlockEntity.STORAGE, false);
+        for (int i = 0; i < halves && !stack.isEmpty(); ++i) {
+            int start = menu.storageStart(i == 0 ? which : 1 - which);
+            moved |= menu.moveTo(stack, start, start + ProjectBenchBlockEntity.STORAGE, false);
         }
         return moved;
     }
@@ -266,19 +263,11 @@ final class QuickMove {
     }
 
     private boolean intoMatrix(ItemStack stack) {
-        boolean moved = ghosted(stack) && intoGhosts(stack) > 0;
-        return !stack.isEmpty() && BenchStacks.topUp(menu.activeBench().matrix(), stack) > 0 || moved;
-    }
-
-    private int intoGhosts(ItemStack stack) {
         ProjectBenchBlockEntity target = menu.activeBench();
-        Blueprint blueprint = target.blueprint();
-        return blueprint == null ? 0 : GridFill.spread(target.matrix(), blueprint.pattern(), stack);
-    }
-
-    private boolean ghosted(ItemStack stack) {
         Blueprint blueprint = menu.fillsGhosts();
-        return blueprint != null && GridFill.acceptsAny(blueprint.pattern(), stack);
+        boolean moved = blueprint != null && GridFill.acceptsAny(blueprint.pattern(), stack)
+                && GridFill.spread(target.matrix(), blueprint.pattern(), stack) > 0;
+        return !stack.isEmpty() && BenchStacks.topUp(target.matrix(), stack) > 0 || moved;
     }
 
     private boolean fits(ItemStack stack) {
@@ -316,7 +305,7 @@ final class QuickMove {
         }
         if (type == ClickType.QUICK_MOVE) {
             if (slot.mayPickup(player)) {
-                menu.quickMoveStack(player, slot.index);
+                quickMove(player, slot.index);
             }
             return true;
         }
@@ -327,7 +316,6 @@ final class QuickMove {
                     menu.setCarried(taken);
                     slot.onTake(player, taken);
                 });
-                return true;
             }
             return true;
         }
