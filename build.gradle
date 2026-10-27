@@ -143,6 +143,9 @@ dependencies {
     gametestImplementation 'dev.darkona.jdlib:jdlib-testkit'
     testImplementation "org.junit.jupiter:junit-jupiter:${junit_version}"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation("com.tngtech.archunit:archunit-junit5:${archunit_version}") {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

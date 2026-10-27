@@ -1,177 +1,134 @@
 package com.darkona.projectbench;
 
-import org.jetbrains.annotations.Nullable;
-import org.junit.jupiter.api.BeforeAll;
+import com.tngtech.archunit.base.DescribedPredicate;
+import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaClasses;
+import com.tngtech.archunit.core.domain.JavaMethodCall;
+import com.tngtech.archunit.lang.ArchCondition;
+import com.tngtech.archunit.lang.ConditionEvents;
+import com.tngtech.archunit.lang.SimpleConditionEvent;
+import dev.darkona.jdlib.testkit.ArchZones;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.loot.LootTableSubProvider;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
 class ArchitectureTest {
-    private static final String BASE = "com/darkona/projectbench/";
-    private static final Pattern MOD_CLASS = Pattern.compile(Pattern.quote(BASE) + "[\\w/$]+");
-    private static final Pattern CLIENT_CLASS = Pattern.compile("(net/minecraft/client/|com/mojang/blaze3d/|" + Pattern.quote(BASE) + "(client/|ProjectBenchClient\\b))[\\w/$]*");
+    private static final String ROOT = "com.darkona.projectbench";
+    private static final JavaClasses MOD = ArchZones.importFolders("projectbench.classes");
+    private static final JavaClasses GAMETESTS = ArchZones.importFolders("projectbench.gametestClasses");
+    private static final Set<String> CLIENT_ENTRIES = Set.of(ROOT + ".ProjectBenchClient");
+    private static final Set<String> CLIENT_COMPAT = Set.of(ROOT + ".compat.emi", ROOT + ".compat.jei", ROOT + ".compat.polymorph", ROOT + ".compat.xei");
 
-    private static final Map<String, Set<String>> MAY_NAME = Map.of(
-            "block", Set.of("config"),
-            "blueprint", Set.of("block", "config"),
-            "block.archive", Set.of("block", "blueprint", "config"),
-            "block.bench", Set.of("block", "block.archive", "blueprint", "config"),
-            "config", Set.of("block"));
-    private static final String ROOT_CLASS_THEY_MAY_NAME = "Content";
-    private static final Map<String, Set<String>> EXCEPTIONS = Map.of(
-            "block/archive/BlueprintArchiveMenu", Set.of("block.bench"));
-    private static final Set<String> CLIENT_COMPAT = Set.of("compat.emi", "compat.jei", "compat.polymorph", "compat.xei");
-
-    private static final Map<String, Set<String>> NAMES = new TreeMap<>();
-    private static final Map<String, Set<String>> CLIENT_NAMES = new TreeMap<>();
-    private static final Set<String> GAMETEST = new TreeSet<>();
-
-    @BeforeAll
-    static void read() throws IOException {
-        read(Path.of(System.getProperty("projectbench.classes", "build/classes/java/main")), null);
-        read(Path.of(System.getProperty("projectbench.gametestClasses", "build/classes/java/gametest")), GAMETEST);
-        assertTrue(NAMES.containsKey("ProjectBench"), "the entry point among " + NAMES.size() + " classes");
-        assertTrue(!GAMETEST.isEmpty(), "the GameTests' classes");
-    }
-
-    private static void read(Path classes, @Nullable Set<String> into) throws IOException {
-        Path root = classes.resolve(BASE);
-        assertTrue(Files.isDirectory(root), "compiled classes at " + root);
-        try (Stream<Path> files = Files.walk(root)) {
-            for (Path file : (Iterable<Path>) files.filter(p -> p.toString().endsWith(".class"))::iterator) {
-                String name = root.relativize(file).toString().replace('\\', '/');
-                name = name.substring(0, name.length() - ".class".length());
-                String bytes = new String(Files.readAllBytes(file), StandardCharsets.ISO_8859_1);
-                Set<String> named = new TreeSet<>();
-                for (Matcher m = MOD_CLASS.matcher(bytes); m.find(); ) {
-                    named.add(m.group().substring(BASE.length()));
-                }
-                named.remove(name);
-                NAMES.put(name, named);
-                Set<String> client = new TreeSet<>();
-                for (Matcher m = CLIENT_CLASS.matcher(bytes); m.find(); ) {
-                    client.add(m.group());
-                }
-                CLIENT_NAMES.put(name, client);
-                if (into != null) {
-                    into.add(name);
-                }
-            }
+    private static final DescribedPredicate<JavaClass> USES_CLIENT_CODE = new DescribedPredicate<>("use client code") {
+        @Override
+        public boolean test(JavaClass type) {
+            return type.getPackageName().startsWith(ROOT) && type.getDirectDependenciesFromSelf().stream()
+                    .map(d -> d.getTargetClass().getPackageName())
+                    .anyMatch(p -> p.startsWith("net.minecraft.client") || p.startsWith("com.mojang.blaze3d"));
         }
-    }
+    };
 
-    private static String zone(String name) {
-        int slash = name.lastIndexOf('/');
-        return slash < 0 ? "" : name.substring(0, slash).replace('/', '.');
-    }
+    private static final DescribedPredicate<JavaClass> RUNS_ONLY_ON_THE_CLIENT = new DescribedPredicate<>("run only on the client") {
+        @Override
+        public boolean test(JavaClass type) {
+            String top = topLevel(type).getName();
+            return USES_CLIENT_CODE.test(type) || USES_CLIENT_CODE.test(topLevel(type)) || CLIENT_ENTRIES.contains(top) || CLIENT_COMPAT.contains(type.getPackageName())
+                    || type.getPackageName().startsWith(ROOT + ".index.client");
+        }
+    };
 
-    private static String topLevel(String name) {
-        int dollar = name.indexOf('$');
-        return dollar < 0 ? name : name.substring(0, dollar);
-    }
-
-    private static void assertNone(List<String> wrong) {
-        assertTrue(wrong.isEmpty(), String.join("\n", wrong));
-    }
-
-    @Test
-    void eachZoneNamesOnlyWhatItMay() {
-        List<String> wrong = new ArrayList<>();
-        NAMES.forEach((name, named) -> {
-            String from = zone(name);
-            Set<String> allowed = MAY_NAME.get(from);
-            if (allowed == null) {
-                return;
-            }
-            Set<String> excepted = EXCEPTIONS.getOrDefault(topLevel(name), Set.of());
-            for (String other : named) {
-                String to = zone(other);
-                boolean content = to.isEmpty() && topLevel(other).equals(ROOT_CLASS_THEY_MAY_NAME);
-                if (!to.equals(from) && !allowed.contains(to) && !excepted.contains(to) && !content) {
-                    wrong.add(name + " (" + from + ") names " + other);
-                }
-            }
-        });
-        assertNone(wrong);
+    private static JavaClass topLevel(JavaClass type) {
+        JavaClass top = type;
+        while (top.getEnclosingClass().isPresent()) {
+            top = top.getEnclosingClass().get();
+        }
+        return top;
     }
 
     @Test
-    void onlyTheClientSideNamesClientCode() {
-        List<String> wrong = new ArrayList<>();
-        CLIENT_NAMES.forEach((name, client) -> {
-            String zone = zone(name);
-            boolean clientSide = zone.equals("client") || CLIENT_COMPAT.contains(zone) || topLevel(name).equals("ProjectBenchClient");
-            if (!clientSide && !client.isEmpty()) {
-                wrong.add(name + " names " + client);
-            }
-        });
-        assertNone(wrong);
-    }
-
-    @Test
-    void onlyTheEntryPointsNameCompatAndDatagen() {
-        List<String> wrong = new ArrayList<>();
-        NAMES.forEach((name, named) -> {
-            String from = zone(name);
-            String entry = topLevel(name);
-            for (String other : named) {
-                String to = zone(other);
-                if (to.equals(from)) {
-                    continue;
-                }
-                boolean compat = to.startsWith("compat.") && !entry.equals("ProjectBench") && !entry.equals("ProjectBenchClient");
-                boolean harness = to.equals("datagen") && !entry.equals("ProjectBench");
-                if (compat || harness) {
-                    wrong.add(name + " names " + other);
-                }
-            }
-        });
-        assertNone(wrong);
-    }
-
-    @Test
-    void theModNamesNoGameTests() {
-        List<String> wrong = new ArrayList<>();
-        NAMES.forEach((name, named) -> {
-            boolean gametest = GAMETEST.contains(name);
-            if (gametest != zone(name).equals("gametest")) {
-                wrong.add(name + (gametest ? " is a GameTest class outside the gametest package" : " is a class of the mod in the gametest package"));
-            }
-            if (!gametest) {
-                for (String other : named) {
-                    if (GAMETEST.contains(other) || zone(other).equals("gametest")) {
-                        wrong.add(name + " names " + other);
+    void registriesAreCreatedOnlyInIndexAndCompat() {
+        noClasses().that().resideOutsideOfPackages(ROOT + ".index..", ROOT + ".compat..")
+                .should().callMethodWhere(new DescribedPredicate<JavaMethodCall>("DeferredRegister.create*") {
+                    @Override
+                    public boolean test(JavaMethodCall call) {
+                        return call.getTargetOwner().isAssignableTo(DeferredRegister.class) && call.getName().startsWith("create");
                     }
-                }
-            }
-        });
-        assertNone(wrong);
+                })
+                .check(MOD);
+    }
+
+    @Test
+    void configSpecsLiveOnlyInConfig() {
+        noClasses().that().resideOutsideOfPackage(ROOT + ".config..")
+                .should().dependOnClassesThat().belongToAnyOf(ModConfigSpec.class)
+                .check(MOD);
+    }
+
+    @Test
+    void dataProvidersLiveOnlyInData() {
+        classes().that().areAssignableTo(DataProvider.class).or().areAssignableTo(LootTableSubProvider.class)
+                .should().resideInAPackage(ROOT + ".data..")
+                .check(MOD);
+        noClasses().that().resideOutsideOfPackage(ROOT + ".data..").and().doNotHaveFullyQualifiedName(ROOT + ".ProjectBench")
+                .should().dependOnClassesThat().belongToAnyOf(GatherDataEvent.class)
+                .check(MOD);
+    }
+
+    @Test
+    void payloadsLiveOnlyInNetwork() {
+        classes().that().implement(CustomPacketPayload.class)
+                .should().resideInAPackage(ROOT + ".network..")
+                .check(MOD);
+        noClasses().that().resideOutsideOfPackage(ROOT + ".network..")
+                .should().dependOnClassesThat().belongToAnyOf(RegisterPayloadHandlersEvent.class)
+                .check(MOD);
+    }
+
+    @Test
+    void noServerClassNamesAClassThatUsesClientCode() {
+        noClasses().that(DescribedPredicate.not(RUNS_ONLY_ON_THE_CLIENT))
+                .should().dependOnClassesThat(USES_CLIENT_CODE)
+                .check(MOD);
+    }
+
+    @Test
+    void onlyTheEntryPointsNameCompatAndData() {
+        noClasses().that().resideOutsideOfPackage(ROOT + ".compat..")
+                .and().doNotHaveFullyQualifiedName(ROOT + ".ProjectBench")
+                .and().doNotHaveFullyQualifiedName(ROOT + ".ProjectBenchClient")
+                .should().dependOnClassesThat().resideInAPackage(ROOT + ".compat..")
+                .check(MOD);
+        noClasses().that().resideOutsideOfPackage(ROOT + ".data..")
+                .and().doNotHaveFullyQualifiedName(ROOT + ".ProjectBench")
+                .should().dependOnClassesThat().resideInAPackage(ROOT + ".data..")
+                .check(MOD);
+    }
+
+    @Test
+    void theGameTestsLiveInInfrastructureAndTheModNamesNone() {
+        classes().should().resideInAPackage(ROOT + ".infrastructure.gametest..").check(GAMETESTS);
+        noClasses().should().dependOnClassesThat().resideInAPackage(ROOT + ".infrastructure.gametest..").check(MOD);
     }
 
     @Test
     void noClassNameHasAnSPrefix() {
-        List<String> wrong = new ArrayList<>();
-        for (String name : NAMES.keySet()) {
-            for (String simple : name.substring(name.lastIndexOf('/') + 1).split("\\$")) {
-                if (simple.length() > 1 && simple.charAt(0) == 'S' && Character.isUpperCase(simple.charAt(1))) {
-                    wrong.add(name);
-                }
+        classes().should(new ArchCondition<>("not start with an S prefix") {
+            @Override
+            public void check(JavaClass type, ConditionEvents events) {
+                String simple = type.getSimpleName();
+                boolean prefixed = simple.length() > 1 && simple.charAt(0) == 'S' && Character.isUpperCase(simple.charAt(1));
+                events.add(new SimpleConditionEvent(type, !prefixed, type.getName()));
             }
-        }
-        assertNone(wrong);
+        }).check(MOD);
     }
 }
