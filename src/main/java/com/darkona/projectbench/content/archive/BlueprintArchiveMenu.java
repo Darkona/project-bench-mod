@@ -1,11 +1,11 @@
 package com.darkona.projectbench.content.archive;
 
+import com.darkona.projectbench.config.BenchConfig;
+import com.darkona.projectbench.content.blueprint.BlueprintContainer;
+import com.darkona.projectbench.foundation.BenchMenu;
 import com.darkona.projectbench.index.BenchMenuTypes;
 import dev.darkona.jdlib.api.inventory.ConcatContainer;
 import dev.darkona.jdlib.api.inventory.Stacks;
-import com.darkona.projectbench.foundation.BenchMenu;
-import com.darkona.projectbench.content.blueprint.BlueprintContainer;
-import com.darkona.projectbench.config.BenchConfig;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;

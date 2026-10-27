@@ -1,35 +1,35 @@
 package com.darkona.projectbench;
 
+import com.darkona.projectbench.compat.polymorph.PolymorphCompat;
+import com.darkona.projectbench.compat.xei.BenchXei;
+import com.darkona.projectbench.content.archive.BlueprintArchiveView;
+import com.darkona.projectbench.content.bench.BlockTint;
+import com.darkona.projectbench.content.bench.ProjectBenchRenderer;
+import com.darkona.projectbench.content.bench.ProjectBenchView;
+import com.darkona.projectbench.content.blueprint.BlueprintItem;
 import com.darkona.projectbench.index.BenchBlockEntityTypes;
 import com.darkona.projectbench.index.BenchDataComponents;
 import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.index.BenchMenuTypes;
+import dev.darkona.jdlib.api.compat.Bridges;
 import dev.darkona.jdlib.api.pattern.Blueprint;
-import com.darkona.projectbench.content.blueprint.BlueprintItem;
-import com.darkona.projectbench.content.bench.BlockTint;
-import com.darkona.projectbench.content.archive.BlueprintArchiveView;
-import com.darkona.projectbench.content.bench.ProjectBenchRenderer;
-import com.darkona.projectbench.content.bench.ProjectBenchView;
-import com.darkona.projectbench.compat.polymorph.PolymorphCompat;
-import com.darkona.projectbench.compat.xei.BenchXei;
 import dev.darkona.jdlib.api.ui.client.JDMenus;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.component.ItemContainerContents;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import dev.darkona.jdlib.api.compat.Bridges;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 @Mod(value = ProjectBench.MOD_ID, dist = Dist.CLIENT)
 public final class ProjectBenchClient {

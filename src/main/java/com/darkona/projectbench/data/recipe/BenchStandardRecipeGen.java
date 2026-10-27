@@ -1,10 +1,10 @@
 package com.darkona.projectbench.data.recipe;
 
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.index.BenchItems;
-import com.darkona.projectbench.content.bench.BenchUpgrade;
-import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.Feature.Condition;
+import com.darkona.projectbench.config.Feature;
+import com.darkona.projectbench.content.bench.BenchUpgrade;
+import com.darkona.projectbench.index.BenchItems;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;

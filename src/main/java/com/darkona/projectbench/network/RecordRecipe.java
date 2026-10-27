@@ -1,7 +1,7 @@
 package com.darkona.projectbench.network;
 
-import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import com.darkona.projectbench.ProjectBench;
+import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

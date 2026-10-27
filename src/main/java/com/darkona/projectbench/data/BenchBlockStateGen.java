@@ -1,13 +1,13 @@
 package com.darkona.projectbench.data;
 
-import com.darkona.projectbench.index.BenchBlocks;
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.foundation.BenchBlock;
-import com.darkona.projectbench.content.archive.BlueprintArchiveBlock;
 import com.darkona.projectbench.content.archive.BlueprintArchiveBlock.ColumnPart;
+import com.darkona.projectbench.content.archive.BlueprintArchiveBlock;
 import com.darkona.projectbench.content.bench.AutoBenchBlock;
 import com.darkona.projectbench.content.bench.BenchSlabBlock;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
+import com.darkona.projectbench.foundation.BenchBlock;
+import com.darkona.projectbench.index.BenchBlocks;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;

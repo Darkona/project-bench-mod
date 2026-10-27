@@ -1,9 +1,9 @@
 package com.darkona.projectbench.compat.xei;
 
-import com.darkona.projectbench.index.BenchMenuTypes;
+import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import com.darkona.projectbench.content.bench.ProjectBenchView;
-import com.darkona.projectbench.config.ClientConfig;
+import com.darkona.projectbench.index.BenchMenuTypes;
 import com.darkona.projectbench.network.RecordRecipe;
 import dev.darkona.jdlib.api.ui.Rect;
 import dev.darkona.jdlib.api.xei.CraftingTransfer;

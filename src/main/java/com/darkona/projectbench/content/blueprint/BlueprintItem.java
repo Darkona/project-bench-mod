@@ -1,8 +1,8 @@
 package com.darkona.projectbench.content.blueprint;
 
-import com.darkona.projectbench.index.BenchDataComponents;
 import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
+import com.darkona.projectbench.index.BenchDataComponents;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

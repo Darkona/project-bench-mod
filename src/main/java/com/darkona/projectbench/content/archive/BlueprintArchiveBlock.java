@@ -1,9 +1,9 @@
 package com.darkona.projectbench.content.archive;
 
-import com.darkona.projectbench.foundation.BenchBlock;
-import com.darkona.projectbench.config.BreakMode;
 import com.darkona.projectbench.config.BenchConfig;
+import com.darkona.projectbench.config.BreakMode;
 import com.darkona.projectbench.config.Feature;
+import com.darkona.projectbench.foundation.BenchBlock;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

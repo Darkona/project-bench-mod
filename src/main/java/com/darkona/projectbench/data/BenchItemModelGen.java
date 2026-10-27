@@ -1,7 +1,7 @@
 package com.darkona.projectbench.data;
 
-import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.ProjectBench;
+import com.darkona.projectbench.index.BenchItems;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;

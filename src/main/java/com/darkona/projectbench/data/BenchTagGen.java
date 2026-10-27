@@ -1,8 +1,8 @@
 package com.darkona.projectbench.data;
 
-import com.darkona.projectbench.index.BenchBlocks;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
+import com.darkona.projectbench.index.BenchBlocks;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;

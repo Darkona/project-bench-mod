@@ -1,11 +1,11 @@
 package com.darkona.projectbench.infrastructure.gametest;
 
-import com.darkona.projectbench.index.BenchBlocks;
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
-import com.darkona.projectbench.content.bench.Opening;
-import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.ShareMode;
+import com.darkona.projectbench.content.bench.Opening;
+import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.content.bench.ProjectBenchMenu;
+import com.darkona.projectbench.index.BenchBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -16,9 +16,9 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import static com.darkona.projectbench.infrastructure.gametest.GameTests.count;
 

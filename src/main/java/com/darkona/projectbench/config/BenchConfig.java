@@ -1,7 +1,7 @@
 package com.darkona.projectbench.config;
 
-import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.ProjectBench;
+import com.darkona.projectbench.config.BenchConfig;
 import dev.darkona.jdlib.api.config.ConfigSection;
 import dev.darkona.jdlib.api.config.ConfigSync;
 import dev.darkona.jdlib.api.config.ConfigTree;
@@ -15,8 +15,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;

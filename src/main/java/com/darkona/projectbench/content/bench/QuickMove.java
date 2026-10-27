@@ -1,10 +1,10 @@
 package com.darkona.projectbench.content.bench;
 
+import com.darkona.projectbench.config.Feature;
+import com.darkona.projectbench.config.ShareMode;
 import com.darkona.projectbench.content.bench.BenchSlots.OutsideSlot;
 import com.darkona.projectbench.content.bench.BenchSlots.ProcessorSlot;
 import com.darkona.projectbench.content.blueprint.BlueprintItem;
-import com.darkona.projectbench.config.Feature;
-import com.darkona.projectbench.config.ShareMode;
 import dev.darkona.jdlib.api.inventory.GridFill;
 import dev.darkona.jdlib.api.inventory.Stacks;
 import dev.darkona.jdlib.api.pattern.Blueprint;

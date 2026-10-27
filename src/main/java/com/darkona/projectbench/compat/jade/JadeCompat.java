@@ -1,10 +1,10 @@
 package com.darkona.projectbench.compat.jade;
 
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.content.bench.ProjectBenchBlock;
-import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.Feature;
+import com.darkona.projectbench.content.bench.ProjectBenchBlock;
+import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import dev.darkona.jdlib.api.compat.jade.JDJade;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

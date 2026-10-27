@@ -1,10 +1,10 @@
 package com.darkona.projectbench.compat.polymorph;
 
+import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import com.darkona.projectbench.content.bench.ProjectBenchView;
-import com.darkona.projectbench.content.bench.RecipeSelector;
 import com.darkona.projectbench.content.bench.RecipeSelector.Choices;
-import com.darkona.projectbench.config.ClientConfig;
+import com.darkona.projectbench.content.bench.RecipeSelector;
 import com.illusivesoulworks.polymorph.api.client.PolymorphWidgets;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.neoforged.bus.api.IEventBus;

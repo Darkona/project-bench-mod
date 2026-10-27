@@ -1,10 +1,10 @@
 package com.darkona.projectbench.compat.jei;
 
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.index.BenchBlocks;
-import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.Feature;
+import com.darkona.projectbench.content.bench.ProjectBenchBlock;
+import com.darkona.projectbench.index.BenchBlocks;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;

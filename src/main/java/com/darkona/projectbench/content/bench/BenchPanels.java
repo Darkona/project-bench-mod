@@ -1,17 +1,17 @@
 package com.darkona.projectbench.content.bench;
 
-import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.content.blueprint.BlueprintItem;
 import dev.darkona.jdlib.JDLib;
-import dev.darkona.jdlib.api.ui.JDNode;
+import dev.darkona.jdlib.api.pattern.Blueprint;
 import dev.darkona.jdlib.api.ui.JDNode.Grow;
+import dev.darkona.jdlib.api.ui.JDNode;
 import dev.darkona.jdlib.api.ui.JDViews;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

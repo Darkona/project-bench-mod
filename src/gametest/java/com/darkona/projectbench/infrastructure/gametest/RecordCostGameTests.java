@@ -1,14 +1,14 @@
 package com.darkona.projectbench.infrastructure.gametest;
 
+import com.darkona.projectbench.ProjectBench;
+import com.darkona.projectbench.config.BenchConfig;
+import com.darkona.projectbench.content.bench.Opening;
+import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import com.darkona.projectbench.index.BenchBlocks;
 import com.darkona.projectbench.index.BenchItems;
-import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
-import com.darkona.projectbench.content.bench.Opening;
-import com.darkona.projectbench.content.bench.ProjectBenchMenu;
-import dev.darkona.jdlib.api.pattern.Blueprint;
-import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.network.RecordRecipe;
+import dev.darkona.jdlib.api.pattern.Blueprint;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;

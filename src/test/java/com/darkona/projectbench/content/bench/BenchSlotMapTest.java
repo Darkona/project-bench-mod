@@ -1,7 +1,7 @@
 package com.darkona.projectbench.content.bench;
 
-import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import com.darkona.projectbench.content.bench.BenchSlotMap;
+import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import dev.darkona.jdlib.api.menu.MoveRoutes;
 import dev.darkona.jdlib.api.menu.SlotGroup;
 import dev.darkona.jdlib.api.menu.SlotMap;

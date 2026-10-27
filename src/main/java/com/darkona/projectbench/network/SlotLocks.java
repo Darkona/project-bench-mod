@@ -1,7 +1,7 @@
 package com.darkona.projectbench.network;
 
-import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.ProjectBench;
+import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

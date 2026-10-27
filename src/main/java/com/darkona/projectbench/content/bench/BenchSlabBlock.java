@@ -34,7 +34,10 @@ public class BenchSlabBlock extends ProjectBenchBlock {
 
     static {
         VoxelShape board = Block.box(0, 8, 0, 16, 16, 16);
-        int south = 1, west = 2, north = 4, east = 8;
+        int south = 1;
+        int west = 2;
+        int north = 4;
+        int east = 8;
         for (int bits = 0; bits < SHAPES.length; bits++) {
             VoxelShape shape = board;
             shape = corner(shape, bits, north | west, 0, 0);

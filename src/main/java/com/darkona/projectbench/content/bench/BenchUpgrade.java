@@ -1,8 +1,8 @@
 package com.darkona.projectbench.content.bench;
 
+import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.index.BenchDataComponents;
 import com.darkona.projectbench.index.BenchRecipeTypes;
-import com.darkona.projectbench.config.Feature;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;

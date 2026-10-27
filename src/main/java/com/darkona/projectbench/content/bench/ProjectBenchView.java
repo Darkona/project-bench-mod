@@ -1,19 +1,19 @@
 package com.darkona.projectbench.content.bench;
 
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.index.BenchItems;
-import com.darkona.projectbench.content.blueprint.CostContainer;
-import com.darkona.projectbench.content.bench.RecipeSelector.Choices;
 import com.darkona.projectbench.config.AutoMode;
-import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.BenchConfig;
+import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
+import com.darkona.projectbench.content.bench.RecipeSelector.Choices;
+import com.darkona.projectbench.content.blueprint.CostContainer;
+import com.darkona.projectbench.index.BenchItems;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.darkona.jdlib.api.inventory.GridFill;
 import dev.darkona.jdlib.api.pattern.Blueprint;
-import dev.darkona.jdlib.api.ui.JDNode;
 import dev.darkona.jdlib.api.ui.JDNode.Icon;
+import dev.darkona.jdlib.api.ui.JDNode;
 import dev.darkona.jdlib.api.ui.JDViews;
 import dev.darkona.jdlib.api.ui.LockView;
 import dev.darkona.jdlib.api.ui.MenuView;

@@ -1,7 +1,7 @@
 package com.darkona.projectbench.content.bench;
 
-import dev.darkona.jdlib.api.pattern.Blueprint;
 import dev.darkona.jdlib.api.inventory.GridFill;
+import dev.darkona.jdlib.api.pattern.Blueprint;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;

@@ -1,8 +1,8 @@
 package com.darkona.projectbench.content.bench;
 
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.content.blueprint.BlueprintContainer;
-import com.darkona.projectbench.config.BenchConfig;
 import dev.darkona.jdlib.api.inventory.ConcatContainer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;

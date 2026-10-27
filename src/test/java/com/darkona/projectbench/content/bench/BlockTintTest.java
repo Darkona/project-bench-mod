@@ -1,7 +1,7 @@
 package com.darkona.projectbench.content.bench;
 
-import com.darkona.projectbench.content.bench.BlockTint;
 import com.darkona.projectbench.config.ClientConfig;
+import com.darkona.projectbench.content.bench.BlockTint;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;

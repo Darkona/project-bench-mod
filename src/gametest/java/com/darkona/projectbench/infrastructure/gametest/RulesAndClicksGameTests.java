@@ -1,16 +1,16 @@
 package com.darkona.projectbench.infrastructure.gametest;
 
-import com.darkona.projectbench.index.BenchBlocks;
-import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.config.AutoMode;
-import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
-import com.darkona.projectbench.content.bench.Opening;
-import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
+import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
+import com.darkona.projectbench.content.bench.Opening;
+import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.content.bench.ProjectBenchMenu;
+import com.darkona.projectbench.index.BenchBlocks;
+import com.darkona.projectbench.index.BenchItems;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;

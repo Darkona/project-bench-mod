@@ -1,9 +1,10 @@
 package com.darkona.projectbench.content.bench;
 
-import com.darkona.projectbench.index.BenchBlocks;
-import dev.darkona.jdlib.api.inventory.Stock;
 import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
+import com.darkona.projectbench.index.BenchBlocks;
+import dev.darkona.jdlib.api.inventory.CapabilityCaches;
+import dev.darkona.jdlib.api.inventory.Stock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -17,7 +18,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.ChestType;
-import dev.darkona.jdlib.api.inventory.CapabilityCaches;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;

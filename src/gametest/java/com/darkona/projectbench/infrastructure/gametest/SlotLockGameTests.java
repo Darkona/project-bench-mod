@@ -1,15 +1,15 @@
 package com.darkona.projectbench.infrastructure.gametest;
 
-import com.darkona.projectbench.index.BenchBlocks;
-import com.darkona.projectbench.index.BenchDataComponents;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.config.AutoMode;
+import com.darkona.projectbench.config.BenchConfig;
+import com.darkona.projectbench.config.BreakMode;
+import com.darkona.projectbench.content.bench.Opening;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
-import com.darkona.projectbench.content.bench.Opening;
 import com.darkona.projectbench.content.bench.ProjectBenchMenu;
-import com.darkona.projectbench.config.BreakMode;
-import com.darkona.projectbench.config.BenchConfig;
+import com.darkona.projectbench.index.BenchBlocks;
+import com.darkona.projectbench.index.BenchDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
