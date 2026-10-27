@@ -1,5 +1,6 @@
 package com.darkona.projectbench.content.bench;
 
+import com.darkona.projectbench.network.SlotLocks;
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.foundation.BenchBlock;
 import com.darkona.projectbench.foundation.BenchBlockEntity;

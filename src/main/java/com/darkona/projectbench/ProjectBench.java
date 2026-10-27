@@ -2,8 +2,7 @@ package com.darkona.projectbench;
 
 import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
-import com.darkona.projectbench.content.bench.RecordRecipe;
-import com.darkona.projectbench.content.bench.SlotLocks;
+import com.darkona.projectbench.network.BenchPackets;
 import com.darkona.projectbench.compat.create.CreateCompat;
 import com.darkona.projectbench.compat.jade.JadeCompat;
 import com.darkona.projectbench.config.ClientConfig;
@@ -18,7 +17,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 @Mod(ProjectBench.MOD_ID)
 public final class ProjectBench {
@@ -30,9 +28,7 @@ public final class ProjectBench {
         container.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
         Config.register(modBus);
         ClientConfig.register(modBus);
-        modBus.addListener((RegisterPayloadHandlersEvent e) -> Config.SYNC.register(e.registrar("1")));
-        RecordRecipe.register(modBus);
-        SlotLocks.register(modBus);
+        BenchPackets.register(modBus);
         Feature.guardUse();
         modBus.addListener(ProjectBench::registerCapabilities);
         modBus.addListener(DataGen::gather);

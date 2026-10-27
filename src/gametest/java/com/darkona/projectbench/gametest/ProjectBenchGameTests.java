@@ -11,7 +11,7 @@ import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.content.blueprint.BlueprintItem;
 import com.darkona.projectbench.content.blueprint.BlueprintContainer;
-import com.darkona.projectbench.content.bench.RecordRecipe;
+import com.darkona.projectbench.network.RecordRecipe;
 import com.darkona.projectbench.config.ShareMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;

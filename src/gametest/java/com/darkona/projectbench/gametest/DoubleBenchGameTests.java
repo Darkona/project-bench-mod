@@ -12,7 +12,7 @@ import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;
-import com.darkona.projectbench.content.bench.RecordRecipe;
+import com.darkona.projectbench.network.RecordRecipe;
 import com.darkona.projectbench.config.ShareMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

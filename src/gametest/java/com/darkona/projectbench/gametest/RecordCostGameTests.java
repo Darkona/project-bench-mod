@@ -7,7 +7,7 @@ import com.darkona.projectbench.content.bench.Opening;
 import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import com.darkona.projectbench.config.Config;
-import com.darkona.projectbench.content.bench.RecordRecipe;
+import com.darkona.projectbench.network.RecordRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;

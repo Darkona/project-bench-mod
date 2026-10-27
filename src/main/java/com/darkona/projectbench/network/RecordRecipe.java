@@ -1,5 +1,6 @@
-package com.darkona.projectbench.content.bench;
+package com.darkona.projectbench.network;
 
+import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import com.darkona.projectbench.Content;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import io.netty.buffer.ByteBuf;
@@ -11,8 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,9 +22,6 @@ public record RecordRecipe(ResourceLocation recipe, boolean fill) implements Cus
             ByteBufCodecs.BOOL, RecordRecipe::fill,
             RecordRecipe::new);
 
-    public static void register(IEventBus modBus) {
-        modBus.addListener((RegisterPayloadHandlersEvent e) -> e.registrar("1").playToServer(TYPE, CODEC, RecordRecipe::handle));
-    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
@@ -40,7 +36,7 @@ public record RecordRecipe(ResourceLocation recipe, boolean fill) implements Cus
                 ? (RecipeHolder<CraftingRecipe>) holder : null;
     }
 
-    private static void handle(RecordRecipe payload, IPayloadContext context) {
+    static void handle(RecordRecipe payload, IPayloadContext context) {
         receive(context.player(), payload);
     }
 
