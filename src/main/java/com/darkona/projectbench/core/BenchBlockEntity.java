@@ -1,4 +1,4 @@
-package com.darkona.projectbench.foundation;
+package com.darkona.projectbench.core;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;

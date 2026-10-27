@@ -10,7 +10,7 @@ import com.darkona.projectbench.content.bench.Opening;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.content.bench.ProjectBenchMenu;
-import com.darkona.projectbench.foundation.BenchBlock;
+import com.darkona.projectbench.core.BenchBlock;
 import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.network.RecordRecipe;
 import dev.darkona.jdlib.api.pattern.Blueprint;

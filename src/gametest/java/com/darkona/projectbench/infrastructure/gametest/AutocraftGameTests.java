@@ -10,7 +10,7 @@ import com.darkona.projectbench.content.bench.AutoBenchBlock;
 import com.darkona.projectbench.content.bench.Opening;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
-import com.darkona.projectbench.foundation.BenchBlock;
+import com.darkona.projectbench.core.BenchBlock;
 import com.darkona.projectbench.index.BenchBlocks;
 import com.darkona.projectbench.index.BenchDataComponents;
 import com.darkona.projectbench.index.BenchItems;

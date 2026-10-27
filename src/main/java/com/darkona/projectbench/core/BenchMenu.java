@@ -1,4 +1,4 @@
-package com.darkona.projectbench.foundation;
+package com.darkona.projectbench.core;
 
 import dev.darkona.jdlib.api.menu.JDMenuSupport;
 import net.minecraft.world.entity.player.Inventory;

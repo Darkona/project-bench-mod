@@ -1,7 +1,7 @@
 package com.darkona.projectbench.content.bench;
 
 import com.darkona.projectbench.config.ClientConfig;
-import com.darkona.projectbench.foundation.BenchBlock;
+import com.darkona.projectbench.core.BenchBlock;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.LevelRenderer;

@@ -5,7 +5,7 @@ import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
-import com.darkona.projectbench.foundation.BenchBlock;
+import com.darkona.projectbench.core.BenchBlock;
 import com.darkona.projectbench.index.BenchBlocks;
 import com.darkona.projectbench.index.BenchItems;
 import dev.darkona.jdlib.api.world.RelativeSide;

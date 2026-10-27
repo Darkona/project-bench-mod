@@ -1,7 +1,7 @@
 package com.darkona.projectbench.content.blueprint;
 
 import com.darkona.projectbench.config.Feature;
-import com.darkona.projectbench.foundation.ContainerSlot;
+import com.darkona.projectbench.core.ContainerSlot;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;

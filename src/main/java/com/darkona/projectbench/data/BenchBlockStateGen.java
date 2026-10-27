@@ -6,7 +6,7 @@ import com.darkona.projectbench.content.archive.BlueprintArchiveBlock;
 import com.darkona.projectbench.content.bench.AutoBenchBlock;
 import com.darkona.projectbench.content.bench.BenchSlabBlock;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
-import com.darkona.projectbench.foundation.BenchBlock;
+import com.darkona.projectbench.core.BenchBlock;
 import com.darkona.projectbench.index.BenchBlocks;
 import java.util.EnumMap;
 import java.util.Map;
