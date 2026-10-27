@@ -5,15 +5,13 @@ import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.network.BenchPackets;
 import com.darkona.projectbench.compat.create.CreateCompat;
 import com.darkona.projectbench.compat.jade.JadeCompat;
-import com.darkona.projectbench.config.ClientConfig;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.datagen.DataGen;
 import dev.darkona.jdlib.api.compat.Bridges;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -24,10 +22,7 @@ public final class ProjectBench {
 
     public ProjectBench(IEventBus modBus, ModContainer container) {
         Content.register(modBus);
-        container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-        container.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
-        Config.register(modBus);
-        ClientConfig.register(modBus);
+        BenchConfig.register(modBus, container);
         BenchPackets.register(modBus);
         Feature.guardUse();
         modBus.addListener(ProjectBench::registerCapabilities);

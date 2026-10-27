@@ -8,7 +8,7 @@ import dev.darkona.jdlib.api.world.RelativeSide;
 import com.darkona.projectbench.foundation.BenchBlock;
 import dev.darkona.jdlib.api.inventory.SidedItemHandler;
 import com.darkona.projectbench.content.blueprint.BlueprintContainer;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,7 +40,7 @@ public class BlueprintArchiveBlockEntity extends BenchBlockEntity implements Men
     private static final Direction[] DIRECTIONS = Direction.values();
     private static final int EXTRACTS = 8;
 
-    private final BlueprintContainer blueprints = new BlueprintContainer(SLOTS, () -> Config.get().archiveStack()) {
+    private final BlueprintContainer blueprints = new BlueprintContainer(SLOTS, () -> BenchConfig.get().archiveStack()) {
         @Override
         public void setChanged() {
             super.setChanged();
@@ -60,7 +60,7 @@ public class BlueprintArchiveBlockEntity extends BenchBlockEntity implements Men
     @Nullable
     private BlockState rulesState;
     @Nullable
-    private Config.Settings rulesSettings;
+    private BenchConfig.Settings rulesSettings;
 
     @Nullable
     private List<BlueprintArchiveBlockEntity> column;
@@ -127,7 +127,7 @@ public class BlueprintArchiveBlockEntity extends BenchBlockEntity implements Men
         if (level == null) {
             return List.of(this);
         }
-        int height = Config.get().archiveHeight();
+        int height = BenchConfig.get().archiveHeight();
         Block block = getBlockState().getBlock();
         BlockPos.MutableBlockPos p = worldPosition.mutable();
         int below = 0;
@@ -164,7 +164,7 @@ public class BlueprintArchiveBlockEntity extends BenchBlockEntity implements Men
 
     private boolean allows(@Nullable Direction side, int shift) {
         BlockState state = getBlockState();
-        Config.Settings settings = Config.get();
+        BenchConfig.Settings settings = BenchConfig.get();
         if (state != rulesState || settings != rulesSettings) {
             rulesState = state;
             rulesSettings = settings;

@@ -1,6 +1,6 @@
 package com.darkona.projectbench.content.bench;
 
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -41,8 +41,8 @@ final class BenchCost {
     }
 
     void tick() {
-        Config.Settings s = Config.get();
-        Item cost = Config.costItem(s);
+        BenchConfig.Settings s = BenchConfig.get();
+        Item cost = BenchConfig.costItem(s);
         int missing = menu.missingCost();
         if (cost == shownCost && s.recordCostCount() == shownCount && missing == shownMissing) {
             return;

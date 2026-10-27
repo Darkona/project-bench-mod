@@ -5,7 +5,7 @@ import dev.darkona.jdlib.api.inventory.ConcatContainer;
 import dev.darkona.jdlib.api.inventory.Stacks;
 import com.darkona.projectbench.foundation.BenchMenu;
 import com.darkona.projectbench.content.blueprint.BlueprintContainer;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,7 +35,7 @@ public class BlueprintArchiveMenu extends BenchMenu {
         this.rows = Math.min(totalRows, MAX_ROWS);
         this.server = shelf != null;
         this.blueprints = shelf != null ? shelf
-                : new BlueprintContainer(rows * COLUMNS, () -> Config.get().archiveStack());
+                : new BlueprintContainer(rows * COLUMNS, () -> BenchConfig.get().archiveStack());
         for (int row = 0; row < rows; ++row) {
             for (int column = 0; column < COLUMNS; ++column) {
                 int index = column + row * COLUMNS;

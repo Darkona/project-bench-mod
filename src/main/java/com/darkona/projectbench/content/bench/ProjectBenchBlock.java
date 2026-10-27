@@ -2,7 +2,7 @@ package com.darkona.projectbench.content.bench;
 
 import com.darkona.projectbench.foundation.BenchBlock;
 import com.darkona.projectbench.config.BreakMode;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -182,7 +182,7 @@ public class ProjectBenchBlock extends BenchBlock<ProjectBenchBlockEntity> {
 
     @Override
     protected BreakMode breakMode() {
-        return Config.get().benchOnBreak();
+        return BenchConfig.get().benchOnBreak();
     }
 
     @Override

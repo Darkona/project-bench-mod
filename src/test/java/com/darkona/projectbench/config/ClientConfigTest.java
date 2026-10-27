@@ -19,7 +19,7 @@ class ClientConfigTest {
         }
         for (String key : List.of("compat", "bench.slab.leftTint", "bench.slab.rightTint", "bench.external.tintWindows",
                 "bench.external.tints", "bench.external.tintFromTexture")) {
-            assertFalse(Config.SPEC.getSpec().contains(key), "the common file no longer has " + key);
+            assertFalse(BenchConfig.SPEC.getSpec().contains(key), "the common file no longer has " + key);
         }
     }
 

@@ -7,7 +7,7 @@ import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.content.bench.Opening;
 import com.darkona.projectbench.content.bench.ProjectBenchMenu;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
 import com.mojang.authlib.GameProfile;
@@ -325,16 +325,16 @@ public final class RulesAndClicksGameTests {
         bench.matrix().setItem(0, new ItemStack(Items.IRON_INGOT, 9));
         bench.matrix().setItem(1, new ItemStack(Items.IRON_INGOT, 1));
         try {
-            Config.CONFIG.override(Config.Settings.builder().balanceButton(false).clearMatrix(false).autoFill(false).autoButton(false).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().balanceButton(false).clearMatrix(false).autoFill(false).autoButton(false).build());
             menu.clickMenuButton(player, ProjectBenchMenu.BUTTON_BALANCE);
             helper.assertTrue(bench.matrix().getItem(0).getCount() == 9, "balance off: the matrix stays as it was");
             menu.clickMenuButton(player, ProjectBenchMenu.BUTTON_CLEAR);
             helper.assertTrue(bench.matrix().getItem(0).getCount() == 9 && bench.storage().isEmpty(), "clear off: nothing moves");
-            AutoMode fixed = Config.get().autoDefault();
+            AutoMode fixed = BenchConfig.get().autoDefault();
             menu.clickMenuButton(player, ProjectBenchMenu.BUTTON_AUTO);
             helper.assertTrue(bench.autoMode() == fixed, "the A off: the bench stays on autoDefault, " + fixed);
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         helper.assertTrue(menu.clickMenuButton(player, ProjectBenchMenu.BUTTON_BALANCE) && bench.matrix().getItem(0).getCount() == 5,
                 "on again: balance works");
@@ -349,13 +349,13 @@ public final class RulesAndClicksGameTests {
         bench.blueprintSlot().setItem(0, sticksBlueprint());
         bench.matrix().setItem(TOP, new ItemStack(Items.OAK_PLANKS, 2));
         try {
-            Config.CONFIG.override(Config.Settings.builder().shiftClickFillsGhosts(false).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().shiftClickFillsGhosts(false).build());
             player.getInventory().setItem(0, new ItemStack(Items.OAK_PLANKS, 10));
             menu.clicked(ProjectBenchMenu.PLAYER_END - 9, 0, ClickType.QUICK_MOVE, player);
             helper.assertTrue(bench.matrix().getItem(TOP).getCount() == 12 && bench.matrix().getItem(UNDER).isEmpty() && bench.storage().isEmpty(),
                     "the ghost under stays empty, the planks on top take all ten: " + bench.matrix().getItem(TOP) + " " + bench.matrix().getItem(UNDER));
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         helper.succeed();
     }
@@ -369,7 +369,7 @@ public final class RulesAndClicksGameTests {
         ProjectBenchMenu menu = open(bench, player);
         helper.assertTrue(menu.archiveSlots() > 0, "on: the window lists the archive beside the bench");
         try {
-            Config.CONFIG.override(Config.Settings.builder().blueprint(false).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().blueprint(false).build());
             helper.assertFalse(Feature.ARCHIVE.enabled(), "the archive needs the blueprint");
             helper.assertTrue(bench.archives().isEmpty(), "and is not listed by the bench");
             Slot slot = menu.getSlot(ProjectBenchMenu.BLUEPRINT);
@@ -379,7 +379,7 @@ public final class RulesAndClicksGameTests {
             helper.assertTrue(count(bench.storage(), Content.Items.BLUEPRINT.get()) == 3 && bench.blueprintSlot().isEmpty()
                     && count(archive.blueprints(), Content.Items.BLUEPRINT.get()) == 0, "a shift-clicked blueprint goes to the internal inventory");
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         helper.succeed();
     }

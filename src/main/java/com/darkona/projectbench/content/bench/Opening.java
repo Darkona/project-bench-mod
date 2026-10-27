@@ -2,7 +2,7 @@ package com.darkona.projectbench.content.bench;
 
 import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.content.blueprint.BlueprintContainer;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import dev.darkona.jdlib.api.inventory.ConcatContainer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -91,7 +91,7 @@ public record Opening(ProjectBenchBlockEntity first, @Nullable ProjectBenchBlock
         private static ConcatContainer clientArchives(int blocks) {
             List<Container> out = new ArrayList<>(blocks);
             for (int i = 0; i < blocks; ++i) {
-                out.add(new BlueprintContainer(BlueprintArchiveBlockEntity.SLOTS, () -> Config.get().archiveStack()));
+                out.add(new BlueprintContainer(BlueprintArchiveBlockEntity.SLOTS, () -> BenchConfig.get().archiveStack()));
             }
             return new ConcatContainer(BlueprintArchiveBlockEntity.SLOTS, out);
         }

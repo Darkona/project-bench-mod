@@ -2,7 +2,7 @@ package com.darkona.projectbench.content.bench;
 
 import com.darkona.projectbench.Content;
 import dev.darkona.jdlib.api.inventory.Stock;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -134,7 +134,7 @@ public final class ExternalInventories implements Stock {
     @Nullable
     private BlockCapabilityCache<IItemHandler, Direction> cache(int sideIndex) {
         Level level = bench.getLevel();
-        if (sideIndex == UP || !(level instanceof ServerLevel server) || !Config.get().external()) {
+        if (sideIndex == UP || !(level instanceof ServerLevel server) || !BenchConfig.get().external()) {
             return null;
         }
         Direction side = SIDES[sideIndex];
@@ -156,8 +156,8 @@ public final class ExternalInventories implements Stock {
 
     private int tab(int sideIndex, BlockCapabilityCache<IItemHandler, Direction> cache) {
         int kind = kind(sideIndex, cache);
-        Config.Settings settings = Config.get();
-        boolean listed = kind >= SIDED && Config.alwaysShow().contains(blocks[sideIndex]);
+        BenchConfig.Settings settings = BenchConfig.get();
+        boolean listed = kind >= SIDED && BenchConfig.alwaysShow().contains(blocks[sideIndex]);
         return tab(kind, settings.processors(), settings.partialTabs() || listed);
     }
 

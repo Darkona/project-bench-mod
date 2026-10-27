@@ -1,7 +1,7 @@
 package com.darkona.projectbench.content.blueprint;
 
 import com.darkona.projectbench.foundation.ContainerSlot;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
@@ -15,13 +15,13 @@ public class CostContainer extends SimpleContainer {
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        Item cost = Config.costItem();
+        Item cost = BenchConfig.costItem();
         return cost != Items.AIR && stack.is(cost);
     }
 
     public static int missing(ItemStack held) {
-        Config.Settings s = Config.get();
-        Item cost = Config.costItem(s);
+        BenchConfig.Settings s = BenchConfig.get();
+        Item cost = BenchConfig.costItem(s);
         if (cost == Items.AIR) {
             return 0;
         }
@@ -29,9 +29,9 @@ public class CostContainer extends SimpleContainer {
     }
 
     public void charge() {
-        Item cost = Config.costItem();
+        Item cost = BenchConfig.costItem();
         if (cost != Items.AIR) {
-            removeItem(0, Config.get().recordCostCount());
+            removeItem(0, BenchConfig.get().recordCostCount());
         }
     }
 
@@ -42,7 +42,7 @@ public class CostContainer extends SimpleContainer {
 
         @Override
         public boolean isActive() {
-            return Config.costItem() != Items.AIR;
+            return BenchConfig.costItem() != Items.AIR;
         }
     }
 }

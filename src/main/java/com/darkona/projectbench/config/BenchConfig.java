@@ -1,5 +1,6 @@
 package com.darkona.projectbench.config;
 
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.Content;
 import dev.darkona.jdlib.api.config.ConfigSection;
 import dev.darkona.jdlib.api.config.ConfigSync;
@@ -14,6 +15,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
@@ -32,7 +35,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @SuppressWarnings("NullAway.Init")
-public final class Config {
+public final class BenchConfig {
     private static final List<String> ALL_SIDES = List.of("front", "back", "left", "right", "up", "down");
 
     private static ModConfigSpec.BooleanValue BENCH;
@@ -74,7 +77,7 @@ public final class Config {
     private static ModConfigSpec.ConfigValue<List<? extends String>> ARCHIVE_INSERT;
     private static ModConfigSpec.ConfigValue<List<? extends String>> ARCHIVE_EXTRACT;
 
-    public static final ConfigSection<Settings> CONFIG = ConfigSection.synced("", Settings.STREAM_CODEC, Config::define)
+    public static final ConfigSection<Settings> CONFIG = ConfigSection.synced("", Settings.STREAM_CODEC, BenchConfig::define)
             .whenSet(settings -> Feature.changed());
     public static final ConfigTree TREE = ConfigTree.of(List.of(CONFIG));
     public static final ModConfigSpec SPEC = TREE.build();
@@ -152,7 +155,7 @@ public final class Config {
                 "as if partialTabs were on for them alone: the tab has the slots of the side that touches the bench, and the bench shares it.",
                 "Block ids; one from a mod that is not installed does nothing. Storage Drawers' Drawer Controller is listed.")
                 .defineListAllowEmpty("alwaysShow", List.of("storagedrawers:controller", "storagedrawers:controller_io",
-                        "storagedrawers:framed_controller", "storagedrawers:framed_controller_io"), () -> "storagedrawers:controller", Config::isItemId);
+                        "storagedrawers:framed_controller", "storagedrawers:framed_controller_io"), () -> "storagedrawers:controller", BenchConfig::isItemId);
         b.pop();
         BENCH_ON_BREAK = b.comment("What happens to what a bench holds (the grid, the inventory, the blueprint slot and the cost slot) when you break it.",
                 "DROP_ALL: it all falls on the ground.",
@@ -234,7 +237,7 @@ public final class Config {
                 "Off, recording is free and the slot is gone (whatever was in it stays there, and falls out when you break the bench).")
                 .define("enabled", true);
         RECORD_COST_ITEM = b.comment("The item it costs, by id. Any item works; one that does not exist makes recording free.")
-                .define("item", "minecraft:white_dye", Config::isItemId);
+                .define("item", "minecraft:white_dye", BenchConfig::isItemId);
         RECORD_COST_COUNT = b.comment("How many of it each recording spends, from 1 to 64.").defineInRange("count", 1, 1, 64);
         b.pop();
         b.pop();
@@ -254,12 +257,12 @@ public final class Config {
                 "The sides turn with the archive, as the bench's: front, back, left, right (yours, as you look at the front), up, down.")
                 .push("automation");
         ARCHIVE_INSERT = b.comment("The sides that can put blueprints in. An empty list means none.")
-                .defineListAllowEmpty("insertSides", ALL_SIDES, () -> "front", Config::isSide);
+                .defineListAllowEmpty("insertSides", ALL_SIDES, () -> "front", BenchConfig::isSide);
         ARCHIVE_EXTRACT = b.comment("The sides that can take blueprints out. Only the bottom by default.")
-                .defineListAllowEmpty("extractSides", List.of("down"), () -> "down", Config::isSide);
+                .defineListAllowEmpty("extractSides", List.of("down"), () -> "down", BenchConfig::isSide);
         b.pop();
         b.pop();
-        return Config::read;
+        return BenchConfig::read;
     }
 
     private static List<ModConfigSpec.EnumValue<SideMode>> defineSides(ModConfigSpec.Builder b, String front, SideMode... defaults) {
@@ -357,7 +360,7 @@ public final class Config {
         });
 
         public static Builder builder() {
-            return Config.DEFAULTS.toBuilder();
+            return BenchConfig.DEFAULTS.toBuilder();
         }
 
         public Builder toBuilder() {
@@ -651,10 +654,13 @@ public final class Config {
     private static volatile Set<Block> alwaysShowOverride;
 
 
-    private Config() {
+    private BenchConfig() {
     }
 
-    public static void register(IEventBus modBus) {
+    public static void register(IEventBus modBus, ModContainer container) {
+        container.registerConfig(ModConfig.Type.COMMON, SPEC);
+        container.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
+        ClientConfig.register(modBus);
         modBus.addListener((ModConfigEvent.Loading e) -> reload(e.getConfig().getSpec()));
         modBus.addListener((ModConfigEvent.Reloading e) -> reload(e.getConfig().getSpec()));
         NeoForge.EVENT_BUS.addListener((ServerAboutToStartEvent e) -> load());

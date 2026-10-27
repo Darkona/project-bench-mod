@@ -5,7 +5,7 @@ import com.darkona.projectbench.content.blueprint.CostContainer;
 import com.darkona.projectbench.content.bench.RecipeSelector.Choices;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.config.ClientConfig;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -95,7 +95,7 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
     }
 
     private static ItemStack storageLock(ProjectBenchMenu menu, int which, Slot slot) {
-        return Config.get().slotLocks() ? menu.lock(which, slot.index - menu.storageStart(which)) : ItemStack.EMPTY;
+        return BenchConfig.get().slotLocks() ? menu.lock(which, slot.index - menu.storageStart(which)) : ItemStack.EMPTY;
     }
 
     @Nullable
@@ -300,7 +300,7 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
             Icon record = icon(176, 0);
             kids.add(JDViews.at(JDViews.iconButton("record", BUTTON, () -> record, cost::recordTip, menu::canRecord,
                     () -> BenchChoices.press(menu, ProjectBenchMenu.BUTTON_RECORD)), x, RECORD_Y));
-            if (Config.get().autoFill()) {
+            if (BenchConfig.get().autoFill()) {
                 Icon fill = icon(176 + 3 * ICON, 0);
                 List<Component> tip = tip(Component.translatable("gui.projectbench.project_bench.fill"), "gui.projectbench.project_bench.fill_help");
                 kids.add(JDViews.at(JDViews.iconButton("fill", BUTTON, () -> fill, () -> tip, () -> menu.benchOf(menu.active()).blueprint() != null,
@@ -321,7 +321,7 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
             if (autocraft != null) {
                 matrix.add(autocraft);
             }
-            if (Config.get().keepLayout() && Config.get().autoButton()) {
+            if (BenchConfig.get().keepLayout() && BenchConfig.get().autoButton()) {
                 matrix.add(slotOf(stateful(menu, "auto-" + which, ProjectBenchMenu.autoButton(which), "gui.projectbench.project_bench.auto_help",
                         () -> menu.autoMode(w).ordinal(), AutoMode.values().length, mode -> new Look(176 + 7 * ICON, mode * ICON, switch (AutoMode.of(mode)) {
                             case OFF -> "gui.projectbench.project_bench.auto_off";
@@ -329,11 +329,11 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
                             case TAGS -> "gui.projectbench.project_bench.auto_tags";
                         }))));
             }
-            if (Config.get().balanceButton()) {
+            if (BenchConfig.get().balanceButton()) {
                 matrix.add(slotOf(plain(menu, "balance-" + which, ProjectBenchMenu.balanceButton(which), 176 + ICON, 0,
                         "gui.projectbench.project_bench.balance", "gui.projectbench.project_bench.balance_help")));
             }
-            if (Config.get().clearMatrix()) {
+            if (BenchConfig.get().clearMatrix()) {
                 matrix.add(slotOf(plain(menu, "clear-" + which, ProjectBenchMenu.clearButton(which), 176 + 2 * ICON, 0,
                         "gui.projectbench.project_bench.clear", "gui.projectbench.project_bench.clear_help")));
             }
@@ -350,12 +350,12 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
                     which -> new Look(ACTIVE_U + which * ICON, ACTIVE_V,
                             which == 0 ? "gui.projectbench.project_bench.active_left" : "gui.projectbench.project_bench.active_right"))));
         }
-        if (Config.get().showcase()) {
+        if (BenchConfig.get().showcase()) {
             bench.add(slotOf(stateful(menu, "showcase", ProjectBenchMenu.BUTTON_SHOWCASE, "gui.projectbench.project_bench.showcase_help",
                     () -> menu.showcase() ? 1 : 0, 2, on -> new Look(176 + 5 * ICON, on == 1 ? 0 : ICON,
                             on == 1 ? "gui.projectbench.project_bench.showcase_on" : "gui.projectbench.project_bench.showcase_off"))));
         }
-        if (Config.get().external() && menu.anyShared()) {
+        if (BenchConfig.get().external() && menu.anyShared()) {
             bench.add(slotOf(stateful(menu, "share", ProjectBenchMenu.BUTTON_SHARE, "gui.projectbench.project_bench.share_help",
                     () -> menu.shareMode().ordinal(), ShareMode.values().length, mode -> switch (ShareMode.of(mode)) {
                         case ALL -> new Look(176 + 4 * ICON, 0, "gui.projectbench.project_bench.share_all");

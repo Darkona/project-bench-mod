@@ -18,7 +18,7 @@ import com.darkona.projectbench.content.bench.BenchSlots.ProcessorSlot;
 import com.darkona.projectbench.content.bench.BenchSlots.RealOutsideSlot;
 import com.darkona.projectbench.content.bench.BenchSlots.RealProcessorSlot;
 import com.darkona.projectbench.content.bench.BenchSlots.ResultSlot;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.ShareMode;
 import dev.darkona.jdlib.api.menu.SlotMap;
 import dev.darkona.jdlib.api.menu.SlotMapped;
@@ -384,7 +384,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
         if (index >= 0 && index < slots.size() && slots.get(index) instanceof OutsideSlot outside && clicks.outsideClick(outside, button, type, player)) {
             return;
         }
-        if (type == ClickType.CLONE && Config.get().slotLocks()) {
+        if (type == ClickType.CLONE && BenchConfig.get().slotLocks()) {
             int which = storageHalf(index);
             if (which >= 0) {
                 if (getCarried().isEmpty()) {
@@ -519,7 +519,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     }
 
     static boolean handsOff(@Nullable ExternalInventories.Panel panel) {
-        return panel != null && panel.handsOff() && Config.get().protectVaults();
+        return panel != null && panel.handsOff() && BenchConfig.get().protectVaults();
     }
 
     public boolean handsOff(Slot slot) {
@@ -705,7 +705,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
     @Nullable
     Blueprint fillsGhosts() {
         Blueprint blueprint = activeBench().blueprint();
-        return blueprint != null && Config.get().shiftClickFillsGhosts() ? blueprint : null;
+        return blueprint != null && BenchConfig.get().shiftClickFillsGhosts() ? blueprint : null;
     }
 
     @Override

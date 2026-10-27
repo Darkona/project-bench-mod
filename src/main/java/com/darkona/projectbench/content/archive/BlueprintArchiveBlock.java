@@ -2,7 +2,7 @@ package com.darkona.projectbench.content.archive;
 
 import com.darkona.projectbench.foundation.BenchBlock;
 import com.darkona.projectbench.config.BreakMode;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -59,7 +59,7 @@ public class BlueprintArchiveBlock extends BenchBlock<BlueprintArchiveBlockEntit
 
     @Override
     protected BreakMode breakMode() {
-        return Config.get().archiveOnBreak();
+        return BenchConfig.get().archiveOnBreak();
     }
 
     @Override
@@ -94,7 +94,7 @@ public class BlueprintArchiveBlock extends BenchBlock<BlueprintArchiveBlockEntit
     }
 
     private ColumnPart partAt(LevelReader level, BlockPos pos) {
-        int height = Config.get().archiveHeight();
+        int height = BenchConfig.get().archiveHeight();
         int index = run(level, pos, Direction.DOWN) % height;
         int above = Math.min(run(level, pos, Direction.UP), height - 1 - index);
         return ColumnPart.of(index > 0, above > 0);

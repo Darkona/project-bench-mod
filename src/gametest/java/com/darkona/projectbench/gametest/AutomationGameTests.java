@@ -7,7 +7,7 @@ import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.foundation.BenchBlock;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -202,7 +202,7 @@ public final class AutomationGameTests {
         ProjectBenchBlockEntity bench = bench(helper, BENCH, Direction.NORTH);
         IItemHandler blueprintSide = handler(helper, BENCH, Direction.NORTH);
         try {
-            Config.CONFIG.override(Config.Settings.builder().blueprint(false).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().blueprint(false).build());
             helper.assertTrue(blueprintSide.insertItem(0, new ItemStack(Content.Items.BLUEPRINT.get()), false).getCount() == 1,
                     "the blueprint view a pipe kept goes quiet");
             IItemHandler front = handler(helper, BENCH, Direction.NORTH);
@@ -210,7 +210,7 @@ public final class AutomationGameTests {
             helper.assertTrue(push(front, new ItemStack(Items.DIRT, 4)).isEmpty() && count(bench.storage(), Items.DIRT) == 4, "and fills the inventory");
             helper.assertTrue(pullOne(front).is(Items.DIRT), "and empties it");
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         helper.succeed();
     }
@@ -282,7 +282,7 @@ public final class AutomationGameTests {
         BlockPos at = BENCH;
         helper.setBlock(at, Content.Blocks.BLUEPRINT_ARCHIVE.get().defaultBlockState().setValue(BenchBlock.FACING, Direction.EAST));
         try {
-            Config.CONFIG.override(Config.Settings.builder().archiveInsert(1 << RelativeSide.BACK.ordinal()).archiveExtract(1 << RelativeSide.FRONT.ordinal()).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().archiveInsert(1 << RelativeSide.BACK.ordinal()).archiveExtract(1 << RelativeSide.FRONT.ordinal()).build());
             ItemStack blueprint = new ItemStack(Content.Items.BLUEPRINT.get(), 2);
             helper.assertTrue(handler(helper, at, Direction.EAST).insertItem(0, blueprint, false).getCount() == 2, "facing east, the east is the front: no way in");
             helper.assertTrue(handler(helper, at, Direction.WEST).insertItem(0, blueprint, false).isEmpty(), "the west is the back: in");
@@ -290,7 +290,7 @@ public final class AutomationGameTests {
             helper.assertTrue(handler(helper, at, Direction.DOWN).extractItem(0, 64, false).isEmpty(), "nor out of the bottom");
             helper.assertTrue(handler(helper, at, Direction.EAST).extractItem(0, 64, false).getCount() == 2, "out of the front");
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         helper.succeed();
     }

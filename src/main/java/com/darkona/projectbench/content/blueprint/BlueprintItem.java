@@ -1,7 +1,7 @@
 package com.darkona.projectbench.content.blueprint;
 
 import com.darkona.projectbench.Content;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import net.minecraft.ChatFormatting;
@@ -45,7 +45,7 @@ public class BlueprintItem extends Item {
         }
         lines.add(Component.translatable("item.projectbench.blueprint.makes", blueprint.result().getCount(),
                 blueprint.result().getHoverName()).withStyle(ChatFormatting.GOLD));
-        if (!Config.get().tooltipIngredients()) {
+        if (!BenchConfig.get().tooltipIngredients()) {
             return;
         }
 

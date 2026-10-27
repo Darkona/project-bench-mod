@@ -1,6 +1,6 @@
 package com.darkona.projectbench.content.bench;
 
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import java.util.Arrays;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -19,7 +19,7 @@ public final class HandsOff {
     }
 
     public static boolean test(Level level, BlockPos pos, BlockState state) {
-        if (!Config.get().protectVaults()) {
+        if (!BenchConfig.get().protectVaults()) {
             return false;
         }
         for (Rule rule : rules) {

@@ -8,7 +8,7 @@ import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.content.bench.Opening;
 import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import com.darkona.projectbench.config.BreakMode;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -195,14 +195,14 @@ public final class SlotLockGameTests {
                 tag, helper.getLevel().registryAccess());
         helper.assertTrue(loaded != null && lockedTo(loaded, 2, cobble) && loaded.storage().lock(3).isEmpty(), "saved and loaded, still locked");
         try {
-            Config.CONFIG.override(Config.Settings.builder().benchOnBreak(BreakMode.SILK_TOUCH).archiveOnBreak(BreakMode.DROP_ALL).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().benchOnBreak(BreakMode.SILK_TOUCH).archiveOnBreak(BreakMode.DROP_ALL).build());
             ItemStack dropped = breakWithSilkTouch(helper);
             helper.assertTrue(dropped.has(Content.Components.SLOT_LOCKS.get()), "the bench broken with Silk Touch keeps its locks");
             ProjectBenchBlockEntity placed = bench(helper);
             placed.applyComponentsFromItemStack(dropped);
             helper.assertTrue(lockedTo(placed, 2, cobble) && placed.storage().getItem(2).getCount() == 2, "placed again, locked again");
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         helper.succeed();
     }
@@ -251,16 +251,16 @@ public final class SlotLockGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ProjectBenchMenu menu = lockedEmpty(helper, bench, player);
         try {
-            Config.CONFIG.override(Config.Settings.builder().slotLocks(false).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().slotLocks(false).build());
             helper.assertTrue(bench.storage().lock(0).isEmpty() && menu.getSlot(S).mayPlace(new ItemStack(Items.DIRT)), "off: the lock is ignored");
             bench.storage().setItem(5, new ItemStack(Items.DIRT));
             menu.clicked(S + 5, MIDDLE, ClickType.CLONE, player);
             menu.clicked(S, MIDDLE, ClickType.CLONE, player);
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
             helper.assertTrue(bench.storage().lock(5).isEmpty() && lockedTo(bench, 0, new ItemStack(Items.COBBLESTONE)),
                     "off, a middle click neither locks nor frees; on again, the stored lock is back");
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         helper.succeed();
     }

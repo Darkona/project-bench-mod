@@ -9,7 +9,7 @@ import com.darkona.projectbench.foundation.BenchBlock;
 import com.darkona.projectbench.content.bench.Opening;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.SideMode;
 import com.darkona.projectbench.config.ShareMode;
@@ -242,20 +242,20 @@ public final class AutocraftGameTests {
         ChestBlockEntity below = chest(helper, BENCH.below());
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         try {
-            Config.CONFIG.override(Config.Settings.builder().autocraft(false).autocraftDefault(true).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().autocraft(false).autocraftDefault(true).build());
             helper.assertFalse(bench.automates() || bench.autocraftButton() != 0, "it does not automate and has no button");
             helper.assertTrue(Feature.allows(helper.getBlockState(BENCH).getBlock()), "it still opens and works");
             helper.assertFalse(Feature.allows(Content.Items.AUTO_PROJECT_BENCH.get()) || Feature.allows(Content.Items.EJECTING_AUTO_PROJECT_BENCH.get()),
                     "but no more can be placed");
             bench.craftOnPulse();
             helper.assertTrue(count(below, Items.STICK) == 0 && planks(bench) == 12, "a pulse crafts nothing");
-            helper.assertTrue(bench.sideMode(Direction.DOWN) == Config.DEFAULTS.benchSide(RelativeSide.DOWN),
+            helper.assertTrue(bench.sideMode(Direction.DOWN) == BenchConfig.DEFAULTS.benchSide(RelativeSide.DOWN),
                     "the sides are a plain bench's");
             bench.craft(player);
             helper.assertTrue(planks(bench) == 10, "crafting by hand works");
             helper.assertTrue(upgrade(helper, upgradeGrid(new ItemStack(Content.Items.PROJECT_BENCH.get()))).isEmpty(), "and the upgrade recipe does not match");
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         helper.assertTrue(bench.automates(), "back on, it automates again");
         helper.succeed();

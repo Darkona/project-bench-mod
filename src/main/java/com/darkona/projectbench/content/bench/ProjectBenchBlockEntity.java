@@ -9,7 +9,7 @@ import com.darkona.projectbench.content.blueprint.BlueprintContainer;
 import com.darkona.projectbench.content.blueprint.BlueprintItem;
 import com.darkona.projectbench.content.blueprint.CostContainer;
 import com.darkona.projectbench.config.AutoMode;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.ShareMode;
 import com.darkona.projectbench.config.SideMode;
@@ -97,7 +97,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     @Nullable
     private BlockState rulesState;
     @Nullable
-    private Config.Settings rulesSettings;
+    private BenchConfig.Settings rulesSettings;
     private boolean rulesAutocraft;
     private final List<ItemStack> leftovers = new ArrayList<>(MATRIX);
     @Nullable
@@ -116,18 +116,18 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
     private boolean updating;
 
-    private ShareMode share = Config.get().shareMode();
+    private ShareMode share = BenchConfig.get().shareMode();
 
-    private boolean showcase = Config.get().showcaseDefault();
+    private boolean showcase = BenchConfig.get().showcaseDefault();
 
-    private boolean autocraft = Config.get().autocraftDefault();
+    private boolean autocraft = BenchConfig.get().autocraftDefault();
 
     private final Substitute substitute = new Substitute();
     private final Showcase display = new Showcase(this);
 
     private boolean activeSecond;
 
-    private AutoMode autoMode = Config.get().autoDefault();
+    private AutoMode autoMode = BenchConfig.get().autoDefault();
     private final ExternalInventories external = new ExternalInventories(this);
     private final Stock own = Stock.of(storage);
     private final Stock shared = Stock.chain(own, external);
@@ -162,7 +162,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     }
 
     public boolean toggleLock(int slot) {
-        if (!Config.get().slotLocks() || slot < 0 || slot >= STORAGE) {
+        if (!BenchConfig.get().slotLocks() || slot < 0 || slot >= STORAGE) {
             return false;
         }
         boolean empty = storage.getItem(slot).isEmpty();
@@ -221,7 +221,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
     private void checkRules() {
         BlockState state = getBlockState();
-        Config.Settings settings = Config.get();
+        BenchConfig.Settings settings = BenchConfig.get();
         if (state == rulesState && settings == rulesSettings && autocraft == rulesAutocraft) {
             return;
         }
@@ -234,7 +234,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
         }
     }
 
-    private SideMode workOutSideMode(BlockState state, Config.Settings s, Direction side) {
+    private SideMode workOutSideMode(BlockState state, BenchConfig.Settings s, Direction side) {
         if (side == ProjectBenchBlock.partnerSide(state)) {
             return SideMode.NONE;
         }
@@ -300,7 +300,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     }
 
     public ShareMode shareMode() {
-        return Config.get().external() ? first().share : ShareMode.NONE;
+        return BenchConfig.get().external() ? first().share : ShareMode.NONE;
     }
 
     public ProjectBenchBlockEntity first() {
@@ -330,7 +330,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     }
 
     public boolean showcase() {
-        return showcase && Config.get().showcase();
+        return showcase && BenchConfig.get().showcase();
     }
 
     public ExternalInventories external() {
@@ -358,7 +358,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     }
 
     public boolean pairs() {
-        return Config.get().slabShare() && partner() != null;
+        return BenchConfig.get().slabShare() && partner() != null;
     }
 
     private void contentsChanged() {
@@ -616,14 +616,14 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     }
 
     private void store(Player player, ItemStack stack) {
-        ItemStack rest = Config.get().remaindersToStorage() ? stockFor(player).insert(stack) : stack;
+        ItemStack rest = BenchConfig.get().remaindersToStorage() ? stockFor(player).insert(stack) : stack;
         if (!rest.isEmpty() && !player.getInventory().add(rest)) {
             player.drop(rest, false);
         }
     }
 
     public void balance() {
-        if (Config.get().balanceButton()) {
+        if (BenchConfig.get().balanceButton()) {
             Stacks.balance(matrix);
         }
     }
@@ -633,7 +633,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     }
 
     public void clearMatrix(@Nullable Player player) {
-        if (level == null || level.isClientSide || !Config.get().clearMatrix()) {
+        if (level == null || level.isClientSide || !BenchConfig.get().clearMatrix()) {
             return;
         }
         Stock into = player == null ? stockFor(null) : Stock.chain(stockFor(player), Stock.playerPockets(player.getInventory()));
@@ -646,7 +646,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
     public void fillMatrix(@Nullable Player player) {
         Blueprint bp = blueprint();
-        if (level == null || level.isClientSide || bp == null || !Config.get().autoFill()) {
+        if (level == null || level.isClientSide || bp == null || !BenchConfig.get().autoFill()) {
             return;
         }
         moveMatrix(() -> GridFill.fill(matrix, bp.pattern(), stockFor(player)));
@@ -680,12 +680,12 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     }
 
     public AutoMode autoMode() {
-        Config.Settings s = Config.get();
+        BenchConfig.Settings s = BenchConfig.get();
         return !s.keepLayout() ? AutoMode.OFF : s.autoButton() ? autoMode : s.autoDefault();
     }
 
     public void cycleAutoMode() {
-        if (!Config.get().autoButton()) {
+        if (!BenchConfig.get().autoButton()) {
             return;
         }
         autoMode = autoMode.next();
@@ -766,7 +766,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
     public List<BlueprintArchiveBlockEntity> archives() {
         List<BlueprintArchiveBlockEntity> out = new ArrayList<>(3);
-        if (level == null || !Feature.ARCHIVE.enabled() || !Config.get().benchPanel()) {
+        if (level == null || !Feature.ARCHIVE.enabled() || !BenchConfig.get().benchPanel()) {
             return out;
         }
         for (Direction d : Direction.values()) {
@@ -781,7 +781,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     }
 
     public List<ExternalInventories.Panel> externalPanels() {
-        return Config.get().external() ? external.panels(Config.get().externalSlots()) : List.of();
+        return BenchConfig.get().external() ? external.panels(BenchConfig.get().externalSlots()) : List.of();
     }
 
     @Override
@@ -920,7 +920,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
         @Override
         protected boolean locksApply() {
-            return Config.get().slotLocks();
+            return BenchConfig.get().slotLocks();
         }
     }
 

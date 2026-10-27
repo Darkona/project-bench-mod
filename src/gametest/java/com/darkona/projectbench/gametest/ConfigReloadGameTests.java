@@ -1,7 +1,7 @@
 package com.darkona.projectbench.gametest;
 
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.mojang.authlib.GameProfile;
 import dev.darkona.jdlib.api.config.ConfigSync;
 import io.netty.buffer.Unpooled;
@@ -31,7 +31,7 @@ public final class ConfigReloadGameTests {
     private ConfigReloadGameTests() {
     }
 
-    private static ServerPlayer listening(GameTestHelper helper, List<Config.Settings> received) {
+    private static ServerPlayer listening(GameTestHelper helper, List<BenchConfig.Settings> received) {
         MinecraftServer server = helper.getLevel().getServer();
         GameProfile profile = new GameProfile(UUID.randomUUID(), "listener");
         ServerPlayer player = new ServerPlayer(server, helper.getLevel(), profile, ClientInformation.createDefault());
@@ -39,7 +39,7 @@ public final class ConfigReloadGameTests {
             @Override
             public void send(Packet<?> packet, @Nullable PacketSendListener listener) {
                 if (packet instanceof ClientboundCustomPayloadPacket custom && custom.payload() instanceof ConfigSync.Snapshot snapshot) {
-                    received.add(Config.Settings.STREAM_CODEC.decode(Unpooled.wrappedBuffer(snapshot.values())));
+                    received.add(BenchConfig.Settings.STREAM_CODEC.decode(Unpooled.wrappedBuffer(snapshot.values())));
                 }
             }
         };
@@ -48,20 +48,20 @@ public final class ConfigReloadGameTests {
 
     @GameTest(template = GameTests.EMPTY)
     public static void aReloadThatChangesAValueReachesTheConnectedPlayers(GameTestHelper helper) {
-        List<Config.Settings> received = new ArrayList<>();
+        List<BenchConfig.Settings> received = new ArrayList<>();
         ServerPlayer player = listening(helper, received);
-        Config.Settings before = Config.get();
-        Config.Settings edited = before.toBuilder().slotLocks(!before.slotLocks()).build();
+        BenchConfig.Settings before = BenchConfig.get();
+        BenchConfig.Settings edited = before.toBuilder().slotLocks(!before.slotLocks()).build();
         try {
-            helper.assertFalse(Config.SYNC.adopt(Config.CONFIG, before, List.of(player)), "a reload that changes nothing sends nothing");
+            helper.assertFalse(BenchConfig.SYNC.adopt(BenchConfig.CONFIG, before, List.of(player)), "a reload that changes nothing sends nothing");
             helper.assertTrue(received.isEmpty(), "and the player got nothing");
-            helper.assertTrue(Config.SYNC.adopt(Config.CONFIG, edited, List.of(player)), "a changed value is sent");
-            helper.assertTrue(Config.get().equals(edited), "the server follows the file");
+            helper.assertTrue(BenchConfig.SYNC.adopt(BenchConfig.CONFIG, edited, List.of(player)), "a changed value is sent");
+            helper.assertTrue(BenchConfig.get().equals(edited), "the server follows the file");
             helper.assertTrue(received.equals(List.of(edited)), "the player got the new Settings once");
         } finally {
-            Config.SYNC.adopt(Config.CONFIG, before, List.of());
+            BenchConfig.SYNC.adopt(BenchConfig.CONFIG, before, List.of());
         }
-        helper.assertTrue(Config.get().equals(before), "the Settings are back");
+        helper.assertTrue(BenchConfig.get().equals(before), "the Settings are back");
         helper.succeed();
     }
 }

@@ -6,7 +6,7 @@ import com.darkona.projectbench.content.bench.HandsOff;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.content.bench.Opening;
 import com.darkona.projectbench.content.bench.ProjectBenchMenu;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.ShareMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
@@ -157,22 +157,22 @@ public final class HandsOffGameTests {
     @GameTest(template = GameTests.EMPTY)
     public static void protectVaultsOffMakesItAPlainTab(GameTestHelper helper) {
         try {
-            Config.CONFIG.override(Config.Settings.builder().protectVaults(false).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().protectVaults(false).build());
             Setup s = setup(helper);
             helper.assertFalse(s.menu().outsidePanels().get(EAST_TAB).handsOff(), "off: no tab is hands-off");
             s.menu().clicked(s.slot(0), 0, ClickType.PICKUP, s.player());
             helper.assertTrue(s.menu().getCarried().getCount() == 10 && count(s.east(), Items.IRON_INGOT) == 0, "and a click takes");
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         Setup s = setup(helper);
         helper.assertTrue(s.menu().handsOff(s.menu().getSlot(s.slot(0))), "on again: hands-off");
         try {
-            Config.CONFIG.override(Config.Settings.builder().protectVaults(false).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().protectVaults(false).build());
             s.menu().clicked(s.slot(0), 0, ClickType.PICKUP, s.player());
             helper.assertTrue(s.menu().getCarried().getCount() == 10, "turned off with the window open, it is read at once");
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         helper.succeed();
     }

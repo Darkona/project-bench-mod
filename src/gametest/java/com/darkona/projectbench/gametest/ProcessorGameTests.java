@@ -7,7 +7,7 @@ import com.darkona.projectbench.content.bench.Processor;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.content.bench.Opening;
 import com.darkona.projectbench.content.bench.ProjectBenchMenu;
-import com.darkona.projectbench.config.Config;
+import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.ShareMode;
 import dev.darkona.jdlib.testkit.TestPlayers;
 import net.minecraft.core.BlockPos;
@@ -234,13 +234,13 @@ public final class ProcessorGameTests {
                 "the chest and the barrel keep their tabs, the sided block gets none: " + menu.outsidePanels());
         helper.assertTrue(bench.stock().count(new ItemStack(Items.REDSTONE)) == 0, "nor is it shared");
         try {
-            Config.CONFIG.override(Config.Settings.builder().processors(true).partialTabs(true).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().processors(true).partialTabs(true).build());
             ProjectBenchMenu partial = open(bench, player);
             helper.assertTrue(partial.outsidePanels().size() == 3 && partial.outsidePanels().get(2).slots() == Direction.WEST.get3DDataValue() + 1,
                     "partialTabs: a tab with the slots of the face that touches the bench: " + partial.outsidePanels());
             helper.assertTrue(bench.stock().count(new ItemStack(Items.REDSTONE)) == 9, "and the bench shares it as before");
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         helper.succeed();
     }
@@ -253,16 +253,16 @@ public final class ProcessorGameTests {
         bench.setShareMode(ShareMode.ALL);
         helper.assertTrue(bench.externalPanels().isEmpty(), "by default the sided block gets no tab: " + bench.externalPanels());
         try {
-            Config.overrideAlwaysShow(List.of("nosuchmod:controller", "not an id"));
+            BenchConfig.overrideAlwaysShow(List.of("nosuchmod:controller", "not an id"));
             helper.assertTrue(bench.externalPanels().isEmpty() && bench.stock().count(new ItemStack(Items.REDSTONE)) == 0,
                     "unknown ids change nothing: " + bench.externalPanels());
-            Config.overrideAlwaysShow(List.of("nosuchmod:controller", BuiltInRegistries.BLOCK.getKey(FakeInventories.SIDED_BLOCK).toString()));
+            BenchConfig.overrideAlwaysShow(List.of("nosuchmod:controller", BuiltInRegistries.BLOCK.getKey(FakeInventories.SIDED_BLOCK).toString()));
             ExternalInventories.Panel panel = bench.externalPanels().isEmpty() ? null : bench.externalPanels().getFirst();
             helper.assertTrue(panel != null && panel.processor() == null && panel.slots() == Direction.WEST.get3DDataValue() + 1,
                     "listed: a tab with the slots of the face that touches the bench: " + bench.externalPanels());
             helper.assertTrue(bench.stock().count(new ItemStack(Items.REDSTONE)) == 9, "and the bench shares it like a chest");
         } finally {
-            Config.clearAlwaysShow();
+            BenchConfig.clearAlwaysShow();
         }
         helper.assertTrue(bench.externalPanels().isEmpty(), "off the list again: no tab");
         helper.succeed();
@@ -275,16 +275,16 @@ public final class ProcessorGameTests {
         furnace.setItem(Processor.FUEL, new ItemStack(Items.COAL, 8));
         bench.setShareMode(ShareMode.ALL);
         try {
-            Config.CONFIG.override(Config.Settings.builder().processors(false).partialTabs(false).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().processors(false).partialTabs(false).build());
             helper.assertTrue(bench.externalPanels().isEmpty() && bench.stock().count(new ItemStack(Items.COAL)) == 0,
                     "processors off: the furnace gets no tab and is not shared");
-            Config.CONFIG.override(Config.Settings.builder().processors(false).partialTabs(true).build());
+            BenchConfig.CONFIG.override(BenchConfig.Settings.builder().processors(false).partialTabs(true).build());
             ExternalInventories.Panel panel = bench.externalPanels().isEmpty() ? null : bench.externalPanels().getFirst();
             helper.assertTrue(panel != null && panel.processor() == null && panel.slots() == 1,
                     "with partialTabs too: the old tab, only the fuel the side shows: " + bench.externalPanels());
             helper.assertTrue(bench.stock().count(new ItemStack(Items.COAL)) == 8, "and the old sharing");
         } finally {
-            Config.CONFIG.clearOverride();
+            BenchConfig.CONFIG.clearOverride();
         }
         helper.assertTrue(bench.externalPanels().size() == 1 && bench.externalPanels().getFirst().processor() == Processor.FURNACE,
                 "on again: the furnace's own window");

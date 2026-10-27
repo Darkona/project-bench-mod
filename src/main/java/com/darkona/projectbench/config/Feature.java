@@ -28,7 +28,7 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.Nullable;
 
 public enum Feature {
-    BENCH(Config.Settings::bench, Content.Items.PROJECT_BENCH),
+    BENCH(BenchConfig.Settings::bench, Content.Items.PROJECT_BENCH),
     SLAB_BENCH(s -> s.bench() && s.slab(), Content.Items.SLAB_PROJECT_BENCH),
     AUTOCRAFT(s -> s.bench() && s.autocraft(), Content.Items.AUTO_PROJECT_BENCH),
     EJECTING(s -> s.bench() && s.autocraft(), Content.Items.EJECTING_AUTO_PROJECT_BENCH),
@@ -39,10 +39,10 @@ public enum Feature {
 
     private static final List<Runnable> LISTENERS = new CopyOnWriteArrayList<>();
 
-    private final Predicate<Config.Settings> test;
+    private final Predicate<BenchConfig.Settings> test;
     private final Supplier<? extends ItemLike> item;
 
-    Feature(Predicate<Config.Settings> test, Supplier<? extends ItemLike> item) {
+    Feature(Predicate<BenchConfig.Settings> test, Supplier<? extends ItemLike> item) {
         this.test = test;
         this.item = item;
     }
@@ -52,11 +52,11 @@ public enum Feature {
     }
 
     public boolean enabled() {
-        return test.test(Config.get());
+        return test.test(BenchConfig.get());
     }
 
     public boolean configured() {
-        return test.test(Config.CONFIG.fromFile());
+        return test.test(BenchConfig.CONFIG.fromFile());
     }
 
     public Item item() {
