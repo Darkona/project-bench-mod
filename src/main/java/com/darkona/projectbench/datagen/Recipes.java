@@ -1,7 +1,7 @@
 package com.darkona.projectbench.datagen;
 
 import com.darkona.projectbench.Content;
-import com.darkona.projectbench.block.bench.BenchUpgrade;
+import com.darkona.projectbench.content.bench.BenchUpgrade;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.Feature.Condition;
 import java.util.concurrent.CompletableFuture;

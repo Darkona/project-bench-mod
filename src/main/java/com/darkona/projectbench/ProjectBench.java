@@ -1,9 +1,9 @@
 package com.darkona.projectbench;
 
-import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
-import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
-import com.darkona.projectbench.block.bench.RecordRecipe;
-import com.darkona.projectbench.block.bench.SlotLocks;
+import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
+import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.content.bench.RecordRecipe;
+import com.darkona.projectbench.content.bench.SlotLocks;
 import com.darkona.projectbench.compat.create.CreateCompat;
 import com.darkona.projectbench.compat.jade.JadeCompat;
 import com.darkona.projectbench.config.ClientConfig;

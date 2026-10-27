@@ -2,7 +2,7 @@ package com.darkona.projectbench.datagen;
 
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.block.bench.ProjectBenchBlock;
+import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;

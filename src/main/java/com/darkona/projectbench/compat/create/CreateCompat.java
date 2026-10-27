@@ -1,6 +1,6 @@
 package com.darkona.projectbench.compat.create;
 
-import com.darkona.projectbench.block.bench.HandsOff;
+import com.darkona.projectbench.content.bench.HandsOff;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

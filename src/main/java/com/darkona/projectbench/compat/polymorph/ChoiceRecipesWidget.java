@@ -1,6 +1,6 @@
 package com.darkona.projectbench.compat.polymorph;
 
-import com.darkona.projectbench.client.RecipeSelector.Choices;
+import com.darkona.projectbench.content.bench.RecipeSelector.Choices;
 import com.illusivesoulworks.polymorph.api.client.base.AbstractRecipesWidget;
 import com.illusivesoulworks.polymorph.api.client.base.ITickingRecipesWidget;
 import com.illusivesoulworks.polymorph.api.common.base.IRecipePair;

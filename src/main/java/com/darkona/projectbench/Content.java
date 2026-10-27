@@ -1,15 +1,15 @@
 package com.darkona.projectbench;
 
-import com.darkona.projectbench.block.archive.BlueprintArchiveBlock;
-import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
-import com.darkona.projectbench.block.archive.BlueprintArchiveMenu;
-import com.darkona.projectbench.block.bench.AutoBenchBlock;
-import com.darkona.projectbench.block.bench.BenchSlabBlock;
-import com.darkona.projectbench.block.bench.BenchUpgrade;
-import com.darkona.projectbench.block.bench.ProjectBenchBlock;
-import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
-import com.darkona.projectbench.block.bench.ProjectBenchMenu;
-import com.darkona.projectbench.blueprint.BlueprintItem;
+import com.darkona.projectbench.content.archive.BlueprintArchiveBlock;
+import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
+import com.darkona.projectbench.content.archive.BlueprintArchiveMenu;
+import com.darkona.projectbench.content.bench.AutoBenchBlock;
+import com.darkona.projectbench.content.bench.BenchSlabBlock;
+import com.darkona.projectbench.content.bench.BenchUpgrade;
+import com.darkona.projectbench.content.bench.ProjectBenchBlock;
+import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.content.bench.ProjectBenchMenu;
+import com.darkona.projectbench.content.blueprint.BlueprintItem;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.Feature.Condition;
 import com.mojang.serialization.MapCodec;

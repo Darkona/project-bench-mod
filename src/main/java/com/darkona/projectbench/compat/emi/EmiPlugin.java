@@ -1,7 +1,7 @@
 package com.darkona.projectbench.compat.emi;
 
 import com.darkona.projectbench.Content;
-import com.darkona.projectbench.block.bench.ProjectBenchBlock;
+import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import com.darkona.projectbench.config.ClientConfig;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiRegistry;

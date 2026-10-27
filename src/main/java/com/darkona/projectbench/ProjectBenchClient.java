@@ -1,11 +1,11 @@
 package com.darkona.projectbench;
 
 import dev.darkona.jdlib.api.pattern.Blueprint;
-import com.darkona.projectbench.blueprint.BlueprintItem;
-import com.darkona.projectbench.client.BlockTint;
-import com.darkona.projectbench.client.BlueprintArchiveView;
-import com.darkona.projectbench.client.ProjectBenchRenderer;
-import com.darkona.projectbench.client.ProjectBenchView;
+import com.darkona.projectbench.content.blueprint.BlueprintItem;
+import com.darkona.projectbench.content.bench.BlockTint;
+import com.darkona.projectbench.content.archive.BlueprintArchiveView;
+import com.darkona.projectbench.content.bench.ProjectBenchRenderer;
+import com.darkona.projectbench.content.bench.ProjectBenchView;
 import com.darkona.projectbench.compat.polymorph.PolymorphCompat;
 import com.darkona.projectbench.compat.xei.BenchXei;
 import dev.darkona.jdlib.api.ui.client.JDMenus;

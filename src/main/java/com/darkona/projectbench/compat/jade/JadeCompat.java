@@ -2,8 +2,8 @@ package com.darkona.projectbench.compat.jade;
 
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.block.bench.ProjectBenchBlock;
-import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
+import com.darkona.projectbench.content.bench.ProjectBenchBlock;
+import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.Feature;
 import dev.darkona.jdlib.api.compat.jade.JDJade;
