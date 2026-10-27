@@ -7,7 +7,7 @@ import com.darkona.projectbench.compat.create.CreateCompat;
 import com.darkona.projectbench.compat.jade.JadeCompat;
 import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
-import com.darkona.projectbench.datagen.DataGen;
+import com.darkona.projectbench.data.BenchDatagen;
 import dev.darkona.jdlib.api.compat.Bridges;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -26,7 +26,7 @@ public final class ProjectBench {
         BenchPackets.register(modBus);
         Feature.guardUse();
         modBus.addListener(ProjectBench::registerCapabilities);
-        modBus.addListener(DataGen::gather);
+        modBus.addListener(BenchDatagen::gather);
         Bridges.ifLoaded(CreateCompat.MOD_ID, () -> modBus.addListener((FMLCommonSetupEvent e) -> e.enqueueWork(CreateCompat::register)));
         Bridges.ifLoaded(JadeCompat.MOD_ID, () -> JadeCompat.init());
     }

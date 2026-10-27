@@ -1,4 +1,4 @@
-package com.darkona.projectbench.datagen;
+package com.darkona.projectbench.data.recipe;
 
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.content.bench.BenchUpgrade;
@@ -24,8 +24,8 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.Nullable;
 
-final class Recipes extends RecipeProvider {
-    Recipes(PackOutput out, CompletableFuture<HolderLookup.Provider> lookup) {
+public final class BenchStandardRecipeGen extends RecipeProvider {
+    public BenchStandardRecipeGen(PackOutput out, CompletableFuture<HolderLookup.Provider> lookup) {
         super(out, lookup);
     }
 

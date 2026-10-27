@@ -1,4 +1,4 @@
-package com.darkona.projectbench.datagen;
+package com.darkona.projectbench.data;
 
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
@@ -22,8 +22,8 @@ import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-final class BlockStates extends BlockStateProvider {
-    BlockStates(PackOutput out, ExistingFileHelper files) {
+final class BenchBlockStateGen extends BlockStateProvider {
+    BenchBlockStateGen(PackOutput out, ExistingFileHelper files) {
         super(out, ProjectBench.MOD_ID, files);
     }
 
