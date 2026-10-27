@@ -1,4 +1,4 @@
-package com.darkona.projectbench.gametest;
+package com.darkona.projectbench.infrastructure.gametest;
 
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
@@ -43,7 +43,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.darkona.projectbench.gametest.GameTests.count;
+import static com.darkona.projectbench.infrastructure.gametest.GameTests.count;
 
 @GameTestHolder(ProjectBench.MOD_ID)
 @PrefixGameTestTemplate(false)

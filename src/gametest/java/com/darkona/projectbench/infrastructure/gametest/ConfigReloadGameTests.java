@@ -1,4 +1,4 @@
-package com.darkona.projectbench.gametest;
+package com.darkona.projectbench.infrastructure.gametest;
 
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.config.BenchConfig;

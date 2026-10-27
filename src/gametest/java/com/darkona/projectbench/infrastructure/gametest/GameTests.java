@@ -1,4 +1,4 @@
-package com.darkona.projectbench.gametest;
+package com.darkona.projectbench.infrastructure.gametest;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;

@@ -1,4 +1,4 @@
-package com.darkona.projectbench.gametest;
+package com.darkona.projectbench.infrastructure.gametest;
 
 import com.darkona.projectbench.ProjectBench;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;

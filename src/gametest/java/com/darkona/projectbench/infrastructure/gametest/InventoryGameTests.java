@@ -1,4 +1,4 @@
-package com.darkona.projectbench.gametest;
+package com.darkona.projectbench.infrastructure.gametest;
 
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
@@ -35,7 +35,7 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.neoforge.items.IItemHandler;
 
-import static com.darkona.projectbench.gametest.GameTests.count;
+import static com.darkona.projectbench.infrastructure.gametest.GameTests.count;
 
 import java.util.List;
 
