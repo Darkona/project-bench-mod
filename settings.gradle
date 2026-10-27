@@ -11,4 +11,4 @@ plugins {
 
 rootProject.name = 'projectbench'
 
-includeBuild('../JDLib')
+includeBuild(providers.gradleProperty('jdlibDir').getOrElse('../JDLib'))
