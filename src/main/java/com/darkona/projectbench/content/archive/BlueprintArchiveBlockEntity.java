@@ -1,6 +1,7 @@
 package com.darkona.projectbench.content.archive;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchBlockEntityTypes;
+import com.darkona.projectbench.index.BenchDataComponents;
 import dev.darkona.jdlib.api.inventory.ConcatContainer;
 import com.darkona.projectbench.foundation.BenchMenu;
 import com.darkona.projectbench.foundation.BenchBlockEntity;
@@ -68,7 +69,7 @@ public class BlueprintArchiveBlockEntity extends BenchBlockEntity implements Men
     private ConcatContainer shelf;
 
     public BlueprintArchiveBlockEntity(BlockPos pos, BlockState state) {
-        super(Content.BlockEntities.BLUEPRINT_ARCHIVE.get(), pos, state);
+        super(BenchBlockEntityTypes.BLUEPRINT_ARCHIVE.get(), pos, state);
     }
 
     public BlueprintContainer blueprints() {
@@ -183,14 +184,14 @@ public class BlueprintArchiveBlockEntity extends BenchBlockEntity implements Men
     protected void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
         if (keeping()) {
-            components.set(Content.Components.CONTENTS.get(), ItemContainerContents.fromItems(blueprints.getItems()));
+            components.set(BenchDataComponents.CONTENTS.get(), ItemContainerContents.fromItems(blueprints.getItems()));
         }
     }
 
     @Override
     protected void applyImplicitComponents(DataComponentInput input) {
         super.applyImplicitComponents(input);
-        ItemContainerContents contents = input.get(Content.Components.CONTENTS);
+        ItemContainerContents contents = input.get(BenchDataComponents.CONTENTS);
         if (contents != null) {
             contents.copyInto(blueprints.getItems());
         }

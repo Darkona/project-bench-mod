@@ -1,6 +1,7 @@
 package com.darkona.projectbench.infrastructure.gametest;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchBlocks;
+import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.content.bench.Opening;
@@ -36,11 +37,11 @@ public final class RecordCostGameTests {
     }
 
     private static ProjectBenchBlockEntity bench(GameTestHelper helper) {
-        helper.setBlock(BENCH, Content.Blocks.PROJECT_BENCH.get());
+        helper.setBlock(BENCH, BenchBlocks.PROJECT_BENCH.get());
         ProjectBenchBlockEntity bench = helper.getBlockEntity(BENCH);
         bench.matrix().setItem(1, new ItemStack(Items.OAK_PLANKS));
         bench.matrix().setItem(4, new ItemStack(Items.OAK_PLANKS));
-        bench.blueprintSlot().setItem(0, new ItemStack(Content.Items.BLUEPRINT.get()));
+        bench.blueprintSlot().setItem(0, new ItemStack(BenchItems.BLUEPRINT.get()));
         return bench;
     }
 
@@ -120,7 +121,7 @@ public final class RecordCostGameTests {
                     "and recording is free");
             helper.assertTrue(bench.costSlot().getItem(0).getCount() == 2, "the dye left there stays");
 
-            bench.blueprintSlot().setItem(0, new ItemStack(Content.Items.BLUEPRINT.get()));
+            bench.blueprintSlot().setItem(0, new ItemStack(BenchItems.BLUEPRINT.get()));
             BenchConfig.CONFIG.override(BenchConfig.Settings.builder().recordCost(true).recordCostItem(ResourceLocation.withDefaultNamespace("paper")).recordCostCount(3).build());
             helper.assertTrue(cost.isActive() && cost.mayPlace(new ItemStack(Items.PAPER)) && !cost.mayPlace(new ItemStack(Items.WHITE_DYE)),
                     "three paper: the slot takes paper now, not dye");
@@ -130,7 +131,7 @@ public final class RecordCostGameTests {
             bench.costSlot().setItem(0, new ItemStack(Items.PAPER, 4));
             helper.assertTrue(bench.record() && bench.costSlot().getItem(0).getCount() == 1, "four: it records and spends three");
 
-            bench.blueprintSlot().setItem(0, new ItemStack(Content.Items.BLUEPRINT.get()));
+            bench.blueprintSlot().setItem(0, new ItemStack(BenchItems.BLUEPRINT.get()));
             BenchConfig.CONFIG.override(BenchConfig.Settings.builder().recordCost(true).recordCostItem(ResourceLocation.fromNamespaceAndPath(ProjectBench.MOD_ID, "no_such_item"))
                     .recordCostCount(1).build());
             helper.assertTrue(!cost.isActive() && bench.record() && bench.costSlot().getItem(0).getCount() == 1,

@@ -1,6 +1,7 @@
 package com.darkona.projectbench.content.bench;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.ProjectBench;
+import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.content.blueprint.CostContainer;
 import com.darkona.projectbench.content.bench.RecipeSelector.Choices;
 import com.darkona.projectbench.config.AutoMode;
@@ -37,9 +38,9 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
     public static final KeyMapping SWITCH_MATRIX = new KeyMapping("key.projectbench.switch_matrix", KeyConflictContext.GUI,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_TAB, "key.categories.projectbench");
 
-    static final ResourceLocation TEXTURE = Content.id("textures/gui/project_bench.png");
-    static final ResourceLocation STATION_TEXTURE = Content.id("textures/gui/project_station.png");
-    private static final ResourceLocation TEMPLATE = Content.id("ui/project_bench.ui.nbt");
+    static final ResourceLocation TEXTURE = ProjectBench.id("textures/gui/project_bench.png");
+    static final ResourceLocation STATION_TEXTURE = ProjectBench.id("textures/gui/project_station.png");
+    private static final ResourceLocation TEMPLATE = ProjectBench.id("ui/project_bench.ui.nbt");
 
     public static final int ARROW_X = 110;
     public static final int ARROW_Y = 37;
@@ -133,7 +134,7 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
                 () -> menu.active() == which), x + du, y + dv);
     }
 
-    private static final ResourceLocation[] SHEETS = {Content.id("lss/bench.lss")};
+    private static final ResourceLocation[] SHEETS = {ProjectBench.id("lss/bench.lss")};
 
     @Override
     public ResourceLocation[] stylesheets() {
@@ -288,7 +289,7 @@ public final class ProjectBenchView implements MenuView<ProjectBenchMenu> {
                 LockView.filters(slot -> storageLock(menu, which, slot))), slot -> storageLock(menu, which, slot).isEmpty() ? null : JDViews.LOCK_CLOSED,
                 JDNode.Corner.TOP_LEFT, LOCK_SIZE), station, which),
                 storageX - 1, storageY - 1));
-        kids.add(JDViews.at(JDViews.ghostItem(JDViews.slot("blueprint" + half, menu.slots.get(menu.blueprintIndex(which))), new ItemStack(Content.Items.BLUEPRINT.get())),
+        kids.add(JDViews.at(JDViews.ghostItem(JDViews.slot("blueprint" + half, menu.slots.get(menu.blueprintIndex(which))), new ItemStack(BenchItems.BLUEPRINT.get())),
                 ProjectBenchMenu.halfX(which, ProjectBenchMenu.BLUEPRINT_X, 16) - 1, ProjectBenchMenu.BLUEPRINT_Y - 1));
         kids.add(JDViews.at(JDViews.ghostItem(JDViews.slot("cost" + half, menu.slots.get(menu.costIndex(which))), slot -> cost.ghost()),
                 ProjectBenchMenu.halfX(which, ProjectBenchMenu.COST_X, 16) - 1, ProjectBenchMenu.COST_Y - 1));

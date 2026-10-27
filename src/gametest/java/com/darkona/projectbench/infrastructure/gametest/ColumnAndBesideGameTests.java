@@ -1,6 +1,8 @@
 package com.darkona.projectbench.infrastructure.gametest;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchBlocks;
+import com.darkona.projectbench.index.BenchDataComponents;
+import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.content.archive.BlueprintArchiveBlock;
 import com.darkona.projectbench.content.archive.BlueprintArchiveBlock.ColumnPart;
@@ -45,12 +47,12 @@ public final class ColumnAndBesideGameTests {
     }
 
     private static BlueprintArchiveBlockEntity archive(GameTestHelper helper, BlockPos at) {
-        helper.setBlock(at, Content.Blocks.BLUEPRINT_ARCHIVE.get());
+        helper.setBlock(at, BenchBlocks.BLUEPRINT_ARCHIVE.get());
         return helper.getBlockEntity(at);
     }
 
     private static ProjectBenchBlockEntity bench(GameTestHelper helper, BlockPos at) {
-        helper.setBlock(at, Content.Blocks.PROJECT_BENCH.get());
+        helper.setBlock(at, BenchBlocks.PROJECT_BENCH.get());
         return helper.getBlockEntity(at);
     }
 
@@ -61,8 +63,8 @@ public final class ColumnAndBesideGameTests {
     }
 
     static ItemStack recorded(List<ItemStack> pattern, ItemStack result) {
-        ItemStack stack = new ItemStack(Content.Items.BLUEPRINT.get());
-        stack.set(Content.Components.BLUEPRINT.get(), new Blueprint(pattern, ResourceLocation.withDefaultNamespace("test"), result));
+        ItemStack stack = new ItemStack(BenchItems.BLUEPRINT.get());
+        stack.set(BenchDataComponents.BLUEPRINT.get(), new Blueprint(pattern, ResourceLocation.withDefaultNamespace("test"), result));
         return stack;
     }
 
@@ -75,12 +77,12 @@ public final class ColumnAndBesideGameTests {
                 && helper.getBlockState(BASE.above()).getValue(BlueprintArchiveBlock.PART) == ColumnPart.MIDDLE
                 && helper.getBlockState(BASE.above(2)).getValue(BlueprintArchiveBlock.PART) == ColumnPart.TOP, "the parts connect");
         helper.assertTrue(top.column().size() == 3 && top.column().get(0) == bottom && middle.shelf().getContainerSize() == 108, "one column of three");
-        bottom.blueprints().setItem(5, new ItemStack(Content.Items.BLUEPRINT.get(), 3));
+        bottom.blueprints().setItem(5, new ItemStack(BenchItems.BLUEPRINT.get(), 3));
         helper.assertTrue(top.shelf().getItem(5).getCount() == 3, "the top sees what the bottom holds");
 
         IItemHandler h = handler(helper, BASE.above(2), Direction.UP);
         helper.assertTrue(h.getSlots() == 108, "the handler has the column's 108 slots: " + h.getSlots());
-        ItemStack rest = h.insertItem(40, new ItemStack(Content.Items.BLUEPRINT.get()), false);
+        ItemStack rest = h.insertItem(40, new ItemStack(BenchItems.BLUEPRINT.get()), false);
         helper.assertTrue(rest.isEmpty() && middle.blueprints().getItem(4).getCount() == 1, "slot 40 is the middle's fifth");
         helper.assertTrue(h.insertItem(0, new ItemStack(Items.DIRT), false).getCount() == 1, "nothing but blueprints goes in, blank or written");
 
@@ -99,7 +101,7 @@ public final class ColumnAndBesideGameTests {
         helper.assertTrue(first.column().size() == 3 && fourth.column().size() == 1, "three and one");
         helper.assertTrue(helper.getBlockState(BASE.above(2)).getValue(BlueprintArchiveBlock.PART) == ColumnPart.TOP
                 && helper.getBlockState(BASE.above(3)).getValue(BlueprintArchiveBlock.PART) == ColumnPart.SINGLE, "the fourth is its own column");
-        fourth.blueprints().setItem(0, new ItemStack(Content.Items.BLUEPRINT.get(), 2));
+        fourth.blueprints().setItem(0, new ItemStack(BenchItems.BLUEPRINT.get(), 2));
         helper.setBlock(BASE, Blocks.AIR);
         helper.assertTrue(fourth.column().size() == 3 && fourth.column().get(0).getBlockPos().equals(helper.absolutePos(BASE.above())),
                 "the three left floating are one column: " + fourth.column().size());
@@ -122,8 +124,8 @@ public final class ColumnAndBesideGameTests {
         helper.assertTrue(h.insertItem(0, written.copy(), false).isEmpty(), "the first recorded blueprint goes in");
         helper.assertTrue(h.insertItem(0, written.copy(), false).getCount() == 1 && archive.blueprints().getItem(0).getCount() == 1,
                 "a second one does not stack onto it");
-        helper.assertTrue(h.insertItem(1, new ItemStack(Content.Items.BLUEPRINT.get(), 64), false).isEmpty(), "64 blank ones fit in a slot");
-        helper.assertTrue(h.insertItem(1, new ItemStack(Content.Items.BLUEPRINT.get()), false).getCount() == 1, "and not a 65th");
+        helper.assertTrue(h.insertItem(1, new ItemStack(BenchItems.BLUEPRINT.get(), 64), false).isEmpty(), "64 blank ones fit in a slot");
+        helper.assertTrue(h.insertItem(1, new ItemStack(BenchItems.BLUEPRINT.get()), false).getCount() == 1, "and not a 65th");
         helper.succeed();
     }
 
@@ -163,7 +165,7 @@ public final class ColumnAndBesideGameTests {
         menu.clicked(ProjectBenchMenu.BLUEPRINT, 0, ClickType.QUICK_MOVE, player);
         helper.assertTrue(bench.blueprintSlot().isEmpty() && ItemStack.isSameItemSameComponents(bottom.blueprints().getItem(0), sticks),
                 "only the top block in reach, the blueprint goes to the bottom block's first slot: " + bottom.blueprints().getItem(0));
-        helper.assertTrue(menu.clickMenuButton(player, ProjectBenchMenu.archiveButton(0)) && bench.blueprintSlot().getItem(0).is(Content.Items.BLUEPRINT.get())
+        helper.assertTrue(menu.clickMenuButton(player, ProjectBenchMenu.archiveButton(0)) && bench.blueprintSlot().getItem(0).is(BenchItems.BLUEPRINT.get())
                 && bottom.blueprints().getItem(0).isEmpty(), "and a click on the panel takes it back from the bottom block");
 
         player.setPos(farAway);
@@ -301,7 +303,7 @@ public final class ColumnAndBesideGameTests {
         bench.matrix().setItem(1, new ItemStack(Items.OAK_PLANKS));
         bench.matrix().setItem(4, new ItemStack(Items.OAK_PLANKS));
         bench.storage().setItem(0, new ItemStack(Items.OAK_PLANKS, 8));
-        bench.blueprintSlot().setItem(0, new ItemStack(Content.Items.BLUEPRINT.get()));
+        bench.blueprintSlot().setItem(0, new ItemStack(BenchItems.BLUEPRINT.get()));
         bench.costSlot().setItem(0, new ItemStack(Items.WHITE_DYE));
         helper.assertTrue(bench.record(), "recorded");
         bench.clearMatrix();

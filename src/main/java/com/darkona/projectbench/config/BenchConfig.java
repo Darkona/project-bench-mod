@@ -1,7 +1,7 @@
 package com.darkona.projectbench.config;
 
 import com.darkona.projectbench.config.BenchConfig;
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.ProjectBench;
 import dev.darkona.jdlib.api.config.ConfigSection;
 import dev.darkona.jdlib.api.config.ConfigSync;
 import dev.darkona.jdlib.api.config.ConfigTree;
@@ -81,7 +81,7 @@ public final class BenchConfig {
             .whenSet(settings -> Feature.changed());
     public static final ConfigTree TREE = ConfigTree.of(List.of(CONFIG));
     public static final ModConfigSpec SPEC = TREE.build();
-    public static final ConfigSync SYNC = ConfigSync.of(Content.id("config_sync"), TREE);
+    public static final ConfigSync SYNC = ConfigSync.of(ProjectBench.id("config_sync"), TREE);
 
     private static Function<ConfigSection.Read, Settings> define(ModConfigSpec.Builder b) {
         b.comment("One switch per system. Turn one off and its blocks and items are gone from the game: no recipe, not in the creative tab",
@@ -652,7 +652,6 @@ public final class BenchConfig {
     private static volatile Set<Block> alwaysShow = Set.of();
     @Nullable
     private static volatile Set<Block> alwaysShowOverride;
-
 
     private BenchConfig() {
     }

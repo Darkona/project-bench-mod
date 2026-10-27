@@ -1,6 +1,6 @@
 package com.darkona.projectbench.compat.xei;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchMenuTypes;
 import com.darkona.projectbench.content.bench.ProjectBenchMenu;
 import com.darkona.projectbench.content.bench.ProjectBenchView;
 import com.darkona.projectbench.config.ClientConfig;
@@ -29,8 +29,8 @@ public final class BenchXei {
     }
 
     public static void register() {
-        JDXei.registerCrafting(Content.Menus.PROJECT_BENCH, ProjectBenchMenu.class, new Transfer());
-        JDXei.recipeClickArea(Content.Menus.PROJECT_BENCH, RecipeKind.CRAFTING, menu -> !ClientConfig.jei() ? List.of() : menu.station() ? BOTH : ONE);
+        JDXei.registerCrafting(BenchMenuTypes.PROJECT_BENCH, ProjectBenchMenu.class, new Transfer());
+        JDXei.recipeClickArea(BenchMenuTypes.PROJECT_BENCH, RecipeKind.CRAFTING, menu -> !ClientConfig.jei() ? List.of() : menu.station() ? BOTH : ONE);
     }
 
     private static final class Transfer implements CraftingTransfer<ProjectBenchMenu> {

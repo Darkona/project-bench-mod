@@ -1,6 +1,6 @@
 package com.darkona.projectbench.infrastructure.gametest;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchBlocks;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.content.bench.Opening;
@@ -37,7 +37,7 @@ public final class ShareModeGameTests {
     }
 
     private static Setup setup(GameTestHelper helper) {
-        helper.setBlock(BENCH, Content.Blocks.PROJECT_BENCH.get());
+        helper.setBlock(BENCH, BenchBlocks.PROJECT_BENCH.get());
         helper.setBlock(BENCH.west(), Blocks.BARREL);
         helper.setBlock(BENCH.east(), Blocks.CHEST);
         ProjectBenchBlockEntity bench = helper.getBlockEntity(BENCH);

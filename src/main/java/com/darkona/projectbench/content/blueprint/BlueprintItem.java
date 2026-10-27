@@ -1,6 +1,6 @@
 package com.darkona.projectbench.content.blueprint;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchDataComponents;
 import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
 import dev.darkona.jdlib.api.pattern.Blueprint;
@@ -20,7 +20,7 @@ public class BlueprintItem extends Item {
 
     @Nullable
     public static Blueprint blueprint(ItemStack stack) {
-        return stack.get(Content.Components.BLUEPRINT.get());
+        return stack.get(BenchDataComponents.BLUEPRINT.get());
     }
 
     public static boolean blank(ItemStack stack) {

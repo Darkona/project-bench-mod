@@ -1,6 +1,7 @@
 package com.darkona.projectbench.data.recipe;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.ProjectBench;
+import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.content.bench.BenchUpgrade;
 import com.darkona.projectbench.config.Feature;
 import com.darkona.projectbench.config.Feature.Condition;
@@ -54,34 +55,34 @@ public final class BenchStandardRecipeGen extends RecipeProvider {
         RecipeOutput slab = out.withConditions(new Condition(Feature.SLAB_BENCH));
         RecipeOutput blueprint = out.withConditions(new Condition(Feature.BLUEPRINT));
         RecipeOutput archive = out.withConditions(new Condition(Feature.ARCHIVE));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Content.Items.PROJECT_BENCH.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BenchItems.PROJECT_BENCH.get())
                 .pattern("RGR").pattern("SBS").pattern("PCP")
                 .define('R', Tags.Items.DUSTS_REDSTONE).define('G', Tags.Items.INGOTS_GOLD).define('S', Items.SMOOTH_STONE)
                 .define('B', Tags.Items.PLAYER_WORKSTATIONS_CRAFTING_TABLES).define('P', ItemTags.PLANKS).define('C', Tags.Items.CHESTS_WOODEN)
                 .unlockedBy("has_crafting_table", has(Tags.Items.PLAYER_WORKSTATIONS_CRAFTING_TABLES)).save(bench);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Content.Items.SLAB_PROJECT_BENCH.get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BenchItems.SLAB_PROJECT_BENCH.get(), 2)
                            .pattern(" B ").pattern("III")
-                           .define('B', Content.Items.PROJECT_BENCH.get()).define('I', Tags.Items.INGOTS_IRON)
-                           .unlockedBy("has_project_bench", has(Content.Items.PROJECT_BENCH.get())).save(slab);
+                           .define('B', BenchItems.PROJECT_BENCH.get()).define('I', Tags.Items.INGOTS_IRON)
+                           .unlockedBy("has_project_bench", has(BenchItems.PROJECT_BENCH.get())).save(slab);
         RecipeOutput autocraft = upgrades(out.withConditions(new Condition(Feature.AUTOCRAFT)));
-        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, Content.Items.AUTO_PROJECT_BENCH.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, BenchItems.AUTO_PROJECT_BENCH.get())
                 .pattern("IBI").pattern("RCR").pattern("PLP")
-                .define('I', Tags.Items.INGOTS_IRON).define('B', Content.Items.PROJECT_BENCH.get()).define('R', Tags.Items.DUSTS_REDSTONE)
+                .define('I', Tags.Items.INGOTS_IRON).define('B', BenchItems.PROJECT_BENCH.get()).define('R', Tags.Items.DUSTS_REDSTONE)
                 .define('C', Items.CRAFTER).define('P', Items.PISTON).define('L', Items.LEVER)
-                .unlockedBy("has_project_bench", has(Content.Items.PROJECT_BENCH.get())).save(autocraft);
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, Content.Items.EJECTING_AUTO_PROJECT_BENCH.get())
-                .requires(Content.Items.AUTO_PROJECT_BENCH.get()).requires(Items.DROPPER)
-                .unlockedBy("has_auto_project_bench", has(Content.Items.AUTO_PROJECT_BENCH.get())).save(autocraft);
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Content.Items.BLUEPRINT.get(), 8)
+                .unlockedBy("has_project_bench", has(BenchItems.PROJECT_BENCH.get())).save(autocraft);
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, BenchItems.EJECTING_AUTO_PROJECT_BENCH.get())
+                .requires(BenchItems.AUTO_PROJECT_BENCH.get()).requires(Items.DROPPER)
+                .unlockedBy("has_auto_project_bench", has(BenchItems.AUTO_PROJECT_BENCH.get())).save(autocraft);
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, BenchItems.BLUEPRINT.get(), 8)
                 .requires(Tags.Items.GEMS_LAPIS).requires(Items.PAPER, 8)
                 .unlockedBy("has_paper", has(Items.PAPER)).save(blueprint);
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Content.Items.BLUEPRINT.get())
-                              .requires(Content.Items.BLUEPRINT.get())
-                              .unlockedBy("has_blueprint", has(Content.Items.BLUEPRINT.get())).save(blueprint, Content.id("blueprint_clear"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Content.Items.BLUEPRINT_ARCHIVE.get())
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, BenchItems.BLUEPRINT.get())
+                              .requires(BenchItems.BLUEPRINT.get())
+                              .unlockedBy("has_blueprint", has(BenchItems.BLUEPRINT.get())).save(blueprint, ProjectBench.id("blueprint_clear"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BenchItems.BLUEPRINT_ARCHIVE.get())
                            .pattern("LIL").pattern("SCS").pattern("PPP")
                            .define('L', Tags.Items.GEMS_LAPIS).define('I', Tags.Items.INGOTS_IRON).define('S', Items.SMOOTH_STONE)
                            .define('C', Tags.Items.CHESTS_WOODEN).define('P', ItemTags.PLANKS)
-                           .unlockedBy("has_blueprint", has(Content.Items.BLUEPRINT.get())).save(archive);
+                           .unlockedBy("has_blueprint", has(BenchItems.BLUEPRINT.get())).save(archive);
     }
 }

@@ -1,6 +1,6 @@
 package com.darkona.projectbench.config;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.foundation.BenchBlock;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -28,12 +28,12 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.Nullable;
 
 public enum Feature {
-    BENCH(BenchConfig.Settings::bench, Content.Items.PROJECT_BENCH),
-    SLAB_BENCH(s -> s.bench() && s.slab(), Content.Items.SLAB_PROJECT_BENCH),
-    AUTOCRAFT(s -> s.bench() && s.autocraft(), Content.Items.AUTO_PROJECT_BENCH),
-    EJECTING(s -> s.bench() && s.autocraft(), Content.Items.EJECTING_AUTO_PROJECT_BENCH),
-    BLUEPRINT(s -> s.bench() && s.blueprint(), Content.Items.BLUEPRINT),
-    ARCHIVE(s -> s.bench() && s.blueprint() && s.archive(), Content.Items.BLUEPRINT_ARCHIVE);
+    BENCH(BenchConfig.Settings::bench, BenchItems.PROJECT_BENCH),
+    SLAB_BENCH(s -> s.bench() && s.slab(), BenchItems.SLAB_PROJECT_BENCH),
+    AUTOCRAFT(s -> s.bench() && s.autocraft(), BenchItems.AUTO_PROJECT_BENCH),
+    EJECTING(s -> s.bench() && s.autocraft(), BenchItems.EJECTING_AUTO_PROJECT_BENCH),
+    BLUEPRINT(s -> s.bench() && s.blueprint(), BenchItems.BLUEPRINT),
+    ARCHIVE(s -> s.bench() && s.blueprint() && s.archive(), BenchItems.BLUEPRINT_ARCHIVE);
 
     private static final Feature[] VALUES = values();
 

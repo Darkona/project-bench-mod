@@ -1,6 +1,7 @@
 package com.darkona.projectbench.compat.jei;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.ProjectBench;
+import com.darkona.projectbench.index.BenchBlocks;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import com.darkona.projectbench.config.ClientConfig;
 import com.darkona.projectbench.config.Feature;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @mezz.jei.api.JeiPlugin
 public final class JeiPlugin implements IModPlugin {
-    private static final ResourceLocation UID = Content.id("jei");
+    private static final ResourceLocation UID = ProjectBench.id("jei");
 
     @Nullable
     private static IJeiRuntime runtime;
@@ -37,7 +38,7 @@ public final class JeiPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         if (ClientConfig.jei()) {
-            for (DeferredBlock<ProjectBenchBlock> bench : Content.Blocks.BENCHES) {
+            for (DeferredBlock<ProjectBenchBlock> bench : BenchBlocks.BENCHES) {
                 registration.addRecipeCatalyst(bench.get(), RecipeTypes.CRAFTING);
             }
         }

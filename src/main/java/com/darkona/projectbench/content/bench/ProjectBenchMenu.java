@@ -1,6 +1,6 @@
 package com.darkona.projectbench.content.bench;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchMenuTypes;
 import dev.darkona.jdlib.api.inventory.GridFill;
 import dev.darkona.jdlib.api.inventory.Stock;
 import com.darkona.projectbench.config.AutoMode;
@@ -174,7 +174,7 @@ public class ProjectBenchMenu extends BenchMenu implements SlotMapped {
 
     private ProjectBenchMenu(int id, Inventory inventory, ProjectBenchBlockEntity bench, @Nullable ProjectBenchBlockEntity second,
                              ConcatContainer archives, List<ExternalInventories.Panel> panels) {
-        super(Content.Menus.PROJECT_BENCH.get(), id);
+        super(BenchMenuTypes.PROJECT_BENCH.get(), id);
         this.bench = bench;
         this.second = second;
         this.player = inventory.player;

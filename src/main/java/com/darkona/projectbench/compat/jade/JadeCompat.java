@@ -1,6 +1,5 @@
 package com.darkona.projectbench.compat.jade;
 
-import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
@@ -41,7 +40,7 @@ public final class JadeCompat {
     private enum RecipeProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
         INSTANCE;
 
-        private static final ResourceLocation UID = Content.id("recipe");
+        private static final ResourceLocation UID = ProjectBench.id("recipe");
 
         @Override
         public ResourceLocation getUid() {

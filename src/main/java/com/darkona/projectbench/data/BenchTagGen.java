@@ -1,6 +1,6 @@
 package com.darkona.projectbench.data;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchBlocks;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
 import java.util.concurrent.CompletableFuture;
@@ -18,9 +18,9 @@ final class BenchTagGen extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        for (DeferredBlock<ProjectBenchBlock> bench : Content.Blocks.BENCHES) {
+        for (DeferredBlock<ProjectBenchBlock> bench : BenchBlocks.BENCHES) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(bench.get());
         }
-        tag(BlockTags.MINEABLE_WITH_AXE).add(Content.Blocks.BLUEPRINT_ARCHIVE.get());
+        tag(BlockTags.MINEABLE_WITH_AXE).add(BenchBlocks.BLUEPRINT_ARCHIVE.get());
     }
 }

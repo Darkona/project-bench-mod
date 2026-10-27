@@ -1,6 +1,6 @@
 package com.darkona.projectbench.content.bench;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchBlocks;
 import dev.darkona.jdlib.api.inventory.Stock;
 import com.darkona.projectbench.config.BenchConfig;
 import com.darkona.projectbench.config.Feature;
@@ -144,7 +144,7 @@ public final class ExternalInventories implements Stock {
         BlockPos at = probe.setWithOffset(bench.getBlockPos(), side);
         BlockCapabilityCache<IItemHandler, Direction> cache = caches.existing(sideIndex);
         Block there = cache != null && kinds[sideIndex] != UNKNOWN ? blocks[sideIndex] : server.getBlockState(at).getBlock();
-        if (there == Content.Blocks.BLUEPRINT_ARCHIVE.get() || !Feature.allows(there)) {
+        if (there == BenchBlocks.BLUEPRINT_ARCHIVE.get() || !Feature.allows(there)) {
             return null;
         }
         if (cache == null) {

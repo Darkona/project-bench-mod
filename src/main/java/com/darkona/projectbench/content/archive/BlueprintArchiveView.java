@@ -1,6 +1,6 @@
 package com.darkona.projectbench.content.archive;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.ProjectBench;
 import dev.darkona.jdlib.api.ui.JDNode;
 import dev.darkona.jdlib.api.ui.JDViews;
 import dev.darkona.jdlib.api.ui.MenuView;
@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public final class BlueprintArchiveView implements MenuView<BlueprintArchiveMenu> {
-    private static final ResourceLocation TEMPLATE = Content.id("ui/blueprint_archive.ui.nbt");
+    private static final ResourceLocation TEMPLATE = ProjectBench.id("ui/blueprint_archive.ui.nbt");
     private static final int SCROLL_WIDTH = 9;
     private static final int SCROLL_GAP = 3;
     private static final int CONTENT = BlueprintArchiveMenu.COLUMNS * JDNode.SLOT;

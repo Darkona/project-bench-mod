@@ -1,7 +1,7 @@
 package com.darkona.projectbench.network;
 
 import com.darkona.projectbench.content.bench.ProjectBenchMenu;
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.ProjectBench;
 import dev.darkona.jdlib.api.pattern.Blueprint;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -16,12 +16,11 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.Nullable;
 
 public record RecordRecipe(ResourceLocation recipe, boolean fill) implements CustomPacketPayload {
-    public static final Type<RecordRecipe> TYPE = new Type<>(Content.id("record_recipe"));
+    public static final Type<RecordRecipe> TYPE = new Type<>(ProjectBench.id("record_recipe"));
     public static final StreamCodec<ByteBuf, RecordRecipe> CODEC = StreamCodec.composite(
             ResourceLocation.STREAM_CODEC, RecordRecipe::recipe,
             ByteBufCodecs.BOOL, RecordRecipe::fill,
             RecordRecipe::new);
-
 
     @Override
     public Type<? extends CustomPacketPayload> type() {

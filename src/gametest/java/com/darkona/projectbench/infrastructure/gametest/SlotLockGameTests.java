@@ -1,6 +1,7 @@
 package com.darkona.projectbench.infrastructure.gametest;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchBlocks;
+import com.darkona.projectbench.index.BenchDataComponents;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.config.AutoMode;
 import com.darkona.projectbench.content.bench.ProjectBenchBlock;
@@ -48,7 +49,7 @@ public final class SlotLockGameTests {
     }
 
     private static ProjectBenchBlockEntity bench(GameTestHelper helper) {
-        helper.setBlock(BENCH, Content.Blocks.PROJECT_BENCH.get());
+        helper.setBlock(BENCH, BenchBlocks.PROJECT_BENCH.get());
         return helper.getBlockEntity(BENCH);
     }
 
@@ -197,7 +198,7 @@ public final class SlotLockGameTests {
         try {
             BenchConfig.CONFIG.override(BenchConfig.Settings.builder().benchOnBreak(BreakMode.SILK_TOUCH).archiveOnBreak(BreakMode.DROP_ALL).build());
             ItemStack dropped = breakWithSilkTouch(helper);
-            helper.assertTrue(dropped.has(Content.Components.SLOT_LOCKS.get()), "the bench broken with Silk Touch keeps its locks");
+            helper.assertTrue(dropped.has(BenchDataComponents.SLOT_LOCKS.get()), "the bench broken with Silk Touch keeps its locks");
             ProjectBenchBlockEntity placed = bench(helper);
             placed.applyComponentsFromItemStack(dropped);
             helper.assertTrue(lockedTo(placed, 2, cobble) && placed.storage().getItem(2).getCount() == 2, "placed again, locked again");

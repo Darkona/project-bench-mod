@@ -1,6 +1,7 @@
 package com.darkona.projectbench.infrastructure.gametest;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchBlocks;
+import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.config.AutoMode;
@@ -51,7 +52,7 @@ public final class RulesAndClicksGameTests {
     }
 
     private static ProjectBenchBlockEntity bench(GameTestHelper helper) {
-        helper.setBlock(BENCH, Content.Blocks.PROJECT_BENCH.get());
+        helper.setBlock(BENCH, BenchBlocks.PROJECT_BENCH.get());
         return helper.getBlockEntity(BENCH);
     }
 
@@ -363,7 +364,7 @@ public final class RulesAndClicksGameTests {
     @GameTest(template = GameTests.EMPTY, batch = "projectbench_switches")
     public static void blueprintSwitchedOffTurnsTheWholeMechanicOff(GameTestHelper helper) {
         ProjectBenchBlockEntity bench = bench(helper);
-        helper.setBlock(BENCH.east(), Content.Blocks.BLUEPRINT_ARCHIVE.get());
+        helper.setBlock(BENCH.east(), BenchBlocks.BLUEPRINT_ARCHIVE.get());
         BlueprintArchiveBlockEntity archive = helper.getBlockEntity(BENCH.east());
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ProjectBenchMenu menu = open(bench, player);
@@ -373,11 +374,11 @@ public final class RulesAndClicksGameTests {
             helper.assertFalse(Feature.ARCHIVE.enabled(), "the archive needs the blueprint");
             helper.assertTrue(bench.archives().isEmpty(), "and is not listed by the bench");
             Slot slot = menu.getSlot(ProjectBenchMenu.BLUEPRINT);
-            helper.assertFalse(slot.mayPlace(new ItemStack(Content.Items.BLUEPRINT.get())) || slot.isActive(), "the blueprint slot takes nothing and is covered");
-            player.getInventory().setItem(0, new ItemStack(Content.Items.BLUEPRINT.get(), 3));
+            helper.assertFalse(slot.mayPlace(new ItemStack(BenchItems.BLUEPRINT.get())) || slot.isActive(), "the blueprint slot takes nothing and is covered");
+            player.getInventory().setItem(0, new ItemStack(BenchItems.BLUEPRINT.get(), 3));
             menu.quickMoveStack(player, ProjectBenchMenu.PLAYER_END - 9);
-            helper.assertTrue(count(bench.storage(), Content.Items.BLUEPRINT.get()) == 3 && bench.blueprintSlot().isEmpty()
-                    && count(archive.blueprints(), Content.Items.BLUEPRINT.get()) == 0, "a shift-clicked blueprint goes to the internal inventory");
+            helper.assertTrue(count(bench.storage(), BenchItems.BLUEPRINT.get()) == 3 && bench.blueprintSlot().isEmpty()
+                    && count(archive.blueprints(), BenchItems.BLUEPRINT.get()) == 0, "a shift-clicked blueprint goes to the internal inventory");
         } finally {
             BenchConfig.CONFIG.clearOverride();
         }

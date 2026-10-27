@@ -1,6 +1,8 @@
 package com.darkona.projectbench.infrastructure.gametest;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchBlocks;
+import com.darkona.projectbench.index.BenchDataComponents;
+import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.content.bench.ProjectBenchBlockEntity;
@@ -50,7 +52,7 @@ public final class InventoryGameTests {
     }
 
     private static ProjectBenchBlockEntity bench(GameTestHelper helper, BlockPos at) {
-        helper.setBlock(at, Content.Blocks.PROJECT_BENCH.get());
+        helper.setBlock(at, BenchBlocks.PROJECT_BENCH.get());
         return helper.getBlockEntity(at);
     }
 
@@ -59,7 +61,7 @@ public final class InventoryGameTests {
         bench.matrix().setItem(UNDER, new ItemStack(Items.OAK_PLANKS));
         bench.storage().setItem(0, new ItemStack(Items.OAK_PLANKS, 8));
         bench.storage().setItem(17, new ItemStack(Items.COBBLESTONE, 4));
-        bench.blueprintSlot().setItem(0, new ItemStack(Content.Items.BLUEPRINT.get()));
+        bench.blueprintSlot().setItem(0, new ItemStack(BenchItems.BLUEPRINT.get()));
         bench.costSlot().setItem(0, new ItemStack(Items.WHITE_DYE, 3));
     }
 
@@ -84,17 +86,17 @@ public final class InventoryGameTests {
         ProjectBenchBlockEntity bench = bench(helper, BENCH);
         fill(bench);
         BlockPos at = BENCH.east();
-        helper.setBlock(at, Content.Blocks.BLUEPRINT_ARCHIVE.get());
+        helper.setBlock(at, BenchBlocks.BLUEPRINT_ARCHIVE.get());
         BlueprintArchiveBlockEntity archive = helper.getBlockEntity(at);
-        archive.blueprints().setItem(4, new ItemStack(Content.Items.BLUEPRINT.get(), 3));
+        archive.blueprints().setItem(4, new ItemStack(BenchItems.BLUEPRINT.get(), 3));
 
         helper.getLevel().destroyBlock(helper.absolutePos(BENCH), true);
         helper.getLevel().destroyBlock(helper.absolutePos(at), true);
         helper.assertTrue(dropped(helper, Items.OAK_PLANKS) == 10, "two planks of the matrix and eight of the inventory: " + dropped(helper, Items.OAK_PLANKS));
         helper.assertTrue(dropped(helper, Items.COBBLESTONE) == 4, "four cobblestone");
         helper.assertTrue(dropped(helper, Items.STICK) == 0, "the result is no item of its own");
-        helper.assertTrue(dropped(helper, Content.Items.BLUEPRINT.get()) == 4, "the bench's blueprint and the archive's three");
-        helper.assertTrue(dropped(helper, Content.Items.PROJECT_BENCH.get()) == 1 && dropped(helper, Content.Items.BLUEPRINT_ARCHIVE.get()) == 1,
+        helper.assertTrue(dropped(helper, BenchItems.BLUEPRINT.get()) == 4, "the bench's blueprint and the archive's three");
+        helper.assertTrue(dropped(helper, BenchItems.PROJECT_BENCH.get()) == 1 && dropped(helper, BenchItems.BLUEPRINT_ARCHIVE.get()) == 1,
                 "and each block itself");
         helper.succeed();
     }
@@ -116,9 +118,9 @@ public final class InventoryGameTests {
         helper.assertTrue(ItemStack.matches(loaded.blueprintSlot().getItem(0), bench.blueprintSlot().getItem(0)), "the blueprint");
 
         BlockPos at = BENCH.east();
-        helper.setBlock(at, Content.Blocks.BLUEPRINT_ARCHIVE.get());
+        helper.setBlock(at, BenchBlocks.BLUEPRINT_ARCHIVE.get());
         BlueprintArchiveBlockEntity archive = helper.getBlockEntity(at);
-        archive.blueprints().setItem(35, new ItemStack(Content.Items.BLUEPRINT.get(), 7));
+        archive.blueprints().setItem(35, new ItemStack(BenchItems.BLUEPRINT.get(), 7));
         BlueprintArchiveBlockEntity again = (BlueprintArchiveBlockEntity) BlueprintArchiveBlockEntity.loadStatic(archive.getBlockPos(),
                 archive.getBlockState(), archive.saveWithFullMetadata(helper.getLevel().registryAccess()), helper.getLevel().registryAccess());
         helper.assertTrue(again != null && again.blueprints().getItem(35).getCount() == 7, "the archive's blueprints too");
@@ -135,11 +137,11 @@ public final class InventoryGameTests {
         helper.assertTrue(helper.getEntities(EntityType.ITEM).isEmpty(), "nothing drops where it stood");
 
         BlockPos to = new BlockPos(3, 1, 3);
-        helper.setBlock(to, Content.Blocks.PROJECT_BENCH.get().defaultBlockState().rotate(Rotation.CLOCKWISE_90));
+        helper.setBlock(to, BenchBlocks.PROJECT_BENCH.get().defaultBlockState().rotate(Rotation.CLOCKWISE_90));
         ProjectBenchBlockEntity moved = helper.getBlockEntity(to);
         moved.loadWithComponents(tag, helper.getLevel().registryAccess());
         helper.assertTrue(count(moved.matrix(), Items.OAK_PLANKS) == 2 && count(moved.storage(), Items.OAK_PLANKS) == 8
-                && count(moved.storage(), Items.COBBLESTONE) == 4 && moved.blueprintSlot().getItem(0).is(Content.Items.BLUEPRINT.get())
+                && count(moved.storage(), Items.COBBLESTONE) == 4 && moved.blueprintSlot().getItem(0).is(BenchItems.BLUEPRINT.get())
                 && count(moved.costSlot(), Items.WHITE_DYE) == 3, "the same items where it lands, the cost slot's too");
         helper.assertTrue(moved.result().getItem(0).is(Items.STICK), "and its recipe: " + moved.result().getItem(0));
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -195,7 +197,7 @@ public final class InventoryGameTests {
             BenchConfig.CONFIG.override(BenchConfig.Settings.builder().benchOnBreak(BreakMode.SILK_TOUCH).archiveOnBreak(BreakMode.DROP_ALL).build());
             ItemStack dropped = breakWith(helper, BENCH, silkPick(helper));
             helper.assertTrue(dropped(helper, Items.OAK_PLANKS) == 0 && dropped(helper, Items.COBBLESTONE) == 0, "nothing falls out of it");
-            helper.assertTrue(dropped.has(Content.Components.CONTENTS.get()), "the dropped bench holds it");
+            helper.assertTrue(dropped.has(BenchDataComponents.CONTENTS.get()), "the dropped bench holds it");
             ProjectBenchBlockEntity placed = bench(helper, BENCH);
             placed.applyComponentsFromItemStack(dropped);
             helper.assertTrue(count(placed.matrix(), Items.OAK_PLANKS) == 2 && count(placed.storage(), Items.OAK_PLANKS) == 8
@@ -206,7 +208,7 @@ public final class InventoryGameTests {
             ProjectBenchBlockEntity second = bench(helper, BENCH);
             fill(second);
             ItemStack plain = breakWith(helper, BENCH, new ItemStack(Items.DIAMOND_PICKAXE));
-            helper.assertTrue(!plain.has(Content.Components.CONTENTS.get()) && dropped(helper, Items.OAK_PLANKS) == 10
+            helper.assertTrue(!plain.has(BenchDataComponents.CONTENTS.get()) && dropped(helper, Items.OAK_PLANKS) == 10
                     && dropped(helper, Items.WHITE_DYE) == 3, "without Silk Touch it all falls, the dye too");
         } finally {
             BenchConfig.CONFIG.clearOverride();
@@ -221,18 +223,18 @@ public final class InventoryGameTests {
         try {
             BenchConfig.CONFIG.override(BenchConfig.Settings.builder().benchOnBreak(BreakMode.ALWAYS_KEEP).archiveOnBreak(BreakMode.DROP_ALL).build());
             ItemStack kept = breakWith(helper, BENCH, new ItemStack(Items.DIAMOND_PICKAXE));
-            helper.assertTrue(kept.has(Content.Components.CONTENTS.get()) && dropped(helper, Items.OAK_PLANKS) == 0, "ALWAYS_KEEP keeps it with any pickaxe");
+            helper.assertTrue(kept.has(BenchDataComponents.CONTENTS.get()) && dropped(helper, Items.OAK_PLANKS) == 0, "ALWAYS_KEEP keeps it with any pickaxe");
 
             ProjectBenchBlockEntity again = bench(helper, BENCH);
             fill(again);
             ItemStack bare = breakWith(helper, BENCH, ItemStack.EMPTY);
-            helper.assertTrue(dropped(helper, Items.OAK_PLANKS) == 10 && !bare.has(Content.Components.CONTENTS.get()), "without the right tool it all falls");
+            helper.assertTrue(dropped(helper, Items.OAK_PLANKS) == 10 && !bare.has(BenchDataComponents.CONTENTS.get()), "without the right tool it all falls");
 
             BenchConfig.CONFIG.override(BenchConfig.Settings.builder().benchOnBreak(BreakMode.DROP_ALL).archiveOnBreak(BreakMode.DROP_ALL).build());
             ProjectBenchBlockEntity last = bench(helper, BENCH);
             fill(last);
             ItemStack all = breakWith(helper, BENCH, silkPick(helper));
-            helper.assertTrue(!all.has(Content.Components.CONTENTS.get()) && dropped(helper, Items.OAK_PLANKS) == 20, "DROP_ALL drops it even with Silk Touch");
+            helper.assertTrue(!all.has(BenchDataComponents.CONTENTS.get()) && dropped(helper, Items.OAK_PLANKS) == 20, "DROP_ALL drops it even with Silk Touch");
         } finally {
             BenchConfig.CONFIG.clearOverride();
         }
@@ -257,7 +259,7 @@ public final class InventoryGameTests {
     public static void switchesStopWhatTheyCover(GameTestHelper helper) {
         ProjectBenchBlockEntity bench = bench(helper, BENCH);
         fill(bench);
-        helper.setBlock(BENCH.east(), Content.Blocks.BLUEPRINT_ARCHIVE.get());
+        helper.setBlock(BENCH.east(), BenchBlocks.BLUEPRINT_ARCHIVE.get());
         IItemHandler west = handler(helper, BENCH, Direction.WEST);
         IItemHandler down = handler(helper, BENCH, Direction.DOWN);
         try {
@@ -270,7 +272,7 @@ public final class InventoryGameTests {
             BenchConfig.CONFIG.override(BenchConfig.Settings.builder().bench(false).benchOnBreak(BreakMode.DROP_ALL).archiveOnBreak(BreakMode.DROP_ALL).build());
             helper.assertTrue(west.insertItem(1, new ItemStack(Items.DIRT), false).getCount() == 1 && down.extractItem(0, 64, false).isEmpty(),
                     "a bench switched off takes and gives nothing");
-            helper.assertTrue(handler(helper, BENCH.east(), Direction.UP).insertItem(0, new ItemStack(Content.Items.BLUEPRINT.get()), false).getCount() == 1,
+            helper.assertTrue(handler(helper, BENCH.east(), Direction.UP).insertItem(0, new ItemStack(BenchItems.BLUEPRINT.get()), false).getCount() == 1,
                     "nor does the archive, which needs the bench");
 
             BenchConfig.CONFIG.override(BenchConfig.Settings.builder().blueprint(false).archive(false).benchOnBreak(BreakMode.DROP_ALL).archiveOnBreak(BreakMode.DROP_ALL)

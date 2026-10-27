@@ -1,6 +1,7 @@
 package com.darkona.projectbench.content.bench;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchDataComponents;
+import com.darkona.projectbench.index.BenchRecipeTypes;
 import com.darkona.projectbench.config.Feature;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.HolderLookup;
@@ -23,11 +24,11 @@ public final class BenchUpgrade {
     static ItemStack keepContents(CraftingInput input, ItemStack result) {
         for (int i = 0; i < input.size(); ++i) {
             ItemStack bench = input.getItem(i);
-            ItemContainerContents contents = bench.get(Content.Components.CONTENTS.get());
-            ItemContainerContents locks = bench.get(Content.Components.SLOT_LOCKS.get());
+            ItemContainerContents contents = bench.get(BenchDataComponents.CONTENTS.get());
+            ItemContainerContents locks = bench.get(BenchDataComponents.SLOT_LOCKS.get());
             if (contents != null || locks != null) {
-                result.set(Content.Components.CONTENTS.get(), contents);
-                result.set(Content.Components.SLOT_LOCKS.get(), locks);
+                result.set(BenchDataComponents.CONTENTS.get(), contents);
+                result.set(BenchDataComponents.SLOT_LOCKS.get(), locks);
                 break;
             }
         }
@@ -55,7 +56,7 @@ public final class BenchUpgrade {
 
         @Override
         public RecipeSerializer<?> getSerializer() {
-            return Content.Recipes.SHAPED_UPGRADE.get();
+            return BenchRecipeTypes.SHAPED_UPGRADE.get();
         }
     }
 
@@ -80,7 +81,7 @@ public final class BenchUpgrade {
 
         @Override
         public RecipeSerializer<?> getSerializer() {
-            return Content.Recipes.SHAPELESS_UPGRADE.get();
+            return BenchRecipeTypes.SHAPELESS_UPGRADE.get();
         }
     }
 

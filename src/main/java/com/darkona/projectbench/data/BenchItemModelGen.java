@@ -1,6 +1,6 @@
 package com.darkona.projectbench.data;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchItems;
 import com.darkona.projectbench.ProjectBench;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
@@ -14,8 +14,8 @@ final class BenchItemModelGen extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        basicItem(Content.id("blueprint_recorded"));
-        basicItem(Content.Items.BLUEPRINT.get()).override().predicate(Content.id("recorded"), 1F)
+        basicItem(ProjectBench.id("blueprint_recorded"));
+        basicItem(BenchItems.BLUEPRINT.get()).override().predicate(ProjectBench.id("recorded"), 1F)
                                            .model(new ModelFile.UncheckedModelFile(modLoc("item/blueprint_recorded"))).end();
     }
 }

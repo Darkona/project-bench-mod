@@ -1,7 +1,8 @@
 package com.darkona.projectbench.content.bench;
 
 import com.darkona.projectbench.network.SlotLocks;
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchBlockEntityTypes;
+import com.darkona.projectbench.index.BenchDataComponents;
 import com.darkona.projectbench.foundation.BenchBlock;
 import com.darkona.projectbench.foundation.BenchBlockEntity;
 import com.darkona.projectbench.content.archive.BlueprintArchiveBlockEntity;
@@ -145,7 +146,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     private final Stock ownStock = Stock.lazy(() -> pairs() ? pairOwn : own);
 
     public ProjectBenchBlockEntity(BlockPos pos, BlockState state) {
-        super(Content.BlockEntities.PROJECT_BENCH.get(), pos, state);
+        super(BenchBlockEntityTypes.PROJECT_BENCH.get(), pos, state);
         matrix.addListener(c -> contentsChanged());
 
         storage.addListener(c -> setChanged());
@@ -759,7 +760,7 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
 
     private void write(Blueprint recorded) {
         ItemStack written = blueprint.getItem(0).copy();
-        written.set(Content.Components.BLUEPRINT.get(), recorded);
+        written.set(BenchDataComponents.BLUEPRINT.get(), recorded);
         blueprint.setItem(0, written);
         cost.charge();
     }
@@ -806,9 +807,9 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
             for (SimpleContainer container : containers) {
                 all.addAll(container.getItems());
             }
-            components.set(Content.Components.CONTENTS.get(), ItemContainerContents.fromItems(all));
+            components.set(BenchDataComponents.CONTENTS.get(), ItemContainerContents.fromItems(all));
             if (storage.anyLock()) {
-                components.set(Content.Components.SLOT_LOCKS.get(), storage.locksAsContents());
+                components.set(BenchDataComponents.SLOT_LOCKS.get(), storage.locksAsContents());
             }
         }
     }
@@ -816,11 +817,11 @@ public class ProjectBenchBlockEntity extends BenchBlockEntity {
     @Override
     protected void applyImplicitComponents(DataComponentInput input) {
         super.applyImplicitComponents(input);
-        ItemContainerContents locks = input.get(Content.Components.SLOT_LOCKS);
+        ItemContainerContents locks = input.get(BenchDataComponents.SLOT_LOCKS);
         if (locks != null) {
             storage.setLocks(locks);
         }
-        ItemContainerContents contents = input.get(Content.Components.CONTENTS);
+        ItemContainerContents contents = input.get(BenchDataComponents.CONTENTS);
         if (contents == null) {
             return;
         }

@@ -1,6 +1,6 @@
 package com.darkona.projectbench.infrastructure.gametest;
 
-import com.darkona.projectbench.Content;
+import com.darkona.projectbench.index.BenchBlocks;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.content.bench.ExternalInventories;
 import com.darkona.projectbench.content.bench.Processor;
@@ -55,7 +55,7 @@ public final class ProcessorGameTests {
     }
 
     private static ProjectBenchBlockEntity benchWith(GameTestHelper helper, BlockPos east, Block block) {
-        helper.setBlock(BENCH, Content.Blocks.PROJECT_BENCH.get());
+        helper.setBlock(BENCH, BenchBlocks.PROJECT_BENCH.get());
         helper.setBlock(east, block);
         return helper.getBlockEntity(BENCH);
     }
@@ -222,7 +222,7 @@ public final class ProcessorGameTests {
 
     @GameTest(template = GameTests.EMPTY)
     public static void aSidedBlockGetsNoTabButStorageKeepsIts(GameTestHelper helper) {
-        helper.setBlock(BENCH, Content.Blocks.PROJECT_BENCH.get());
+        helper.setBlock(BENCH, BenchBlocks.PROJECT_BENCH.get());
         helper.setBlock(BENCH.north(), Blocks.CHEST);
         helper.setBlock(BENCH.south(), Blocks.BARREL);
         FakeInventories.placeSided(helper, BENCH.east(), sided());
@@ -247,7 +247,7 @@ public final class ProcessorGameTests {
 
     @GameTest(template = GameTests.EMPTY)
     public static void aSidedBlockInAlwaysShowGetsItsTab(GameTestHelper helper) {
-        helper.setBlock(BENCH, Content.Blocks.PROJECT_BENCH.get());
+        helper.setBlock(BENCH, BenchBlocks.PROJECT_BENCH.get());
         FakeInventories.placeSided(helper, BENCH.east(), sided());
         ProjectBenchBlockEntity bench = helper.getBlockEntity(BENCH);
         bench.setShareMode(ShareMode.ALL);
