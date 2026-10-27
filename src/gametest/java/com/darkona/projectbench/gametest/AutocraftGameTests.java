@@ -5,7 +5,7 @@ import com.darkona.projectbench.ProjectBench;
 import dev.darkona.jdlib.api.world.RelativeSide;
 import com.darkona.projectbench.block.bench.AutoBenchBlock;
 import com.darkona.projectbench.config.AutoMode;
-import com.darkona.projectbench.block.BenchBlock;
+import com.darkona.projectbench.foundation.BenchBlock;
 import com.darkona.projectbench.block.bench.Opening;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;

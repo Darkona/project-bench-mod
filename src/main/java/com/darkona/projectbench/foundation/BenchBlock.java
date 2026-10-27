@@ -1,4 +1,4 @@
-package com.darkona.projectbench.block;
+package com.darkona.projectbench.foundation;
 
 import com.darkona.projectbench.config.BreakMode;
 import com.darkona.projectbench.config.Feature;

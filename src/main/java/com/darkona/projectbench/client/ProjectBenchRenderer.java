@@ -1,6 +1,6 @@
 package com.darkona.projectbench.client;
 
-import com.darkona.projectbench.block.BenchBlock;
+import com.darkona.projectbench.foundation.BenchBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;
 import com.darkona.projectbench.config.ClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;

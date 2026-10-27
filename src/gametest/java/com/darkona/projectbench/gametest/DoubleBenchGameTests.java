@@ -3,7 +3,7 @@ package com.darkona.projectbench.gametest;
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
 import com.darkona.projectbench.config.AutoMode;
-import com.darkona.projectbench.block.BenchBlock;
+import com.darkona.projectbench.foundation.BenchBlock;
 import com.darkona.projectbench.block.bench.BenchSlabBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlock;
 import com.darkona.projectbench.block.bench.ProjectBenchBlockEntity;

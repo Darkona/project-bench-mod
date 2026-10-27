@@ -2,10 +2,10 @@ package com.darkona.projectbench.block.archive;
 
 import com.darkona.projectbench.Content;
 import dev.darkona.jdlib.api.inventory.ConcatContainer;
-import com.darkona.projectbench.block.BenchMenu;
-import com.darkona.projectbench.block.BenchBlockEntity;
+import com.darkona.projectbench.foundation.BenchMenu;
+import com.darkona.projectbench.foundation.BenchBlockEntity;
 import dev.darkona.jdlib.api.world.RelativeSide;
-import com.darkona.projectbench.block.BenchBlock;
+import com.darkona.projectbench.foundation.BenchBlock;
 import dev.darkona.jdlib.api.inventory.SidedItemHandler;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.config.Config;

@@ -2,7 +2,7 @@ package com.darkona.projectbench.datagen;
 
 import com.darkona.projectbench.Content;
 import com.darkona.projectbench.ProjectBench;
-import com.darkona.projectbench.block.BenchBlock;
+import com.darkona.projectbench.foundation.BenchBlock;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlock;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlock.ColumnPart;
 import com.darkona.projectbench.block.bench.AutoBenchBlock;

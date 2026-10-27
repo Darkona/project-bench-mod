@@ -1,8 +1,8 @@
 package com.darkona.projectbench.block.bench;
 
 import com.darkona.projectbench.Content;
-import com.darkona.projectbench.block.BenchBlock;
-import com.darkona.projectbench.block.BenchBlockEntity;
+import com.darkona.projectbench.foundation.BenchBlock;
+import com.darkona.projectbench.foundation.BenchBlockEntity;
 import com.darkona.projectbench.block.archive.BlueprintArchiveBlockEntity;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.blueprint.BlueprintItem;

@@ -1,6 +1,6 @@
 package com.darkona.projectbench.block.bench;
 
-import com.darkona.projectbench.block.BenchBlock;
+import com.darkona.projectbench.foundation.BenchBlock;
 import com.darkona.projectbench.config.BreakMode;
 import com.darkona.projectbench.config.Config;
 import com.darkona.projectbench.config.Feature;

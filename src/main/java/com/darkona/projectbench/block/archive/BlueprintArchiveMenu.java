@@ -3,7 +3,7 @@ package com.darkona.projectbench.block.archive;
 import com.darkona.projectbench.Content;
 import dev.darkona.jdlib.api.inventory.ConcatContainer;
 import dev.darkona.jdlib.api.inventory.Stacks;
-import com.darkona.projectbench.block.BenchMenu;
+import com.darkona.projectbench.foundation.BenchMenu;
 import com.darkona.projectbench.blueprint.BlueprintContainer;
 import com.darkona.projectbench.config.Config;
 import net.minecraft.network.RegistryFriendlyByteBuf;

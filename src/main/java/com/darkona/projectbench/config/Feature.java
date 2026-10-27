@@ -1,7 +1,7 @@
 package com.darkona.projectbench.config;
 
 import com.darkona.projectbench.Content;
-import com.darkona.projectbench.block.BenchBlock;
+import com.darkona.projectbench.foundation.BenchBlock;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

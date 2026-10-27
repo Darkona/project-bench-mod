@@ -1,4 +1,4 @@
-package com.darkona.projectbench.block;
+package com.darkona.projectbench.foundation;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
